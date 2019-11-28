@@ -17,7 +17,7 @@
 using namespace clas12;
 
 void pi0analysis(const Char_t in_list[]){
-
+  cout << "Start" << endl;
   TFile *Out_File = new TFile("out.root", "recreate");
   ifstream list_of_files;
   char file_name[200];
@@ -64,7 +64,7 @@ void pi0analysis(const Char_t in_list[]){
         double protm = db -> GetParticle(2212)->Mass();
         //double neutm = db -> GetParticle(2112)->Mass();
 
-        while(c12.next() || n_events == 10000) {                         //loop over events
+        while(c12.next() /*|| n_events == 1000*/) {                         //loop over events
           auto electronbuff = c12.getByID(11);
           auto photonbuff   = c12.getByID(22);
           auto protonbuff   = c12.getByID(2212);
@@ -92,7 +92,8 @@ void pi0analysis(const Char_t in_list[]){
                             photonbuff[j]->par()->getPz(),
                             0);
 
-              TLorentzVector photcombo = phot1 + phot2;
+              TLorentzVector
+                photcombo = phot1 + phot2;
               double pi0_m = photcombo.M2();
               pi0s->Fill(pi0_m);
 
@@ -122,6 +123,7 @@ void pi0analysis(const Char_t in_list[]){
 
   list_of_files.close();
   cout << "\nTotal no of files in list: " << n_files << endl;
+  cout << "\nTotal no of events processed: " << n_events << endl;
 
   Out_File->Write();
   Out_File->Close();
@@ -129,10 +131,10 @@ void pi0analysis(const Char_t in_list[]){
 }//pi0analysis fxn
 
   void histos(){
-    pi0s = new TH1F("pi0s",   "Invatiant mass of paired photons; Mass (GeV?); counts", 100, 0, 3);
-    pi0mm = new TH1F("pi0mm", "Pi0 Missing Mass; Mass (GeV?); counts", 100, -2, 2);
+    pi0s = new TH1F("pi0s",   "Invariant mass of paired photons; Mass (GeV?); counts", 250, 0, 0.2);
+    pi0mm = new TH1F("pi0mm", "Pi0 Missing Mass; Mass (GeV?); counts", 100, -1, 1);
 /*
-  Q2h      = new TH1F("Q2h", "Q^{2};  Q^{2};  counts", 100, -1, 9);
+  Q2h      = new TH1F("Q2h", "Q^{2};  Q^{2};  counts", 200, -1, 9);
   XBh      = new TH1F("XBh", "X_{B};  X_{B};  counts", 100, -0.5, 1.5);
 */
 }//histos fxn
