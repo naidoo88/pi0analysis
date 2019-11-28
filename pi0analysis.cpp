@@ -48,7 +48,7 @@ void pi0analysis(const Char_t in_list[]){
 
         c12.addExactPid(2212,1);          //one proton
         c12.addExactPid(11,1);            //one electron
-        c12.AddAtLeastPid(22,2);          //at least 2 photons
+        c12.addAtLeastPid(22,2);          //at least 2 photons
 
         auto db=TDatabasePDG::Instance();
         TLorentzVector beam   (0,0,10.6,10.6);
@@ -64,7 +64,7 @@ void pi0analysis(const Char_t in_list[]){
         double protm = db -> GetParticle(2212)->Mass();
         //double neutm = db -> GetParticle(2112)->Mass();
 
-        while(c12.next()) {                         //loop over events
+        while(c12.next() || n_events == 10000) {                         //loop over events
           auto electronbuff = c12.getByID(11);
           auto photonbuff   = c12.getByID(22);
           auto protonbuff   = c12.getByID(2212);
@@ -81,8 +81,8 @@ void pi0analysis(const Char_t in_list[]){
 
           int j = 0;
           int N = photonbuff.size();
-          for (int i=0; i<N-1; i++){
-            for (int j=i+1; j=N-1; j++){
+          for (int i=0; i<(N-1); i++){
+            for (int j=i+1; j==(N-1); j++){
               phot1.SetXYZM(photonbuff[i]->par()->getPx(),
                             photonbuff[i]->par()->getPy(),
                             photonbuff[i]->par()->getPz(),
@@ -92,11 +92,14 @@ void pi0analysis(const Char_t in_list[]){
                             photonbuff[j]->par()->getPz(),
                             0);
 
-              TLorentzVector photcomb = phot1 + phot2; 
+              TLorentzVector photcombo = phot1 + phot2;
+              double pi0_m = photcombo.M2();
+              pi0s->Fill(pi0_m);
+
             }//photons j-loop
           }//photons i-loop
-
-            /*q  = beam-e;
+/*
+            q  = beam-e;
             mm = (beam + target) - (e + pip);
             double Q2  = -1*q.M2();
             double xb  = Q2 / ( 2 * protm * (beam.E()-e.E()) );
@@ -104,15 +107,9 @@ void pi0analysis(const Char_t in_list[]){
             double MM2 = mm.M2();
 
             Q2h       ->Fill(Q2);
-            Q2semih   ->Fill(Q2);
             XBh       ->Fill(xb);
-            XBsemih   ->Fill(xb);
-            Mp2h      ->Fill(Mp2);
-            MM2h      ->Fill(MM2);
             Q2XBh     ->Fill(Q2, xb);
-            Q2XBsemih ->Fill(Q2, xb);*/
-
-
+*/
           n_events++;
         }//event while-loop
 
@@ -132,39 +129,10 @@ void pi0analysis(const Char_t in_list[]){
 }//pi0analysis fxn
 
   void histos(){
-  /*npxh     = new TH1F("npxh", "Neutron px; px (GeV); counts", 100, -1.5, 1.5);
-  npyh     = new TH1F("npyh", "Neutron py; py (GeV); counts", 100, -1.5, 1.5);
-  npzh     = new TH1F("npzh", "Neutron pz; pz (GeV); counts", 100, -1  , 2);
-  nEh      = new TH1F("nEh" , "Neutron E;  E (GeV) ; counts", 200,  0.5, 3);
-
-  Q2h      = new TH1F("Q2h"    , "Q^{2};  Q^{2};  counts",                       100, -1, 9);
-  Q2exh    = new TH1F("Q2exh"  , "Q^{2} - Exclusive only;  Q^{2};  counts",      100, -1, 9);
-  Q2semih  = new TH1F("Q2semih", "Q^{2} - Semi-inclusive only;  Q^{2};  counts", 100, -1, 9);
-
-  XBh      = new TH1F("XBh"    , "X_{B};  X_{B};  counts",                       100, -0.5, 1.5);
-  XBexh    = new TH1F("XBexh"  , "X_{B} - Exclusive only;  X_{B};  counts",      100, -0.5, 1.5);
-  XBsemih  = new TH1F("XBsemih", "X_{B} - Semi-inclusive only;  X_{B};  counts", 100, -0.5, 1.5);
-
-  MM2h      = new TH1F("MM2h" , "Missing Mass - Squared;  MM(GeV); counts",     100, -20, 25);
-  Mp2h      = new TH1F("Mp2h" , "Missing Momentum - Squared;  MM(GeV); counts", 100, -1, 6);
-
-  Q2XBh     = new TH2F("Q2XBh"    , "Q^{2} vs. X_{B}; Q^{2}; X_{B}", 100, -1, 9, 100, -0.5, 1.5);
-  Q2XBsemih = new TH2F("Q2XBsemih", "Q^{2} vs. X_{B}; Q^{2}; X_{B}", 100, -1, 9, 100, -0.5, 1.5);
-
-  //  sectnh   = new TH1F("sectnh"    , "Section - CND Neutrons; Section;  counts",  26, -0.5, 25.5);
-  //  sectph   = new TH1F("sectph"    , "Section - CND Pi+s; Section;  counts",  26, -0.5, 25.5);
-  sect1nh  = new TH1F("sect1nh"   , "Section - nCND1; Section;  counts",  26, -0.5, 25.5);
-  sect2nh  = new TH1F("sect2nh"   , "Section - nCND2; Section;  counts",  26, -0.5, 25.5);
-  sect3nh  = new TH1F("sect3nh"   , "Section - nCND3; Section;  counts",  26, -0.5, 25.5);
-  sect1ph  = new TH1F("sect1ph"   , "Section - pipCND1; Section;  counts",  26, -0.5, 25.5);
-  sect2ph  = new TH1F("sect2ph"   , "Section - pipCND2; Section;  counts",  26, -0.5, 25.5);
-  sect3ph  = new TH1F("sect3ph"   , "Section - pipCND3; Section;  counts",  26, -0.5, 25.5);
-
-  sectnh  = new TH1F("sectnh"   , "Section - Neutrons (all layers); Section;  counts",  26, -0.5, 25.5);
-  sectph  = new TH1F("sectph"   , "Section - Pi+ (all layers);      Section;  counts",  26, -0.5, 25.5);
-
-  layer0testh  = new TH1F("layer0testh" , "CTOF  ; ~;  counts",  200, 0, 100);
-  layer1testh  = new TH1F("layer1testh" , "Layer1; ~;  counts",  200, 0, 100);
-  layer2testh  = new TH1F("layer2testh" , "Layer2; ~;  counts",  200, 0, 100);
-  layer3testh  = new TH1F("layer3testh" , "Layer3; ~;  counts",  200, 0, 100);*/
+    pi0s = new TH1F("pi0s",   "Invatiant mass of paired photons; Mass (GeV?); counts", 100, 0, 3);
+    pi0mm = new TH1F("pi0mm", "Pi0 Missing Mass; Mass (GeV?); counts", 100, -2, 2);
+/*
+  Q2h      = new TH1F("Q2h", "Q^{2};  Q^{2};  counts", 100, -1, 9);
+  XBh      = new TH1F("XBh", "X_{B};  X_{B};  counts", 100, -0.5, 1.5);
+*/
 }//histos fxn
