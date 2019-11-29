@@ -92,10 +92,12 @@ void pi0analysis(const Char_t in_list[]){
                             photonbuff[j]->par()->getPz(),
                             0);
 
-              TLorentzVector
-                photcombo = phot1 + phot2;
-              double pi0_m = photcombo.M2();
+              TLorentzVector photcombo = phot1 + phot2;
+              TLorentzVector system = (beam+target)-(e+prot+phot1+phot2);
+              double pi0_m  = photcombo.M2();
+              double pi0_mm = system.M2();
               pi0s->Fill(pi0_m);
+              pi0s->Fill(pi0_mm);
 
             }//photons j-loop
           }//photons i-loop
@@ -132,7 +134,7 @@ void pi0analysis(const Char_t in_list[]){
 
   void histos(){
     pi0s = new TH1F("pi0s",   "Invariant mass of paired photons; Mass (GeV?); counts", 250, 0, 0.2);
-    pi0mm = new TH1F("pi0mm", "Pi0 Missing Mass; Mass (GeV?); counts", 100, -1, 1);
+    pi0mm = new TH1F("pi0mm", "Pi0 Missing Mass; Mass (GeV?); counts", 200, -.5, .5);
 /*
   Q2h      = new TH1F("Q2h", "Q^{2};  Q^{2};  counts", 200, -1, 9);
   XBh      = new TH1F("XBh", "X_{B};  X_{B};  counts", 100, -0.5, 1.5);
