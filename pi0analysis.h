@@ -8,7 +8,7 @@ void histos();
 int n_events;
 
 /*  Histograms   */
-TH1F *pi0s;
-TH1F *pi0mm;
+TH1F *pi0s_h;
+TH1F *pi0mm_h;
 
 #endif

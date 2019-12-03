@@ -49,6 +49,7 @@ void pi0analysis(const Char_t in_list[]){
         c12.addExactPid(2212,1);          //one proton
         c12.addExactPid(11,1);            //one electron
         c12.addAtLeastPid(22,2);          //at least 2 photons
+        c12.addZeroOfRestPid();           //no other particles
 
         auto db=TDatabasePDG::Instance();
         TLorentzVector beam   (0,0,10.6,10.6);
@@ -94,10 +95,10 @@ void pi0analysis(const Char_t in_list[]){
 
               TLorentzVector photcombo = phot1 + phot2;
               TLorentzVector system = (beam+target)-(e+prot+phot1+phot2);
-              double pi0_m  = photcombo.M2();
-              double pi0_mm = system.M2();
-              pi0s->Fill(pi0_m);
-              pi0s->Fill(pi0_mm);
+              double pi0s  = photcombo.M2();
+              double pi0mm = system.M2();
+              pi0s_h ->Fill(pi0s);
+              pi0mm_h->Fill(pi0mm);
 
             }//photons j-loop
           }//photons i-loop
@@ -133,8 +134,8 @@ void pi0analysis(const Char_t in_list[]){
 }//pi0analysis fxn
 
   void histos(){
-    pi0s = new TH1F("pi0s",   "Invariant mass of paired photons; Mass (GeV?); counts", 250, 0, 0.2);
-    pi0mm = new TH1F("pi0mm", "Pi0 Missing Mass; Mass (GeV?); counts", 200, -.5, .5);
+    pi0s_h  = new TH1F("pi0s",   "Invariant mass of paired photons; Mass (GeV); counts", 250, 0, 0.2);
+    pi0mm_h = new TH1F("pi0mm", "Pi0 Missing Mass; Mass (GeV); counts", 200, -.5, .5);
 /*
   Q2h      = new TH1F("Q2h", "Q^{2};  Q^{2};  counts", 200, -1, 9);
   XBh      = new TH1F("XBh", "X_{B};  X_{B};  counts", 100, -0.5, 1.5);
