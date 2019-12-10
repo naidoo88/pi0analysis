@@ -82,26 +82,44 @@ void pi0analysis(const Char_t in_list[]){
 
           int j = 0;
           int N = photonbuff.size();
-          for (int i=0; i<(N-1); i++){
-            for (int j=i+1; j==(N-1); j++){
-              phot1.SetXYZM(photonbuff[i]->par()->getPx(),
-                            photonbuff[i]->par()->getPy(),
-                            photonbuff[i]->par()->getPz(),
-                            0);
-              phot2.SetXYZM(photonbuff[j]->par()->getPx(),
-                            photonbuff[j]->par()->getPy(),
-                            photonbuff[j]->par()->getPz(),
-                            0);
 
-              TLorentzVector photcombo = phot1 + phot2;
-              TLorentzVector system = (beam+target)-(e+prot+phot1+phot2);
-              double pi0s   = photcombo.M();
-              double pi0mm2 = system.M2();
-              pi0s_h ->Fill(pi0s);
-              pi0mm2_h->Fill(pi0mm2);
+          if(N == 2){
+            phot1.SetXYZM(photonbuff[0]->par()->getPx(),
+                          photonbuff[0]->par()->getPy(),
+                          photonbuff[0]->par()->getPz(),
+                          0);
+            phot2.SetXYZM(photonbuff[1]->par()->getPx(),
+                          photonbuff[1]->par()->getPy(),
+                          photonbuff[1]->par()->getPz(),
+                          0);
+          }
+          else{
+            for (int i=0; i<(N-1); i++){
+              for (int j=i+1; j==(N-1); j++){
+                phot1.SetXYZM(photonbuff[i]->par()->getPx(),
+                              photonbuff[i]->par()->getPy(),
+                              photonbuff[i]->par()->getPz(),
+                              0);
+                phot2.SetXYZM(photonbuff[j]->par()->getPx(),
+                              photonbuff[j]->par()->getPy(),
+                              photonbuff[j]->par()->getPz(),
+                              0);
 
-            }//photons j-loop
-          }//photons i-loop
+                TLorentzVector combobuffer = phot1 + phot2;
+                //WORK OUT HOW TO DO THIS ON PAPER STOP TRYING TO EYEBALL IT// ####################################################################
+              }//photons j-loop
+            }//photons i-loop
+
+
+          }//close else
+
+          TLorentzVector photcombo = phot1 + phot2;
+          TLorentzVector system = (beam+target)-(e+prot+phot1+phot2);
+          double pi0s   = photcombo.M();
+          double pi0mm2 = system.M2();
+          pi0s_h ->Fill(pi0s);
+          pi0mm2_h->Fill(pi0mm2);
+
 /*
             q  = beam-e;
             mm = (beam + target) - (e + pip);
@@ -115,7 +133,6 @@ void pi0analysis(const Char_t in_list[]){
             Q2XBh     ->Fill(Q2, xb);
 */
           n_events++;
-          if (n_events == 10000) break; //stop after 10k events
         }//event while-loop
 
         sprintf(last_file,"%s",file_name);     // save name of the current file into "last_file"
