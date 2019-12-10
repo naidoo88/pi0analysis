@@ -65,7 +65,7 @@ void pi0analysis(const Char_t in_list[]){
         double protm = db -> GetParticle(2212)->Mass();
         //double neutm = db -> GetParticle(2112)->Mass();
 
-        while(c12.next() /*|| n_events == 1000*/) {                         //loop over events
+        while(c12.next()) {                   //loop over events
           auto electronbuff = c12.getByID(11);
           auto photonbuff   = c12.getByID(22);
           auto protonbuff   = c12.getByID(2212);
@@ -95,10 +95,10 @@ void pi0analysis(const Char_t in_list[]){
 
               TLorentzVector photcombo = phot1 + phot2;
               TLorentzVector system = (beam+target)-(e+prot+phot1+phot2);
-              double pi0s  = photcombo.M2();
-              double pi0mm = system.M2();
+              double pi0s   = photcombo.M();
+              double pi0mm2 = system.M2();
               pi0s_h ->Fill(pi0s);
-              pi0mm_h->Fill(pi0mm);
+              pi0mm2_h->Fill(pi0mm2);
 
             }//photons j-loop
           }//photons i-loop
@@ -115,6 +115,7 @@ void pi0analysis(const Char_t in_list[]){
             Q2XBh     ->Fill(Q2, xb);
 */
           n_events++;
+          if (n_events == 10000) break; //stop after 10k events
         }//event while-loop
 
         sprintf(last_file,"%s",file_name);     // save name of the current file into "last_file"
@@ -135,7 +136,7 @@ void pi0analysis(const Char_t in_list[]){
 
   void histos(){
     pi0s_h  = new TH1F("pi0s",   "Invariant mass of paired photons; Mass (GeV); counts", 250, 0, 0.2);
-    pi0mm_h = new TH1F("pi0mm", "Pi0 Missing Mass; Mass (GeV); counts", 200, -.5, .5);
+    pi0mm2_h = new TH1F("pi0mm2", "Missing Mass-Squared; Mass (GeV^{2}); counts", 200, -.5, .5);
 /*
   Q2h      = new TH1F("Q2h", "Q^{2};  Q^{2};  counts", 200, -1, 9);
   XBh      = new TH1F("XBh", "X_{B};  X_{B};  counts", 100, -0.5, 1.5);

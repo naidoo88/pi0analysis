@@ -9,6 +9,6 @@ int n_events;
 
 /*  Histograms   */
 TH1F *pi0s_h;
-TH1F *pi0mm_h;
+TH1F *pi0mm2_h;
 
 #endif
