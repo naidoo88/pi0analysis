@@ -17,6 +17,7 @@
 using namespace clas12;
 
 void pi0analysis(const Char_t in_list[]){
+  bool DEBUG = 0;
   cout << "Start" << endl;
   TFile *Out_File = new TFile("out.root", "recreate");
   ifstream list_of_files;
@@ -63,9 +64,10 @@ void pi0analysis(const Char_t in_list[]){
 
         double em    = db -> GetParticle(11)  ->Mass();
         double protm = db -> GetParticle(2212)->Mass();
+        double pi0m  = db -> GetParticle(111) ->Mass();
         //double neutm = db -> GetParticle(2112)->Mass();
 
-        while(c12.next()) {                   //loop over events
+        while(c12.next()) {   //loop over events
           auto electronbuff = c12.getByID(11);
           auto photonbuff   = c12.getByID(22);
           auto protonbuff   = c12.getByID(2212);
@@ -80,10 +82,11 @@ void pi0analysis(const Char_t in_list[]){
                     electronbuff[0]->par()->getPz(),
                     em);
 
-          int j = 0;
           int N = photonbuff.size();
+          if(DEBUG) cout << "PHOTON BUFF SIZE: " << N << endl;
 
           if(N == 2){
+            if(DEBUG) cout << "ONE PAIR" << endl;
             phot1.SetXYZM(photonbuff[0]->par()->getPx(),
                           photonbuff[0]->par()->getPy(),
                           photonbuff[0]->par()->getPz(),
@@ -92,25 +95,45 @@ void pi0analysis(const Char_t in_list[]){
                           photonbuff[1]->par()->getPy(),
                           photonbuff[1]->par()->getPz(),
                           0);
-          }
-          else{
-            for (int i=0; i<(N-1); i++){
-              for (int j=i+1; j==(N-1); j++){
-                phot1.SetXYZM(photonbuff[i]->par()->getPx(),
-                              photonbuff[i]->par()->getPy(),
-                              photonbuff[i]->par()->getPz(),
-                              0);
-                phot2.SetXYZM(photonbuff[j]->par()->getPx(),
-                              photonbuff[j]->par()->getPy(),
-                              photonbuff[j]->par()->getPz(),
-                              0);
+          }//if one pair
 
-                TLorentzVector combobuffer = phot1 + phot2;
-                //WORK OUT HOW TO DO THIS ON PAPER STOP TRYING TO EYEBALL IT// ####################################################################
+          else{                           //loop through combinations, keeping pair closest to pi0-mass
+            double diff, mindiff = 10000; //mindiff initialised high
+            TLorentzVector phot1buff, phot2buff, combobuff;
+            int n_pairs = 0;
+
+            for (int i=0; i<N-1; i++){
+              for (int j=i+1; j<N; j++){
+                if(DEBUG) cout << "pair [" << i << "][" << j << "]" << endl;
+                phot1buff.SetXYZM(photonbuff[i]->par()->getPx(),
+                                  photonbuff[i]->par()->getPy(),
+                                  photonbuff[i]->par()->getPz(),
+                                  0);
+                phot2buff.SetXYZM(photonbuff[j]->par()->getPx(),
+                                  photonbuff[j]->par()->getPy(),
+                                  photonbuff[j]->par()->getPz(),
+                                  0);
+
+                combobuff = phot1buff + phot2buff;
+                diff = abs(pi0m - combobuff.M());
+
+                if (diff < mindiff){
+                  phot1.SetXYZM(photonbuff[i]->par()->getPx(),
+                                    photonbuff[i]->par()->getPy(),
+                                    photonbuff[i]->par()->getPz(),
+                                    0);
+                  phot2.SetXYZM(photonbuff[j]->par()->getPx(),
+                                    photonbuff[j]->par()->getPy(),
+                                    photonbuff[j]->par()->getPz(),
+                                    0);
+
+                  mindiff = diff;
+                  if(DEBUG) cout << "new pair is ["<< i << "][" << j << "]" << endl;
+                }//masscheck
+                n_pairs++;
               }//photons j-loop
             }//photons i-loop
-
-
+            if(DEBUG) cout << "LOOPED THROUGH " << n_pairs << " PAIRS.\n" << endl;
           }//close else
 
           TLorentzVector photcombo = phot1 + phot2;
@@ -133,6 +156,7 @@ void pi0analysis(const Char_t in_list[]){
             Q2XBh     ->Fill(Q2, xb);
 */
           n_events++;
+          // if (n_events == 10) break;
         }//event while-loop
 
         sprintf(last_file,"%s",file_name);     // save name of the current file into "last_file"
