@@ -134,14 +134,28 @@ void pi0analysis(const Char_t in_list[]){
               }//photons j-loop
             }//photons i-loop
             if(DEBUG) cout << "LOOPED THROUGH " << n_pairs << " PAIRS.\n" << endl;
-          }//close else
+          }//close pair else
+
+          TLorentzVector system = (beam+target)-(e+prot+phot1+phot2);
+          double pi0mm2 = system.M2();
+
+          /*=====CUTS=====*/
+          if(pi0mm2 < -0.073 || pi0mm2 > 0.053) continue;
+          /*==============*/
 
           TLorentzVector photcombo = phot1 + phot2;
-          TLorentzVector system = (beam+target)-(e+prot+phot1+phot2);
           double pi0s   = photcombo.M();
-          double pi0mm2 = system.M2();
           pi0s_h ->Fill(pi0s);
           pi0mm2_h->Fill(pi0mm2);
+
+          /*===PHYSICS===*/
+          TLorentzVector  q = beam - e;
+          double         Q2 = -1*q.M2();
+          double         xB = Q2 / 2*(target*q);
+          double       tneg = -(prot-beam).M2();
+
+          Q2xB_h -> Fill(xB, Q2);
+          tneg_h -> Fill(tneg);
 
 /*
             q  = beam-e;
@@ -176,8 +190,10 @@ void pi0analysis(const Char_t in_list[]){
 }//pi0analysis fxn
 
   void histos(){
-    pi0s_h  = new TH1F("pi0s",   "Invariant mass of paired photons; Mass (GeV); counts", 250, 0, 0.2);
-    pi0mm2_h = new TH1F("pi0mm2", "Missing Mass-Squared; Mass (GeV^{2}); counts", 200, -.5, .5);
+    pi0s_h   = new TH1F("pi0s_h",   "Invariant mass of paired photons; Mass (GeV); counts", 250, 0, 0.2);
+    pi0mm2_h = new TH1F("pi0mm2_h", "Missing Mass-Squared; Mass (GeV^{2}); counts",         200, -.5, .5);
+    tneg_h   = new TH1F("tneg_h",   "-t; -t (GeV^{2}); counts",                             200, -10, 10);
+    Q2xB_h   = new TH2F("Q2xB_h",   "Q^{2} vs. x_{B}; x_{B}; Q^{2} (GeV^{2})", 400, -10, 10, 400, -10, 10);
 /*
   Q2h      = new TH1F("Q2h", "Q^{2};  Q^{2};  counts", 200, -1, 9);
   XBh      = new TH1F("XBh", "X_{B};  X_{B};  counts", 100, -0.5, 1.5);
