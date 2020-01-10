@@ -23,6 +23,7 @@ TH1F *W_h;
 TH1F *xB_pre_h;
 TH1F *xB_h;
 
+TH1F *recprotmm_pre_h;
 TH1F *recprotmm_h;
 
 TH2F *pi0im_pi0mm2_pre_h;

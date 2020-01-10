@@ -154,6 +154,9 @@ void pi0analysis(const Char_t in_list[]){
           double pi0mp  = system.P();
           double     xB = Q2 / 2*(target*(beam - e));
 
+          TLorentzVector recprot = (beam+target)-(e+phot1+phot2);
+          double recprotmm = recprot.M();
+
           /*=====PRE-CUT HISTOS=====*/
           pi0im_pre_h  -> Fill(pi0im);
           pi0mm2_pre_h -> Fill(pi0mm2);
@@ -167,37 +170,36 @@ void pi0analysis(const Char_t in_list[]){
           pi0im_pi0mm2_pre_h  -> Fill(pi0mm2, pi0im);
           pi0im_pi0mp_pre_h   -> Fill(pi0mp, pi0im);
           pi0mm2_pi0mp_pre_h  -> Fill(pi0mp, pi0mm2);
+
+          recprotmm_pre_h -> Fill(recprotmm);
           /*========================*/
 
-         if(pi0mm2 < -0.073 || pi0mm2 > 0.053) continue;
+          if(pi0mm2 < -0.0853 || pi0mm2 > 0.0718) continue; //mu = -0.006743, sig = 0.02618
 
-         /*=====POST-CUT HISTOS=====*/
-         pi0im_h  -> Fill(pi0im);
-         pi0mm2_h -> Fill(pi0mm2);
-         pi0mp_h  -> Fill(pi0mp);
-         Q2_h     -> Fill(Q2);
-         xB_h     -> Fill(xB);
-         Q2xB_h   -> Fill(xB, Q2);
-         tneg_h   -> Fill(tneg);
-         W_h      -> Fill(W);
+          /*=====POST-CUT HISTOS=====*/
+          pi0im_h  -> Fill(pi0im);
+          pi0mm2_h -> Fill(pi0mm2);
+          pi0mp_h  -> Fill(pi0mp);
+          Q2_h     -> Fill(Q2);
+          xB_h     -> Fill(xB);
+          Q2xB_h   -> Fill(xB, Q2);
+          tneg_h   -> Fill(tneg);
+          W_h      -> Fill(W);
 
-         pi0im_pi0mm2_h   -> Fill(pi0mm2, pi0im);
-         pi0im_pi0mp_h   -> Fill(pi0mp, pi0im);
-         pi0mm2_pi0mp_h  -> Fill(pi0mp, pi0mm2);
-         /*========================*/
+          pi0im_pi0mm2_h   -> Fill(pi0mm2, pi0im);
+          pi0im_pi0mp_h   -> Fill(pi0mp, pi0im);
+          pi0mm2_pi0mp_h  -> Fill(pi0mp, pi0mm2);
 
-         TLorentzVector recprot = (beam+target)-(e+phot1+phot2);
-         double recprotmm = recprot.M();
-         recprotmm_h -> Fill(recprotmm);
+          recprotmm_h -> Fill(recprotmm);
+          /*========================*/
 
-         n_events++;
-         // if (n_events == 10) break;        }//event while-loop
-
-         sprintf(last_file,"%s",file_name);     // save name of the current file into "last_file"
-         n_files++;
+          n_events++;
+          //if (n_events == 10) break;        }//event while-loop
 
         }//event loop
       }//duplicate check
+      sprintf(last_file,"%s",file_name);     // save name of the current file into "last_file"
+      n_files++;
     }//file list loop
   }//list open-check
 
@@ -238,5 +240,6 @@ void pi0analysis(const Char_t in_list[]){
    Q2xB_pre_h   = new TH2F("Q2xB_pre_h", "Q{2} vs. x_{B} - Before MM^{2} cut; x_{B}; Q^{2} (GeV^{2})", 250, 0, 20, 150, 0, 8);
    Q2xB_h       = new TH2F("Q2xB_h", "Q{2} vs. x_{B}; x_{B}; Q^{2} (GeV^{2})",                         250, 0, 20, 150, 0, 8);
 
-   recprotmm_h = new TH1F("recprotmm2_h", "Reconstructed Proton MissingMass-Sq; MM of reconstructed proton (GeV^{2}); counts", 180, 0, 3);
+   recprotmm_pre_h = new TH1F("recprotmm2_pre_h", "Reconstructed Proton MissingMass-Sq - Before MM^{2} cuts; MM of reconstructed proton (GeV^{2}); counts", 180, 0, 3);
+   recprotmm_h     = new TH1F("recprotmm2_h", "Reconstructed Proton MissingMass-Sq; MM of reconstructed proton (GeV^{2}); counts",                          180, 0, 3);
  }//histos fxn
