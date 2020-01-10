@@ -229,7 +229,6 @@ void pi0analysis(const Char_t in_list[]){
    W_pre_h      = new TH1F("W_pre_h", "Centre of Mass Energy - Before MM^{2} cut; W (GeV^{2}); counts",  120, 0, 30);
    W_h          = new TH1F("W_h", "Centre of Mass Energy; W (GeV^{2}); counts",                          120, 0, 30);
 
-   //FIX MP PLOT LABLES
    pi0im_pi0mm2_pre_h   = new TH2F ("pi0im_pi0mm2_pre_h", "Invariant Mass of photon-pair vs. MM^{2} of channel - Pre-MM^{2} cut; MissingMass-Sq (GeV^{2}); Inv.Mass (GeV)", 200, -.5, .5, 200, 0, 0.2);
    pi0im_pi0mm2_h       = new TH2F ("pi0im_pi0mm2_h", "Invariant Mass of photon-pair vs. MM^{2} of channel; MissingMass-Sq (GeV^{2}); Inv.Mass (GeV)",                      200, -.5, .5, 200, 0, 0.2);
    pi0im_pi0mp_pre_h    = new TH2F ("pi0im_pi0mp_pre_h", "Invariant Mass of photon-pair vs. Mp of channel - Pre-MM^{2} cut; MissingMomentum-Sq (GeV^{2}); Inv.Mass (GeV)",  200, 0, 6, 200, 0, 0.2);
