@@ -19,7 +19,7 @@ using namespace clas12;
 void pi0analysis(const Char_t in_list[]){
   bool DEBUG = 0;
   cout << "Start" << endl;
-  TFile *Out_File = new TFile("/scratch/pauln/out.root", "recreate");
+  TFile *Out_File = new TFile("out.root", "recreate");
   ifstream list_of_files;
   char file_name[200];
   char last_file[200];
@@ -62,10 +62,13 @@ void pi0analysis(const Char_t in_list[]){
         TLorentzVector q      (0,0,0,0);
         TLorentzVector mm     (0,0,0,0);
 
-        double em    = db -> GetParticle(11)  ->Mass();
-        double protm = db -> GetParticle(2212)->Mass();
-        double pi0m  = db -> GetParticle(111) ->Mass();
-        //double neutm = db -> GetParticle(2112)->Mass();
+        double em    = db -> GetParticle(11)  -> Mass();
+        double protm = db -> GetParticle(2212)-> Mass();
+        double pi0m  = db -> GetParticle(111) -> Mass();
+        //double neutm = db -> GetParticle(2112)-> Mass();
+
+        //double deutm = db -> GetParticle(1000010020) -> Mass();
+        TLorentzVector deut (0,0,0,1.876);
 
         while(c12.next()) {   //loop over events
           auto electronbuff = c12.getByID(11);
@@ -138,60 +141,88 @@ void pi0analysis(const Char_t in_list[]){
 
           /*=====KINEMATIC CUTS=====*/
           double   Q2 = -1*(beam - e).M2();
-          if(Q2 < 1)   continue; // could be 1.5, 2... revisit at asymmetry stage
+          //if(Q2 < 1)   continue; // could be 1.5, 2... revisit at asymmetry stage
 
           double tneg = -(prot-target).M2();
-          if(tneg > 1) continue; //**DOUBLE CHECK THIS AGAINST THEORY PAPER**
+          //if(tneg > 1) continue; //**DOUBLE CHECK THIS AGAINST THEORY PAPER**
 
           double    W = (e + prot + phot1 + phot2).M2();
-          if(W  < 4)   continue;
+          //if(W  < 4)   continue;
           /*========================*/
 
-          TLorentzVector system = (beam+target)-(e+prot+phot1+phot2);
+          TLorentzVector system = (beam+target)-(e+prot+phot1+phot2); //[e p -> e' p' g1 g2]
           TLorentzVector photcombo = phot1 + phot2;
           double pi0im  = photcombo.M();
           double pi0mm2 = system.M2();
           double pi0mp  = system.P();
           double     xB = Q2 / 2*(target*(beam - e));
 
-          TLorentzVector recprot = (beam+target)-(e+phot1+phot2);
-          double recprotmm = recprot.M();
+          TLorentzVector recprot     = (beam+target)-(e+phot1+phot2);
+          TLorentzVector recspecneut = (beam+deut)-(e+prot+phot1+phot2);
+          double recprotmm  = recprot.M();
+          double specneutmp = recspecneut.P();
+          double specneutmm = recspecneut.M();
 
           /*=====PRE-CUT HISTOS=====*/
-          pi0im_pre_h  -> Fill(pi0im);
-          pi0mm2_pre_h -> Fill(pi0mm2);
-          pi0mp_pre_h  -> Fill(pi0mp);
-          Q2_pre_h     -> Fill(Q2);
-          xB_pre_h     -> Fill(xB);
-          Q2xB_pre_h   -> Fill(xB, Q2);
-          tneg_pre_h   -> Fill(tneg);
-          W_pre_h      -> Fill(W);
+          pi0im_h[0]  -> Fill(pi0im);
+          pi0mm2_h[0] -> Fill(pi0mm2);
+          pi0mp_h[0]  -> Fill(pi0mp);
+          Q2_h[0]     -> Fill(Q2);
+          xB_h[0]     -> Fill(xB);
+          Q2xB_h[0]   -> Fill(xB, Q2);
+          tneg_h[0]   -> Fill(tneg);
+          W_h[0]      -> Fill(W);
 
-          pi0im_pi0mm2_pre_h  -> Fill(pi0mm2, pi0im);
-          pi0im_pi0mp_pre_h   -> Fill(pi0mp, pi0im);
-          pi0mm2_pi0mp_pre_h  -> Fill(pi0mp, pi0mm2);
+          pi0im_pi0mm2_h[0] -> Fill(pi0mm2, pi0im);
+          pi0im_pi0mp_h[0]  -> Fill(pi0mp, pi0im);
+          pi0mm2_pi0mp_h[0] -> Fill(pi0mp, pi0mm2);
 
-          recprotmm_pre_h -> Fill(recprotmm);
+          recprotmm_h[0]   -> Fill(recprotmm);
+          spectneutmm_h[0] -> Fill(specneutmm);
+          spectneutmp_h[0] -> Fill(specneutmp);
           /*========================*/
 
           if(pi0mm2 < -0.0853 || pi0mm2 > 0.0718) continue; //mu = -0.006743, sig = 0.02618
 
-          /*=====POST-CUT HISTOS=====*/
-          pi0im_h  -> Fill(pi0im);
-          pi0mm2_h -> Fill(pi0mm2);
-          pi0mp_h  -> Fill(pi0mp);
-          Q2_h     -> Fill(Q2);
-          xB_h     -> Fill(xB);
-          Q2xB_h   -> Fill(xB, Q2);
-          tneg_h   -> Fill(tneg);
-          W_h      -> Fill(W);
+          /*=====POST-pi0MM2-CUT HISTOS=====*/
+          pi0im_h[1]  -> Fill(pi0im);
+          pi0mm2_h[1] -> Fill(pi0mm2);
+          pi0mp_h[1]  -> Fill(pi0mp);
+          Q2_h[1]     -> Fill(Q2);
+          xB_h[1]     -> Fill(xB);
+          Q2xB_h[1]   -> Fill(xB, Q2);
+          tneg_h[1]   -> Fill(tneg);
+          W_h[1]      -> Fill(W);
 
-          pi0im_pi0mm2_h   -> Fill(pi0mm2, pi0im);
-          pi0im_pi0mp_h   -> Fill(pi0mp, pi0im);
-          pi0mm2_pi0mp_h  -> Fill(pi0mp, pi0mm2);
+          pi0im_pi0mm2_h[1] -> Fill(pi0mm2, pi0im);
+          pi0im_pi0mp_h[1]  -> Fill(pi0mp, pi0im);
+          pi0mm2_pi0mp_h[1] -> Fill(pi0mp, pi0mm2);
 
-          recprotmm_h -> Fill(recprotmm);
-          /*========================*/
+          recprotmm_h[1] -> Fill(recprotmm);
+          spectneutmm_h[1] -> Fill(specneutmm);
+          spectneutmp_h[1] -> Fill(specneutmp);
+          /*================================*/
+
+          if(specneutmp > 0.3) continue; //300MeV cut on spectator missing momentum
+
+          /*=====POST-spectMP-CUT HISTOS=====*/
+          pi0im_h[2]  -> Fill(pi0im);
+          pi0mm2_h[2] -> Fill(pi0mm2);
+          pi0mp_h[2]  -> Fill(pi0mp);
+          Q2_h[2]     -> Fill(Q2);
+          xB_h[2]     -> Fill(xB);
+          Q2xB_h[2]   -> Fill(xB, Q2);
+          tneg_h[2]   -> Fill(tneg);
+          W_h[2]      -> Fill(W);
+
+          pi0im_pi0mm2_h[2] -> Fill(pi0mm2, pi0im);
+          pi0im_pi0mp_h[2]  -> Fill(pi0mp, pi0im);
+          pi0mm2_pi0mp_h[2] -> Fill(pi0mp, pi0mm2);
+
+          recprotmm_h[2] -> Fill(recprotmm);
+          spectneutmm_h[2] -> Fill(specneutmm);
+          spectneutmp_h[2] -> Fill(specneutmp);
+          /*================================*/
 
           n_events++;
           //if (n_events == 10) break;        }//event while-loop
@@ -213,32 +244,76 @@ void pi0analysis(const Char_t in_list[]){
 }//pi0analysis fxn
 
  void histos(){
-   pi0im_pre_h  = new TH1F("pi0im_pre_h", "Invariant mass of paired photons - Before MM^{2} cut; Inv.Mass (GeV); counts", 200, 0, 0.2);
-   pi0im_h      = new TH1F("pi0im_h", "Invariant mass of paired photons; Inv.Mass (GeV); counts",                         200, 0, 0.2);
-   pi0mm2_pre_h = new TH1F("pi0mm2_pre_h", "Missing Mass-Squared - Before MM^{2} cut; MissingMass-Sq (GeV^{2}); counts",  200, -.5, .5);
-   pi0mm2_h     = new TH1F("pi0mm2_h", "Missing Mass-Squared; MissingMass-Sq (GeV^{2}); counts",                          200, -.5, .5);
-   pi0mp_pre_h  = new TH1F("pi0mp_pre_h", "Missing Momentum - Before MM^{2} cut; MissingMomentum (GeV); counts",          200, 0, 6);
-   pi0mp_h      = new TH1F("pi0mp_h", "Missing Momentum; MissingMomentum-Sq (GeV); counts",                               200, 0, 6);
+   // [0] - raw;
+   // [1] - post MM^2 cut
+   // [2] - post rec neut mp cut
 
-   tneg_pre_h   = new TH1F("tneg_pre_h", "-t - Before MM^{2} cut; -t (GeV^{2}); counts",                 150, 0, 10);
-   tneg_h       = new TH1F("tneg_h", "-t; -t (GeV^{2}); counts",                                         150, 0, 10);
-   Q2_pre_h     = new TH1F("Q2_pre_h", "Q^{2} - Before MM^{2} cut; Q^{2} (GeV^{2}); counts",             150, 0, 8);
-   Q2_h         = new TH1F("Q2_h", "Q^{2}; Q^{2} (GeV^{2}); counts",                                     150, 0, 8);
-   xB_pre_h     = new TH1F("xB_pre_h", "xB - Before MM^{2} cut; xB; counts",                             100, 0, 20);
-   xB_h         = new TH1F("xB_h", "xB - Before MM^{2} cut; xB; counts",                                 100, 0, 20);
-   W_pre_h      = new TH1F("W_pre_h", "Centre of Mass Energy - Before MM^{2} cut; W (GeV^{2}); counts",  120, 0, 30);
-   W_h          = new TH1F("W_h", "Centre of Mass Energy; W (GeV^{2}); counts",                          120, 0, 30);
+   //Exclusivity variables
+   //---------------------------------------------------------------------------------------------------------------
+   tneg_h[0] = new TH1F("tneg_pre_h",  "-t - Before pi0MM^{2} cut; -t (GeV^{2}); counts",               150, 0, 10);
+   tneg_h[1] = new TH1F("tneg_h",      "-t; -t (GeV^{2}); counts",                                      150, 0, 10);
+   tneg_h[2] = new TH1F("tneg_post_h", "-t - Post spectMP cut; -t (GeV^{2}); counts",                   150, 0, 10);
 
-   pi0im_pi0mm2_pre_h   = new TH2F ("pi0im_pi0mm2_pre_h", "Invariant Mass of photon-pair vs. MM^{2} of channel - Pre-MM^{2} cut; MissingMass-Sq (GeV^{2}); Inv.Mass (GeV)", 200, -.5, .5, 200, 0, 0.2);
-   pi0im_pi0mm2_h       = new TH2F ("pi0im_pi0mm2_h", "Invariant Mass of photon-pair vs. MM^{2} of channel; MissingMass-Sq (GeV^{2}); Inv.Mass (GeV)",                      200, -.5, .5, 200, 0, 0.2);
-   pi0im_pi0mp_pre_h    = new TH2F ("pi0im_pi0mp_pre_h", "Invariant Mass of photon-pair vs. Mp of channel - Pre-MM^{2} cut; MissingMomentum-Sq (GeV^{2}); Inv.Mass (GeV)",  200, 0, 6, 200, 0, 0.2);
-   pi0im_pi0mp_h        = new TH2F ("pi0im_pi0mp_h", "Invariant Mass of photon-pair vs. Mp of channel; MissingMomentum-Sq (GeV^{2}); Inv.Mass (GeV)",                       200, 0, 6, 200, 0, 0.2);
-   pi0mm2_pi0mp_pre_h   = new TH2F ("pi0mm2_pi0mp_pre_h","MM^{2} vs. Mp - Pre-MM^{2} cut; MissingMomentum-Sq (GeV^{2}); MissingMass-Sq (GeV^{2})",                          200, 0, 6, 200, -.5, .5);
-   pi0mm2_pi0mp_h       = new TH2F ("pi0mm2_pi0mp_h","MM^{2} vs. Mp; MissingMomentum-Sq (GeV^{2}); MissingMass-Sq (GeV^{2})",                                               200, 0, 6, 200, -.5, .5);
+   Q2_h[0]   = new TH1F("Q2_pre_h",  "Q^{2} - Before pi0MM^{2} cut; Q^{2} (GeV^{2}); counts",           150, 0, 8);
+   Q2_h[1]   = new TH1F("Q2_h",      "Q^{2}; Q^{2} (GeV^{2}); counts",                                  150, 0, 8);
+   Q2_h[2]   = new TH1F("Q2_post_h", "Q^{2} - Post spectMP cut; Q^{2} (GeV^{2}); counts",               150, 0, 8);
 
-   Q2xB_pre_h   = new TH2F("Q2xB_pre_h", "Q{2} vs. x_{B} - Before MM^{2} cut; x_{B}; Q^{2} (GeV^{2})", 250, 0, 20, 150, 0, 8);
-   Q2xB_h       = new TH2F("Q2xB_h", "Q{2} vs. x_{B}; x_{B}; Q^{2} (GeV^{2})",                         250, 0, 20, 150, 0, 8);
+   xB_h[0]   = new TH1F("xB_pre_h",  "xB - Before pi0MM^{2} cut; xB; counts",                           100, 0, 20);
+   xB_h[1]   = new TH1F("xB_h",      "xB; xB; counts",                                                  100, 0, 20);
+   xB_h[2]   = new TH1F("xB_post_h", "xB - Post spectMP cut; xB; counts",                               100, 0, 20);
 
-   recprotmm_pre_h = new TH1F("recprotmm2_pre_h", "Reconstructed Proton MissingMass-Sq - Before MM^{2} cuts; MM of reconstructed proton (GeV^{2}); counts", 180, 0, 3);
-   recprotmm_h     = new TH1F("recprotmm2_h", "Reconstructed Proton MissingMass-Sq; MM of reconstructed proton (GeV^{2}); counts",                          180, 0, 3);
+   W_h[0]    = new TH1F("W_pre_h",  "CoM Energy - Before pi0MM^{2} cut; W (GeV^{2}); counts",           120, 0, 30);
+   W_h[1]    = new TH1F("W_h",      "CoM Energy; W (GeV^{2}); counts",                                  120, 0, 30);
+   W_h[2]    = new TH1F("W_post_h", "CoM Energy - Post spectMP cut; W (GeV^{2}); counts",               120, 0, 30);
+
+   Q2xB_h[0] = new TH2F("Q2xB_pre_h",  "Q{2} vs. x_{B} - Before pi0MM^{2} cut; x_{B}; Q^{2} (GeV^{2})", 250, 0, 20, 150, 0, 8);
+   Q2xB_h[1] = new TH2F("Q2xB_h",      "Q{2} vs. x_{B}; x_{B}; Q^{2} (GeV^{2})",                        250, 0, 20, 150, 0, 8);
+   Q2xB_h[2] = new TH2F("Q2xB_post_h", "Q{2} vs. x_{B} - Post spectMP cut; x_{B}; Q^{2} (GeV^{2})",     250, 0, 20, 150, 0, 8);
+
+   //Channel masses etc.
+   //---------------------------------------------------------------------------------------------------------------
+   pi0im_h[0]  = new TH1F("pi0im_pre_h",  "Invariant mass of paired photons - Before pi0MM^{2} cut; Inv.Mass (GeV); counts", 200, 0, 0.2);
+   pi0im_h[1]  = new TH1F("pi0im_h",      "Invariant mass of paired photons; Inv.Mass (GeV); counts",                        200, 0, 0.2);
+   pi0im_h[2]  = new TH1F("pi0im_post_h", "Invariant mass of paired photons - Post spectMP cut; Inv.Mass (GeV); counts",     200, 0, 0.2);
+
+   pi0mm2_h[0] = new TH1F("pi0mm2_pre_h",  "Missing Mass-Squared [e p -> e' p' #gamma_{1} #gamma_{2}] - Before pi0MM^{2} cut; MissingMass-Sq (GeV^{2}); counts",  200, -.5, .5);
+   pi0mm2_h[1] = new TH1F("pi0mm2_h",      "Missing Mass-Squared [e p -> e' p' #gamma_{1} #gamma_{2}]; MissingMass-Sq (GeV^{2}); counts",                         200, -.5, .5);
+   pi0mm2_h[2] = new TH1F("pi0mm2_post_h", "Missing Mass-Squared [e p -> e' p' #gamma_{1} #gamma_{2}] - Post spectMP cut; MissingMass-Sq (GeV^{2}); counts",      200, -.5, .5);
+
+   pi0mp_h[0]  = new TH1F("pi0mp_pre_h",  "Missing Momentum [e p -> e' p' #gamma_{1} #gamma_{2}] - Before pi0MM^{2} cut; MissingMomentum (GeV); counts",          200, 0, 6);
+   pi0mp_h[1]  = new TH1F("pi0mp_h",      "Missing Momentum [e p -> e' p' #gamma_{1} #gamma_{2}]; MissingMomentum-Sq (GeV); counts",                              200, 0, 6);
+   pi0mp_h[2]  = new TH1F("pi0mp_post_h", "Missing Momentum [e p -> e' p' #gamma_{1} #gamma_{2}] - Post spectMP cut; MissingMomentum-Sq (GeV); counts",           200, 0, 6);
+
+   pi0im_pi0mm2_h[0] = new TH2F ("pi0im_pi0mm2_pre_h",  "Invariant Mass of photon-pair vs. MM^{2}[e p -> e' p' #gamma_{1} #gamma_{2}] Pre-pi0MM^{2} cut; MissingMass-Sq (GeV^{2}); Inv.Mass (GeV)", 200, -.5, .5, 200, 0, 0.2);
+   pi0im_pi0mm2_h[1] = new TH2F ("pi0im_pi0mm2_h",      "Invariant Mass of photon-pair vs. MM^{2}[e p -> e' p' #gamma_{1} #gamma_{2}]; MissingMass-Sq (GeV^{2}); Inv.Mass (GeV)",                   200, -.5, .5, 200, 0, 0.2);
+   pi0im_pi0mm2_h[2] = new TH2F ("pi0im_pi0mm2_post_h", "Invariant Mass of photon-pair vs. MM^{2}[e p -> e' p' #gamma_{1} #gamma_{2}]- Post spectMP cut; MissingMass-Sq (GeV^{2}); Inv.Mass (GeV)", 200, -.5, .5, 200, 0, 0.2);
+
+   pi0im_pi0mp_h[0]  = new TH2F ("pi0im_pi0mp_pre_h",  "Inv.Mass [#gamma_{1}#gamma_{2}] vs. MP[e p -> e' p' #gamma_{1} #gamma_{2}] - Pre-pi0MM^{2} cut; MissingMomentum (GeV); Inv.Mass (GeV)",     200, 0, 6, 200, 0, 0.2);
+   pi0im_pi0mp_h[1]  = new TH2F ("pi0im_pi0mp_h",      "Inv.Mass [#gamma_{1}#gamma_{2}] vs. MP[e p -> e' p' #gamma_{1} #gamma_{2}]; MissingMomentum (GeV); Inv.Mass (GeV)",                         200, 0, 6, 200, 0, 0.2);
+   pi0im_pi0mp_h[2]  = new TH2F ("pi0im_pi0mp_post_h", "Inv.Mass [#gamma_{1}#gamma_{2}] vs. MP[e p -> e' p' #gamma_{1} #gamma_{2}] - Post spectMP cut; MissingMomentum (GeV); Inv.Mass (GeV)",      200, 0, 6, 200, 0, 0.2);
+
+   pi0mm2_pi0mp_h[0] = new TH2F ("pi0mm2_pi0mp_pre_h",  "[e p -> e' p' #gamma_{1} #gamma_{2}]: MM^{2} vs. Mp - Pre-pi0MM^{2} cut; MissingMomentum (GeV); MissingMass-Sq (GeV^{2})",                 200, 0, 6, 200, -.5, .5);
+   pi0mm2_pi0mp_h[1] = new TH2F ("pi0mm2_pi0mp_h",      "[e p -> e' p' #gamma_{1} #gamma_{2}]: MM^{2} vs. Mp; MissingMomentum (GeV); MissingMass-Sq (GeV^{2})",                                     200, 0, 6, 200, -.5, .5);
+   pi0mm2_pi0mp_h[2] = new TH2F ("pi0mm2_pi0mp_h_post", "[e p -> e' p' #gamma_{1} #gamma_{2}]: MM^{2} vs. Mp - Post spectMP cut; MissingMomentum (GeV); MissingMass-Sq (GeV^{2})",                  200, 0, 6, 200, -.5, .5);
+
+   //Reconstructed particles for BG clean-up
+   //---------------------------------------------------------------------------------------------------------------
+   recprotmm_h[0]   = new TH1F("recprotmm_pre_h",  "MM[e p -> e' #gamma_{1} #gamma_{2}] - Before pi0MM^{2} cut; MM of reconstructed proton (GeV); counts",                180, 0, 3);
+   recprotmm_h[1]   = new TH1F("recprotmm_h",      "MM[e p -> e' #gamma_{1} #gamma_{2}]; MM of reconstructed proton (GeV); counts",                                       180, 0, 3);
+   recprotmm_h[2]   = new TH1F("recprotmm_post_h", "MM[e p -> e' #gamma_{1} #gamma_{2}] - Post spectMP cut; MM of reconstructed proton (GeV); counts",                    180, 0, 3);
+
+   spectneutmp_h[0] = new TH1F("spectneutmp_pre_h",  "MP[e d -> e' p' #gamma_{1} #gamma_{2}] - Before pi0MM^{2} cut; MP of reconstructed spect. neutron (GeV/c); counts", 200, 0, 6);
+   spectneutmp_h[1] = new TH1F("spectneutmp_h",      "MP[e d -> e' p' #gamma_{1} #gamma_{2}]; MP of reconstructed spect. neutron (GeV/c); counts",                        200, 0, 6);
+   spectneutmp_h[2] = new TH1F("spectneutmp_post_h", "MP[e d -> e' p' #gamma_{1} #gamma_{2}]- Post spectMP cut; MP of reconstructed spect. neutron (GeV/c); counts",      200, 0, 6);
+
+   spectneutmm_h[0] = new TH1F("spectneutmm_pre_h",  "MM[e d -> e' p' #gamma_{1} #gamma_{2}] - Before pi0MM^{2} cut; MM of reconstructed spect. neutron (GeV); counts",   200, 0, 6);
+   spectneutmm_h[1] = new TH1F("spectneutmm_h",      "MM[e d -> e' p' #gamma_{1} #gamma_{2}]; MM of reconstructed spect. neutron (GeV); counts",                          200, 0, 6);
+   spectneutmm_h[2] = new TH1F("spectneutmm_post_h", "MM[e d -> e' p' #gamma_{1} #gamma_{2}] - Post spectMP cut; MM of reconstructed spect. neutron (GeV); counts",       200, 0, 6);
+
+   spectneut_mpmm_h[0] = new TH2F("spectneut_mpmm_pre_h",  "[e d -> e' p' #gamma_{1} #gamma_{2}]: MP vs. MM - Before pi0MM^{2} cut; MM of rec. spect. neutron (GeV); MissingMom. (GeV/c)", 200, 0, 6, 200, 0, 6);
+   spectneut_mpmm_h[1] = new TH2F("spectneut_mpmm_h",      "[e d -> e' p' #gamma_{1} #gamma_{2}]: MP vs. MM; MM of rec. spect. neutron (GeV); MissingMom. (GeV/c)",                        200, 0, 6, 200, 0, 6);
+   spectneut_mpmm_h[2] = new TH2F("spectneut_mpmm_post_h", "[e d -> e' p' #gamma_{1} #gamma_{2}]: MP vs. MM - Post spectMP cut; MM of rec. spect. neutron (GeV); MissingMom. (GeV/c)",     200, 0, 6, 200, 0, 6);
  }//histos fxn
+
+
+//edit "post pre" lables. Fill 2D rec neut histos. 
