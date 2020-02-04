@@ -32,6 +32,22 @@ void pi0analysis(const Char_t in_list[]){
 
   histos();
 
+  TTree *data = new TTree("data", "Processed Data.");
+     data->Branch("Q2",   &Q2,   "Q2/D");
+     data->Branch("tneg", &tneg, "tneg/D");
+     data->Branch("W",    &W,    "W/D");
+     data->Branch("xB",   &xB ,  "xB/D");
+
+     data->Branch("pi0im",  &pi0im,  "pi0im/D");
+     data->Branch("pi0mm2", &pi0mm2, "pi0mm2/D");
+     data->Branch("pi0mp",  &pi0mp,  "pi0mp/D");
+
+     data->Branch("recprotmm",  &recprotmm,  "recprotmm/D");
+     data->Branch("specneutmp", &specneutmp, "specneutmp/D");
+     data->Branch("specneutmm", &specneutmm, "specneutmm/D");
+
+     data->Branch("excl", &excl, "excl/O");
+
   if(list_of_files.is_open()){
     cout << "Successfully opened list:  " << in_list << endl;
 
@@ -140,28 +156,35 @@ void pi0analysis(const Char_t in_list[]){
           }//close pair else
 
           /*=====KINEMATIC CUTS=====*/
-          double   Q2 = -1*(beam - e).M2();
+          //Q2   = -1*(beam - e).M2();
           //if(Q2 < 1)   continue; // could be 1.5, 2... revisit at asymmetry stage
-
-          double tneg = -(prot-target).M2();
+          //tneg = -(prot-target).M2();
           //if(tneg > 1) continue; //**DOUBLE CHECK THIS AGAINST THEORY PAPER**
-
-          double    W = (e + prot + phot1 + phot2).M2();
+          //W    = (e + prot + phot1 + phot2).M2();
           //if(W  < 4)   continue;
           /*========================*/
 
+          Q2   = -1*(beam - e).M2();
+          xB   = Q2 / 2*(target*(beam - e));
+          tneg = -(prot-target).M2();
+          W    = (e + prot + phot1 + phot2).M2();
+
           TLorentzVector system = (beam+target)-(e+prot+phot1+phot2); //[e p -> e' p' g1 g2]
           TLorentzVector photcombo = phot1 + phot2;
-          double pi0im  = photcombo.M();
-          double pi0mm2 = system.M2();
-          double pi0mp  = system.P();
-          double     xB = Q2 / 2*(target*(beam - e));
+          pi0im  = photcombo.M();
+          pi0mm2 = system.M2();
+          pi0mp  = system.P();
 
           TLorentzVector recprot     = (beam+target)-(e+phot1+phot2);
           TLorentzVector recspecneut = (beam+deut)-(e+prot+phot1+phot2);
-          double recprotmm  = recprot.M();
-          double specneutmp = recspecneut.P();
-          double specneutmm = recspecneut.M();
+          recprotmm  = recprot.M();
+          specneutmp = recspecneut.P();
+          specneutmm = recspecneut.M();
+
+          if((Q2 < 1) && (tneg > 1) && (W  < 4)) excl = 1; //Set flag for pass/fail on exclusivity cuts.
+          else excl = 0;
+
+          data->Fill();
 
           /*=====PRE-CUT HISTOS=====*/
           pi0im_h[0]  -> Fill(pi0im);
@@ -287,17 +310,17 @@ void pi0analysis(const Char_t in_list[]){
    pi0mp_h[1]  = new TH1F("pi0mp_1_h", "Missing Momentum [e p -> e' p' #gamma_{1} #gamma_{2}]; MissingMomentum-Sq (GeV); counts",                             200, 0, 6);
    pi0mp_h[2]  = new TH1F("pi0mp_2_h", "Missing Momentum [e p -> e' p' #gamma_{1} #gamma_{2}] - Post spectMP cut; MissingMomentum-Sq (GeV); counts",          200, 0, 6);
 
-   pi0_immm2_h[0] = new TH2F ("pi0_immm2_0_h", "Invariant Mass of photon-pair vs. MM^{2}[e p -> e' p' #gamma_{1} #gamma_{2}] Pre-pi0MM^{2} cut; MissingMass-Sq (GeV^{2}); Inv.Mass (GeV)", 200, -.5, .5, 200, 0, 0.2);
-   pi0_immm2_h[1] = new TH2F ("pi0_immm2_1_h", "Invariant Mass of photon-pair vs. MM^{2}[e p -> e' p' #gamma_{1} #gamma_{2}]; MissingMass-Sq (GeV^{2}); Inv.Mass (GeV)",                   200, -.5, .5, 200, 0, 0.2);
-   pi0_immm2_h[2] = new TH2F ("pi0_immm2_2_h", "Invariant Mass of photon-pair vs. MM^{2}[e p -> e' p' #gamma_{1} #gamma_{2}]- Post spectMP cut; MissingMass-Sq (GeV^{2}); Inv.Mass (GeV)", 200, -.5, .5, 200, 0, 0.2);
+   pi0_immm2_h[0] = new TH2F ("pi0_immm2_0_h", "Inv. Mass of photon-pair vs. MM^{2}[e p -> e' p' #gamma_{1} #gamma_{2}] Pre-pi0MM^{2} cut; MissingMass-Sq (GeV^{2}); Inv.Mass (GeV)", 200, -.5, .5, 200, 0, 0.2);
+   pi0_immm2_h[1] = new TH2F ("pi0_immm2_1_h", "Inv. Mass of photon-pair vs. MM^{2}[e p -> e' p' #gamma_{1} #gamma_{2}]; MissingMass-Sq (GeV^{2}); Inv.Mass (GeV)",                   200, -.5, .5, 200, 0, 0.2);
+   pi0_immm2_h[2] = new TH2F ("pi0_immm2_2_h", "Inv. Mass of photon-pair vs. MM^{2}[e p -> e' p' #gamma_{1} #gamma_{2}]- Post spectMP cut; MissingMass-Sq (GeV^{2}); Inv.Mass (GeV)", 200, -.5, .5, 200, 0, 0.2);
 
-   pi0_immp_h[0]  = new TH2F ("pi0_immp_0_h", "Inv.Mass [#gamma_{1}#gamma_{2}] vs. MP[e p -> e' p' #gamma_{1} #gamma_{2}] - Pre-pi0MM^{2} cut; MissingMomentum (GeV); Inv.Mass (GeV)",     200, 0, 6, 200, 0, 0.2);
-   pi0_immp_h[1]  = new TH2F ("pi0_immp_1_h", "Inv.Mass [#gamma_{1}#gamma_{2}] vs. MP[e p -> e' p' #gamma_{1} #gamma_{2}]; MissingMomentum (GeV); Inv.Mass (GeV)",                         200, 0, 6, 200, 0, 0.2);
-   pi0_immp_h[2]  = new TH2F ("pi0_immp_2_h", "Inv.Mass [#gamma_{1}#gamma_{2}] vs. MP[e p -> e' p' #gamma_{1} #gamma_{2}] - Post spectMP cut; MissingMomentum (GeV); Inv.Mass (GeV)",      200, 0, 6, 200, 0, 0.2);
+   pi0_immp_h[0]  = new TH2F ("pi0_immp_0_h", "Inv.Mass [#gamma_{1}#gamma_{2}] vs. MP[e p -> e' p' #gamma_{1} #gamma_{2}] - Pre-pi0MM^{2} cut; MissingMomentum (GeV); Inv.Mass (GeV)",   200, 0, 6, 200, 0, 0.2);
+   pi0_immp_h[1]  = new TH2F ("pi0_immp_1_h", "Inv.Mass [#gamma_{1}#gamma_{2}] vs. MP[e p -> e' p' #gamma_{1} #gamma_{2}]; MissingMomentum (GeV); Inv.Mass (GeV)",                       200, 0, 6, 200, 0, 0.2);
+   pi0_immp_h[2]  = new TH2F ("pi0_immp_2_h", "Inv.Mass [#gamma_{1}#gamma_{2}] vs. MP[e p -> e' p' #gamma_{1} #gamma_{2}] - Post spectMP cut; MissingMomentum (GeV); Inv.Mass (GeV)",    200, 0, 6, 200, 0, 0.2);
 
-   pi0_mm2mp_h[0] = new TH2F ("pi0_mm2mp_0_h", "[e p -> e' p' #gamma_{1} #gamma_{2}]: MM^{2} vs. Mp - Pre-pi0MM^{2} cut; MissingMomentum (GeV); MissingMass-Sq (GeV^{2})",                 200, 0, 6, 200, -.5, .5);
-   pi0_mm2mp_h[1] = new TH2F ("pi0_mm2mp_1_h", "[e p -> e' p' #gamma_{1} #gamma_{2}]: MM^{2} vs. Mp; MissingMomentum (GeV); MissingMass-Sq (GeV^{2})",                                     200, 0, 6, 200, -.5, .5);
-   pi0_mm2mp_h[2] = new TH2F ("pi0_mm2mp_2_h", "[e p -> e' p' #gamma_{1} #gamma_{2}]: MM^{2} vs. Mp - Post spectMP cut; MissingMomentum (GeV); MissingMass-Sq (GeV^{2})",                  200, 0, 6, 200, -.5, .5);
+   pi0_mm2mp_h[0] = new TH2F ("pi0_mm2mp_0_h", "[e p -> e' p' #gamma_{1} #gamma_{2}]: MM^{2} vs. Mp - Pre-pi0MM^{2} cut; MissingMomentum (GeV); MissingMass-Sq (GeV^{2})",              200, 0, 6, 200, -.5, .5);
+   pi0_mm2mp_h[1] = new TH2F ("pi0_mm2mp_1_h", "[e p -> e' p' #gamma_{1} #gamma_{2}]: MM^{2} vs. Mp; MissingMomentum (GeV); MissingMass-Sq (GeV^{2})",                                  200, 0, 6, 200, -.5, .5);
+   pi0_mm2mp_h[2] = new TH2F ("pi0_mm2mp_2_h", "[e p -> e' p' #gamma_{1} #gamma_{2}]: MM^{2} vs. Mp - Post spectMP cut; MissingMomentum (GeV); MissingMass-Sq (GeV^{2})",               200, 0, 6, 200, -.5, .5);
 
    //Reconstructed particles for BG clean-up
    //---------------------------------------------------------------------------------------------------------------

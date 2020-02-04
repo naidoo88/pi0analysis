@@ -7,6 +7,22 @@ void histos();
 /*  Counters  */
 int n_events;
 
+/* Branch Variables */
+bool excl;
+
+double Q2;
+double tneg;
+double W;
+double xB;
+
+double pi0im;
+double pi0mm2;
+double pi0mp;
+
+double recprotmm;
+double specneutmp;
+double specneutmm;
+
 /*  Histograms   */
 TH1F *Q2_h[3];
 TH1F *W_h[3];
