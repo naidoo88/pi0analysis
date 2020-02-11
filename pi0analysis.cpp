@@ -16,10 +16,10 @@
 
 using namespace clas12;
 
-void pi0analysis(const Char_t in_list[]){
+void pi0analysis(const Char_t in_list[], const TString outfilename){
   bool DEBUG = 0;
   cout << "Start" << endl;
-  TFile *Out_File = new TFile("out.root", "recreate");
+  TFile *Out_File = new TFile(outfilename, "recreate");
   ifstream list_of_files;
   char file_name[200];
   char last_file[200];
@@ -28,7 +28,9 @@ void pi0analysis(const Char_t in_list[]){
   cout << "list of files opened" << endl;
 
   int n_files = 0;
-  n_events    = 0;
+  n_events         = 0;
+  n_excl_events    = 0;
+  n_postcut_events = 0;
 
   histos();
 
@@ -38,15 +40,22 @@ void pi0analysis(const Char_t in_list[]){
      data->Branch("W",    &W,    "W/D");
      data->Branch("xB",   &xB ,  "xB/D");
 
+     data->Branch("pi0thetadiff", &pi0thetadiff, "pi0thetadiff/D");
+     data->Branch("pi0anglediff", &pi0anglediff, "pi0anglediff/D");
+
      data->Branch("pi0im",  &pi0im,  "pi0im/D");
      data->Branch("pi0mm2", &pi0mm2, "pi0mm2/D");
      data->Branch("pi0mp",  &pi0mp,  "pi0mp/D");
 
      data->Branch("recprotmm",  &recprotmm,  "recprotmm/D");
+     data->Branch("recprotmp",  &recprotmp,  "recprotmp/D");
      data->Branch("specneutmp", &specneutmp, "specneutmp/D");
      data->Branch("specneutmm", &specneutmm, "specneutmm/D");
 
-     data->Branch("excl", &excl, "excl/O");
+     data->Branch("flag_excl", &flag_excl, "flag_excl/O");
+     data->Branch("flag_pi0thetadiff", &flag_pi0thetadiff, "flag_pi0thetadiff/O");
+     data->Branch("flag_pi0mm2", &flag_pi0mm2, "flag_pi0mm2/O");
+     data->Branch("flag_spectneutmp", &flag_spectneutmp, "flag_spectneutmp/O");
 
   if(list_of_files.is_open()){
     cout << "Successfully opened list:  " << in_list << endl;
@@ -87,6 +96,7 @@ void pi0analysis(const Char_t in_list[]){
         TLorentzVector deut (0,0,0,1.876);
 
         while(c12.next()) {   //loop over events
+          n_events++;
           auto electronbuff = c12.getByID(11);
           auto photonbuff   = c12.getByID(22);
           auto protonbuff   = c12.getByID(2212);
@@ -169,6 +179,11 @@ void pi0analysis(const Char_t in_list[]){
           tneg = -(prot-target).M2();
           W    = (e + prot + phot1 + phot2).M2();
 
+          TLorentzVector expected_pi0 = target+beam-e-prot;
+          TLorentzVector reconstr_pi0 = phot1+phot2;
+          pi0thetadiff = TMath::RadToDeg()*((target+beam-e-prot).Theta() - (phot1+phot2).Theta());
+          pi0anglediff = TMath::RadToDeg()*(expected_pi0.Angle(reconstr_pi0.Vect()));
+
           TLorentzVector system = (beam+target)-(e+prot+phot1+phot2); //[e p -> e' p' g1 g2]
           TLorentzVector photcombo = phot1 + phot2;
           pi0im  = photcombo.M();
@@ -178,13 +193,19 @@ void pi0analysis(const Char_t in_list[]){
           TLorentzVector recprot     = (beam+target)-(e+phot1+phot2);
           TLorentzVector recspecneut = (beam+deut)-(e+prot+phot1+phot2);
           recprotmm  = recprot.M();
+          recprotmp =  recprot.P();
           specneutmp = recspecneut.P();
           specneutmm = recspecneut.M();
 
-          if((Q2 < 1) && (tneg > 1) && (W  < 4)) excl = 1; //Set flag for pass/fail on exclusivity cuts.
-          else excl = 0;
+          if((Q2 > 1) && (tneg < 1) && (W  > 4)){ //Set flag for pass/fail on exclusivity cuts.
+            flag_excl = 1;
+            n_excl_events++;
+          }
+          else flag_excl = 0;
 
           data->Fill();
+
+          pi0thetadiff_h -> Fill(pi0thetadiff);
 
           /*=====PRE-CUT HISTOS=====*/
           pi0im_h[0]  -> Fill(pi0im);
@@ -206,7 +227,11 @@ void pi0analysis(const Char_t in_list[]){
           spectneut_mpmm_h[0] -> Fill(specneutmm, specneutmp);
           /*========================*/
 
-          if(pi0mm2 < -0.0853 || pi0mm2 > 0.0718) continue; //mu = -0.006743, sig = 0.02618
+          if(pi0mm2 < -0.0853 || pi0mm2 > 0.0718){
+            flag_pi0mm2 = 0;
+            continue; //mu = -0.006743, sig = 0.02618
+          }
+          flag_pi0mm2 = 1; //cut passed
 
           /*=====POST-pi0MM2-CUT HISTOS=====*/
           pi0im_h[1]  -> Fill(pi0im);
@@ -228,7 +253,11 @@ void pi0analysis(const Char_t in_list[]){
           spectneut_mpmm_h[1] -> Fill(specneutmm, specneutmp);
           /*================================*/
 
-          if(specneutmp > 0.3) continue; //300MeV cut on spectator missing momentum
+          if(specneutmp > 0.3){
+            continue; //300MeV cut on spectator missing momentum
+            flag_spectneutmp = 0;
+          }
+          flag_spectneutmp = 1;
 
           /*=====POST-spectMP-CUT HISTOS=====*/
           pi0im_h[2]  -> Fill(pi0im);
@@ -250,7 +279,7 @@ void pi0analysis(const Char_t in_list[]){
           spectneut_mpmm_h[2] -> Fill(specneutmm, specneutmp);
           /*================================*/
 
-          n_events++;
+          n_postcut_events++;
           //if (n_events == 10) break;        }//event while-loop
 
         }//event loop
@@ -263,6 +292,8 @@ void pi0analysis(const Char_t in_list[]){
   list_of_files.close();
   cout << "\nTotal no of files in list: " << n_files << endl;
   cout << "\nTotal no of events processed: " << n_events << endl;
+  cout << "\nTotal no of exclusive events: " << n_excl_events << endl;
+  cout << "\nTotal no of events post-cuts: " << n_postcut_events << endl;
 
   Out_File->Write();
   Out_File->Close();
@@ -298,6 +329,8 @@ void pi0analysis(const Char_t in_list[]){
 
    //Channel masses etc.
    //---------------------------------------------------------------------------------------------------------------
+   pi0thetadiff_h = new TH1F("pi0thetadiff_h", "dThet(Expected - Reconstructed); Angle (^{o}); counts", 100, 0, 45);
+
    pi0im_h[0]  = new TH1F("pi0im_0_h", "Invariant mass of paired photons - Before pi0MM^{2} cut; Inv.Mass (GeV); counts", 200, 0, 0.2);
    pi0im_h[1]  = new TH1F("pi0im_1_h", "Invariant mass of paired photons; Inv.Mass (GeV); counts",                        200, 0, 0.2);
    pi0im_h[2]  = new TH1F("pi0im_2_h", "Invariant mass of paired photons - Post spectMP cut; Inv.Mass (GeV); counts",     200, 0, 0.2);
