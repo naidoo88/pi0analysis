@@ -31,9 +31,10 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
   n_events         = 0;
   n_excl_events    = 0;
   n_postcut_events = 0;
+  n_FTreg_flags    = 0;
+  n_FTCAL_flags    = 0;
 
-  histos();
-
+  //  histos();
   TTree *data = new TTree("data", "Processed Data.");
      data->Branch("Q2",   &Q2,   "Q2/D");
      data->Branch("tneg", &tneg, "tneg/D");
@@ -52,10 +53,19 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
      data->Branch("specneutmp", &specneutmp, "specneutmp/D");
      data->Branch("specneutmm", &specneutmm, "specneutmm/D");
 
-     data->Branch("flag_excl", &flag_excl, "flag_excl/O");
+     data->Branch("flag_excl",         &flag_excl,         "flag_excl/O");
      data->Branch("flag_pi0thetadiff", &flag_pi0thetadiff, "flag_pi0thetadiff/O");
-     data->Branch("flag_pi0mm2", &flag_pi0mm2, "flag_pi0mm2/O");
-     data->Branch("flag_spectneutmp", &flag_spectneutmp, "flag_spectneutmp/O");
+     data->Branch("flag_pi0mm2",       &flag_pi0mm2,       "flag_pi0mm2/O");
+     data->Branch("flag_spectneutmp",  &flag_spectneutmp,  "flag_spectneutmp/O");
+
+     data->Branch("flag_photon1_FT",    &flag_photon1_FT,    "flag_photon1_FT/O");
+     data->Branch("flag_photon1_ft",    &flag_photon1_ft,    "flag_photon1_ft/O");
+     data->Branch("flag_photon1_CAL",   &flag_photon1_CAL,   "flag_photon1_CAL/O");
+     data->Branch("flag_photon1_wCAL",  &flag_photon1_wCAL,  "flag_photon1_wCAL/I");
+     data->Branch("flag_photon2_FT",    &flag_photon2_FT,    "flag_photon2_FT/O");
+     data->Branch("flag_photon2_ft",    &flag_photon2_ft,    "flag_photon2_ft/O");
+     data->Branch("flag_photon2_CAL",   &flag_photon2_CAL,   "flag_photon2_CAL/O");
+     data->Branch("flag_photon2_wCAL",  &flag_photon2_wCAL,  "flag_photon2_wCAL/I");
 
   if(list_of_files.is_open()){
     cout << "Successfully opened list:  " << in_list << endl;
@@ -95,6 +105,8 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
         //double deutm = db -> GetParticle(1000010020) -> Mass();
         TLorentzVector deut (0,0,0,1.876);
 
+        cout << "BEFORE c12.next()" << endl;
+
         while(c12.next()) {   //loop over events
           n_events++;
           auto electronbuff = c12.getByID(11);
@@ -124,6 +136,41 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
                           photonbuff[1]->par()->getPy(),
                           photonbuff[1]->par()->getPz(),
                           0);
+
+            //set photon detector flags
+              if(photonbuff[0]->getRegion() ==1000){
+                flag_photon1_FT  = 1;
+                flag_photon1_CAL = 0;
+                n_FTreg_flags++;
+              }
+              else if(photonbuff[0]->getRegion()==2000) {
+                flag_photon1_FT  = 0;
+                flag_photon1_CAL = 1;
+              }
+              if(photonbuff[0]->ft(FTCAL)->getDetector()==10){
+                flag_photon1_ft = 1;
+                n_FTCAL_flags++;
+              }
+              else flag_photon1_ft = 0;
+              //cout << "FT out: " << photonbuff[0]->getRegion() << " FT flag: " << flag_photon1_FT <<"  FTCAL out: " << photonbuff[0]->ft(FTCAL)->getDetector() << " FTCAL flag: " << flag_photon1_ft << endl;
+
+              if(photonbuff[0]->cal(PCAL)->getDetector()==7)  flag_photon1_wCAL=1;
+              if(photonbuff[0]->cal(ECIN)->getDetector()==7)  flag_photon1_wCAL=2;
+              if(photonbuff[0]->cal(ECOUT)->getDetector()==7) flag_photon1_wCAL=3;
+
+              if(photonbuff[1]->getRegion() ==1000){
+                flag_photon2_FT  = 1;
+                flag_photon2_CAL = 0;
+              }
+              else if(photonbuff[1]->getRegion()==2000) {
+                flag_photon2_FT  = 0;
+                flag_photon2_CAL = 1;
+              }
+              if(photonbuff[1]->ft(FTCAL)->getDetector()==10) flag_photon2_ft = 1;
+
+              if(photonbuff[1]->cal(PCAL)->getDetector()==7)  flag_photon2_wCAL=1;
+              if(photonbuff[1]->cal(ECIN)->getDetector()==7)  flag_photon2_wCAL=2;
+              if(photonbuff[1]->cal(ECOUT)->getDetector()==7) flag_photon2_wCAL=3;
           }//if one pair
 
           else{                           //loop through combinations, keeping pair closest to pi0-mass
@@ -157,6 +204,32 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
                                     0);
 
                   mindiff = diff;
+
+                  //set photon detector flags
+                    if(photonbuff[i]->getRegion() ==1000){
+                      flag_photon1_FT  = 1;
+                      flag_photon1_CAL = 0;
+                    }
+                    else if(photonbuff[i]->getRegion()==2000) {
+                      flag_photon1_FT  = 0;
+                      flag_photon1_CAL = 1;
+                    }
+                    if(photonbuff[i]->cal(PCAL) ->getDetector()==7) flag_photon1_wCAL=1;
+                    if(photonbuff[i]->cal(ECIN) ->getDetector()==7) flag_photon1_wCAL=2;
+                    if(photonbuff[i]->cal(ECOUT)->getDetector()==7) flag_photon1_wCAL=3;
+
+                    if(photonbuff[j]->getRegion() ==1000){
+                      flag_photon2_FT  = 1;
+                      flag_photon2_CAL = 0;
+                    }
+                    else if(photonbuff[j]->getRegion()==2000) {
+                      flag_photon2_FT  = 0;
+                      flag_photon2_CAL = 1;
+                    }
+                    if(photonbuff[j]->cal(PCAL) ->getDetector()==7) flag_photon2_wCAL=1;
+                    if(photonbuff[j]->cal(ECIN) ->getDetector()==7) flag_photon2_wCAL=2;
+                    if(photonbuff[j]->cal(ECOUT)->getDetector()==7) flag_photon2_wCAL=3;
+
                   if(DEBUG) cout << "new pair is ["<< i << "][" << j << "]" << endl;
                 }//masscheck
                 n_pairs++;
@@ -205,27 +278,28 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 
           data->Fill();
 
-          pi0thetadiff_h -> Fill(pi0thetadiff);
 
-          /*=====PRE-CUT HISTOS=====*/
-          pi0im_h[0]  -> Fill(pi0im);
-          pi0mm2_h[0] -> Fill(pi0mm2);
-          pi0mp_h[0]  -> Fill(pi0mp);
-          Q2_h[0]     -> Fill(Q2);
-          xB_h[0]     -> Fill(xB);
-          Q2xB_h[0]   -> Fill(xB, Q2);
-          tneg_h[0]   -> Fill(tneg);
-          W_h[0]      -> Fill(W);
+          // pi0thetadiff_h -> Fill(pi0thetadiff);
 
-          pi0_immm2_h[0] -> Fill(pi0mm2, pi0im);
-          pi0_immp_h[0]  -> Fill(pi0mp, pi0im);
-          pi0_mm2mp_h[0] -> Fill(pi0mp, pi0mm2);
+          // /*=====PRE-CUT HISTOS=====*/
+          // pi0im_h[0]  -> Fill(pi0im);
+          // pi0mm2_h[0] -> Fill(pi0mm2);
+          // pi0mp_h[0]  -> Fill(pi0mp);
+          // Q2_h[0]     -> Fill(Q2);
+          // xB_h[0]     -> Fill(xB);
+          // Q2xB_h[0]   -> Fill(xB, Q2);
+          // tneg_h[0]   -> Fill(tneg);
+          // W_h[0]      -> Fill(W);
 
-          recprotmm_h[0]      -> Fill(recprotmm);
-          spectneutmm_h[0]    -> Fill(specneutmm);
-          spectneutmp_h[0]    -> Fill(specneutmp);
-          spectneut_mpmm_h[0] -> Fill(specneutmm, specneutmp);
-          /*========================*/
+          // pi0_immm2_h[0] -> Fill(pi0mm2, pi0im);
+          // pi0_immp_h[0]  -> Fill(pi0mp, pi0im);
+          // pi0_mm2mp_h[0] -> Fill(pi0mp, pi0mm2);
+
+          // recprotmm_h[0]      -> Fill(recprotmm);
+          // spectneutmm_h[0]    -> Fill(specneutmm);
+          // spectneutmp_h[0]    -> Fill(specneutmp);
+          // spectneut_mpmm_h[0] -> Fill(specneutmm, specneutmp);
+          // /*========================*/
 
           if(pi0mm2 < -0.0853 || pi0mm2 > 0.0718){
             flag_pi0mm2 = 0;
@@ -233,25 +307,25 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
           }
           flag_pi0mm2 = 1; //cut passed
 
-          /*=====POST-pi0MM2-CUT HISTOS=====*/
-          pi0im_h[1]  -> Fill(pi0im);
-          pi0mm2_h[1] -> Fill(pi0mm2);
-          pi0mp_h[1]  -> Fill(pi0mp);
-          Q2_h[1]     -> Fill(Q2);
-          xB_h[1]     -> Fill(xB);
-          Q2xB_h[1]   -> Fill(xB, Q2);
-          tneg_h[1]   -> Fill(tneg);
-          W_h[1]      -> Fill(W);
+          // /*=====POST-pi0MM2-CUT HISTOS=====*/
+          // pi0im_h[1]  -> Fill(pi0im);
+          // pi0mm2_h[1] -> Fill(pi0mm2);
+          // pi0mp_h[1]  -> Fill(pi0mp);
+          // Q2_h[1]     -> Fill(Q2);
+          // xB_h[1]     -> Fill(xB);
+          // Q2xB_h[1]   -> Fill(xB, Q2);
+          // tneg_h[1]   -> Fill(tneg);
+          // W_h[1]      -> Fill(W);
 
-          pi0_immm2_h[1] -> Fill(pi0mm2, pi0im);
-          pi0_immp_h[1]  -> Fill(pi0mp, pi0im);
-          pi0_mm2mp_h[1] -> Fill(pi0mp, pi0mm2);
+          // pi0_immm2_h[1] -> Fill(pi0mm2, pi0im);
+          // pi0_immp_h[1]  -> Fill(pi0mp, pi0im);
+          // pi0_mm2mp_h[1] -> Fill(pi0mp, pi0mm2);
 
-          recprotmm_h[1]      -> Fill(recprotmm);
-          spectneutmm_h[1]    -> Fill(specneutmm);
-          spectneutmp_h[1]    -> Fill(specneutmp);
-          spectneut_mpmm_h[1] -> Fill(specneutmm, specneutmp);
-          /*================================*/
+          // recprotmm_h[1]      -> Fill(recprotmm);
+          // spectneutmm_h[1]    -> Fill(specneutmm);
+          // spectneutmp_h[1]    -> Fill(specneutmp);
+          // spectneut_mpmm_h[1] -> Fill(specneutmm, specneutmp);
+          // /*================================*/
 
           if(specneutmp > 0.3){
             continue; //300MeV cut on spectator missing momentum
@@ -259,25 +333,25 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
           }
           flag_spectneutmp = 1;
 
-          /*=====POST-spectMP-CUT HISTOS=====*/
-          pi0im_h[2]  -> Fill(pi0im);
-          pi0mm2_h[2] -> Fill(pi0mm2);
-          pi0mp_h[2]  -> Fill(pi0mp);
-          Q2_h[2]     -> Fill(Q2);
-          xB_h[2]     -> Fill(xB);
-          Q2xB_h[2]   -> Fill(xB, Q2);
-          tneg_h[2]   -> Fill(tneg);
-          W_h[2]      -> Fill(W);
+          // /*=====POST-spectMP-CUT HISTOS=====*/
+          // pi0im_h[2]  -> Fill(pi0im);
+          // pi0mm2_h[2] -> Fill(pi0mm2);
+          // pi0mp_h[2]  -> Fill(pi0mp);
+          // Q2_h[2]     -> Fill(Q2);
+          // xB_h[2]     -> Fill(xB);
+          // Q2xB_h[2]   -> Fill(xB, Q2);
+          // tneg_h[2]   -> Fill(tneg);
+          // W_h[2]      -> Fill(W);
 
-          pi0_immm2_h[2] -> Fill(pi0mm2, pi0im);
-          pi0_immp_h[2]  -> Fill(pi0mp, pi0im);
-          pi0_mm2mp_h[2] -> Fill(pi0mp, pi0mm2);
+          // pi0_immm2_h[2] -> Fill(pi0mm2, pi0im);
+          // pi0_immp_h[2]  -> Fill(pi0mp, pi0im);
+          // pi0_mm2mp_h[2] -> Fill(pi0mp, pi0mm2);
 
-          recprotmm_h[2]      -> Fill(recprotmm);
-          spectneutmm_h[2]    -> Fill(specneutmm);
-          spectneutmp_h[2]    -> Fill(specneutmp);
-          spectneut_mpmm_h[2] -> Fill(specneutmm, specneutmp);
-          /*================================*/
+          // recprotmm_h[2]      -> Fill(recprotmm);
+          // spectneutmm_h[2]    -> Fill(specneutmm);
+          // spectneutmp_h[2]    -> Fill(specneutmp);
+          // spectneut_mpmm_h[2] -> Fill(specneutmm, specneutmp);
+          // /*================================*/
 
           n_postcut_events++;
           //if (n_events == 10) break;        }//event while-loop
@@ -294,84 +368,11 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
   cout << "\nTotal no of events processed: " << n_events << endl;
   cout << "\nTotal no of exclusive events: " << n_excl_events << endl;
   cout << "\nTotal no of events post-cuts: " << n_postcut_events << endl;
+  cout << "\nNumber of photons in FT reg: "  << n_FTreg_flags << endl;
+  cout << "\nNumber of photons in FTCAL : "  << n_FTCAL_flags << endl;
 
   Out_File->Write();
   Out_File->Close();
 
 }//pi0analysis fxn
-
- void histos(){
-   // [0] - raw;
-   // [1] - post MM^2 cut
-   // [2] - post rec neut mp cut
-
-   //Exclusivity variables
-   //---------------------------------------------------------------------------------------------------------------
-   tneg_h[0] = new TH1F("tneg_0_h", "-t - Before pi0MM^{2} cut; -t (GeV^{2}); counts",               150, 0, 10);
-   tneg_h[1] = new TH1F("tneg_1_h", "-t; -t (GeV^{2}); counts",                                      150, 0, 10);
-   tneg_h[2] = new TH1F("tneg_2_h", "-t - Post spectMP cut; -t (GeV^{2}); counts",                   150, 0, 10);
-
-   Q2_h[0]   = new TH1F("Q2_0_h", "Q^{2} - Before pi0MM^{2} cut; Q^{2} (GeV^{2}); counts",           150, 0, 8);
-   Q2_h[1]   = new TH1F("Q2_1_h", "Q^{2}; Q^{2} (GeV^{2}); counts",                                  150, 0, 8);
-   Q2_h[2]   = new TH1F("Q2_2_h", "Q^{2} - Post spectMP cut; Q^{2} (GeV^{2}); counts",               150, 0, 8);
-
-   xB_h[0]   = new TH1F("xB_0_h", "xB - Before pi0MM^{2} cut; xB; counts",                           100, 0, 20);
-   xB_h[1]   = new TH1F("xB_1_h", "xB; xB; counts",                                                  100, 0, 20);
-   xB_h[2]   = new TH1F("xB_2_h", "xB - Post spectMP cut; xB; counts",                               100, 0, 20);
-
-   W_h[0]    = new TH1F("W_0_h", "CoM Energy - Before pi0MM^{2} cut; W (GeV^{2}); counts",           120, 0, 30);
-   W_h[1]    = new TH1F("W_1_h", "CoM Energy; W (GeV^{2}); counts",                                  120, 0, 30);
-   W_h[2]    = new TH1F("W_2_h", "CoM Energy - Post spectMP cut; W (GeV^{2}); counts",               120, 0, 30);
-
-   Q2xB_h[0] = new TH2F("Q2xB_0_h", "Q{2} vs. x_{B} - Before pi0MM^{2} cut; x_{B}; Q^{2} (GeV^{2})", 250, 0, 20, 150, 0, 8);
-   Q2xB_h[1] = new TH2F("Q2xB_1_h", "Q{2} vs. x_{B}; x_{B}; Q^{2} (GeV^{2})",                        250, 0, 20, 150, 0, 8);
-   Q2xB_h[2] = new TH2F("Q2xB_2_h", "Q{2} vs. x_{B} - Post spectMP cut; x_{B}; Q^{2} (GeV^{2})",     250, 0, 20, 150, 0, 8);
-
-   //Channel masses etc.
-   //---------------------------------------------------------------------------------------------------------------
-   pi0thetadiff_h = new TH1F("pi0thetadiff_h", "dThet(Expected - Reconstructed); Angle (^{o}); counts", 100, 0, 45);
-
-   pi0im_h[0]  = new TH1F("pi0im_0_h", "Invariant mass of paired photons - Before pi0MM^{2} cut; Inv.Mass (GeV); counts", 200, 0, 0.2);
-   pi0im_h[1]  = new TH1F("pi0im_1_h", "Invariant mass of paired photons; Inv.Mass (GeV); counts",                        200, 0, 0.2);
-   pi0im_h[2]  = new TH1F("pi0im_2_h", "Invariant mass of paired photons - Post spectMP cut; Inv.Mass (GeV); counts",     200, 0, 0.2);
-
-   pi0mm2_h[0] = new TH1F("pi0mm2_0_h", "Missing Mass-Squared [e p -> e' p' #gamma_{1} #gamma_{2}] - Before pi0MM^{2} cut; MissingMass-Sq (GeV^{2}); counts", 200, -.5, .5);
-   pi0mm2_h[1] = new TH1F("pi0mm2_1_h", "Missing Mass-Squared [e p -> e' p' #gamma_{1} #gamma_{2}]; MissingMass-Sq (GeV^{2}); counts",                        200, -.5, .5);
-   pi0mm2_h[2] = new TH1F("pi0mm2_2_h", "Missing Mass-Squared [e p -> e' p' #gamma_{1} #gamma_{2}] - Post spectMP cut; MissingMass-Sq (GeV^{2}); counts",     200, -.5, .5);
-
-   pi0mp_h[0]  = new TH1F("pi0mp_0_h", "Missing Momentum [e p -> e' p' #gamma_{1} #gamma_{2}] - Before pi0MM^{2} cut; MissingMomentum (GeV); counts",         200, 0, 6);
-   pi0mp_h[1]  = new TH1F("pi0mp_1_h", "Missing Momentum [e p -> e' p' #gamma_{1} #gamma_{2}]; MissingMomentum-Sq (GeV); counts",                             200, 0, 6);
-   pi0mp_h[2]  = new TH1F("pi0mp_2_h", "Missing Momentum [e p -> e' p' #gamma_{1} #gamma_{2}] - Post spectMP cut; MissingMomentum-Sq (GeV); counts",          200, 0, 6);
-
-   pi0_immm2_h[0] = new TH2F ("pi0_immm2_0_h", "Inv. Mass of photon-pair vs. MM^{2}[e p -> e' p' #gamma_{1} #gamma_{2}] Pre-pi0MM^{2} cut; MissingMass-Sq (GeV^{2}); Inv.Mass (GeV)", 200, -.5, .5, 200, 0, 0.2);
-   pi0_immm2_h[1] = new TH2F ("pi0_immm2_1_h", "Inv. Mass of photon-pair vs. MM^{2}[e p -> e' p' #gamma_{1} #gamma_{2}]; MissingMass-Sq (GeV^{2}); Inv.Mass (GeV)",                   200, -.5, .5, 200, 0, 0.2);
-   pi0_immm2_h[2] = new TH2F ("pi0_immm2_2_h", "Inv. Mass of photon-pair vs. MM^{2}[e p -> e' p' #gamma_{1} #gamma_{2}]- Post spectMP cut; MissingMass-Sq (GeV^{2}); Inv.Mass (GeV)", 200, -.5, .5, 200, 0, 0.2);
-
-   pi0_immp_h[0]  = new TH2F ("pi0_immp_0_h", "Inv.Mass [#gamma_{1}#gamma_{2}] vs. MP[e p -> e' p' #gamma_{1} #gamma_{2}] - Pre-pi0MM^{2} cut; MissingMomentum (GeV); Inv.Mass (GeV)",   200, 0, 6, 200, 0, 0.2);
-   pi0_immp_h[1]  = new TH2F ("pi0_immp_1_h", "Inv.Mass [#gamma_{1}#gamma_{2}] vs. MP[e p -> e' p' #gamma_{1} #gamma_{2}]; MissingMomentum (GeV); Inv.Mass (GeV)",                       200, 0, 6, 200, 0, 0.2);
-   pi0_immp_h[2]  = new TH2F ("pi0_immp_2_h", "Inv.Mass [#gamma_{1}#gamma_{2}] vs. MP[e p -> e' p' #gamma_{1} #gamma_{2}] - Post spectMP cut; MissingMomentum (GeV); Inv.Mass (GeV)",    200, 0, 6, 200, 0, 0.2);
-
-   pi0_mm2mp_h[0] = new TH2F ("pi0_mm2mp_0_h", "[e p -> e' p' #gamma_{1} #gamma_{2}]: MM^{2} vs. Mp - Pre-pi0MM^{2} cut; MissingMomentum (GeV); MissingMass-Sq (GeV^{2})",              200, 0, 6, 200, -.5, .5);
-   pi0_mm2mp_h[1] = new TH2F ("pi0_mm2mp_1_h", "[e p -> e' p' #gamma_{1} #gamma_{2}]: MM^{2} vs. Mp; MissingMomentum (GeV); MissingMass-Sq (GeV^{2})",                                  200, 0, 6, 200, -.5, .5);
-   pi0_mm2mp_h[2] = new TH2F ("pi0_mm2mp_2_h", "[e p -> e' p' #gamma_{1} #gamma_{2}]: MM^{2} vs. Mp - Post spectMP cut; MissingMomentum (GeV); MissingMass-Sq (GeV^{2})",               200, 0, 6, 200, -.5, .5);
-
-   //Reconstructed particles for BG clean-up
-   //---------------------------------------------------------------------------------------------------------------
-   recprotmm_h[0]   = new TH1F("recprotmm_0_h", "MM[e p -> e' #gamma_{1} #gamma_{2}] - Before pi0MM^{2} cut; MM of reconstructed proton (GeV); counts",                180, 0, 3);
-   recprotmm_h[1]   = new TH1F("recprotmm_1_h", "MM[e p -> e' #gamma_{1} #gamma_{2}]; MM of reconstructed proton (GeV); counts",                                       180, 0, 3);
-   recprotmm_h[2]   = new TH1F("recprotmm_2_h", "MM[e p -> e' #gamma_{1} #gamma_{2}] - Post spectMP cut; MM of reconstructed proton (GeV); counts",                    180, 0, 3);
-
-   spectneutmp_h[0] = new TH1F("spectneutmp_0_h", "MP[e d -> e' p' #gamma_{1} #gamma_{2}] - Before pi0MM^{2} cut; MP of reconstructed spect. neutron (GeV/c); counts", 200, 0, 6);
-   spectneutmp_h[1] = new TH1F("spectneutmp_1_h", "MP[e d -> e' p' #gamma_{1} #gamma_{2}]; MP of reconstructed spect. neutron (GeV/c); counts",                        200, 0, 6);
-   spectneutmp_h[2] = new TH1F("spectneutmp_2_h", "MP[e d -> e' p' #gamma_{1} #gamma_{2}]- Post spectMP cut; MP of reconstructed spect. neutron (GeV/c); counts",      200, 0, 6);
-
-   spectneutmm_h[0] = new TH1F("spectneutmm_0_h", "MM[e d -> e' p' #gamma_{1} #gamma_{2}] - Before pi0MM^{2} cut; MM of reconstructed spect. neutron (GeV); counts",   200, 0, 6);
-   spectneutmm_h[1] = new TH1F("spectneutmm_1_h", "MM[e d -> e' p' #gamma_{1} #gamma_{2}]; MM of reconstructed spect. neutron (GeV); counts",                          200, 0, 6);
-   spectneutmm_h[2] = new TH1F("spectneutmm_2_h", "MM[e d -> e' p' #gamma_{1} #gamma_{2}] - Post spectMP cut; MM of reconstructed spect. neutron (GeV); counts",       200, 0, 6);
-
-   spectneut_mpmm_h[0] = new TH2F("spectneut_mpmm_0_h", "[e d -> e' p' #gamma_{1} #gamma_{2}]: MP vs. MM - Before pi0MM^{2} cut; MM of rec. spect. neutron (GeV); MissingMom. (GeV/c)", 200, 0, 6, 200, 0, 6);
-   spectneut_mpmm_h[1] = new TH2F("spectneut_mpmm_1_h", "[e d -> e' p' #gamma_{1} #gamma_{2}]: MP vs. MM; MM of rec. spect. neutron (GeV); MissingMom. (GeV/c)",                        200, 0, 6, 200, 0, 6);
-   spectneut_mpmm_h[2] = new TH2F("spectneut_mpmm_2_h", "[e d -> e' p' #gamma_{1} #gamma_{2}]: MP vs. MM - Post spectMP cut; MM of rec. spect. neutron (GeV); MissingMom. (GeV/c)",     200, 0, 6, 200, 0, 6);
- }//histos fxn
-
 
