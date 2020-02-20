@@ -17,6 +17,9 @@
 using namespace clas12;
 
 void pi0analysis(const Char_t in_list[], const TString outfilename){
+  TStopwatch time;
+  time.Start();
+
   bool DEBUG = 0;
   cout << "Start" << endl;
   TFile *Out_File = new TFile(outfilename, "recreate");
@@ -364,5 +367,7 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
   Out_File->Write();
   Out_File->Close();
 
+  time.Stop();
+  time.Print();
 } //pi0analysis fxn
 
