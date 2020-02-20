@@ -42,7 +42,7 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
      data->Branch("xB",   &xB ,  "xB/D");
 
      data->Branch("pi0thetadiff", &pi0thetadiff, "pi0thetadiff/D");
-     data->Branch("pi0anglediff", &pi0anglediff, "pi0anglediff/D");
+     data->Branch("pi0coneangle", &pi0coneangle, "pi0coneangle/D");
 
      data->Branch("pi0im",  &pi0im,  "pi0im/D");
      data->Branch("pi0mm2", &pi0mm2, "pi0mm2/D");
@@ -60,11 +60,13 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 
      data->Branch("flag_photon1_FT",    &flag_photon1_FT,    "flag_photon1_FT/O");
      data->Branch("flag_photon1_ft",    &flag_photon1_ft,    "flag_photon1_ft/O");
-     data->Branch("flag_photon1_CAL",   &flag_photon1_CAL,   "flag_photon1_CAL/O");
+     data->Branch("flag_photon1_PCAL",   &flag_photon1_PCAL,   "flag_photon1_PCAL/O");
+     data->Branch("flag_photon1_ECAL",   &flag_photon1_ECAL,   "flag_photon1_ECAL/O");
      data->Branch("flag_photon1_wCAL",  &flag_photon1_wCAL,  "flag_photon1_wCAL/I");
      data->Branch("flag_photon2_FT",    &flag_photon2_FT,    "flag_photon2_FT/O");
      data->Branch("flag_photon2_ft",    &flag_photon2_ft,    "flag_photon2_ft/O");
-     data->Branch("flag_photon2_CAL",   &flag_photon2_CAL,   "flag_photon2_CAL/O");
+     data->Branch("flag_photon2_PCAL",   &flag_photon2_PCAL,   "flag_photon2_PCAL/O");
+     data->Branch("flag_photon2_ECAL",   &flag_photon2_ECAL,   "flag_photon2_ECAL/O");
      data->Branch("flag_photon2_wCAL",  &flag_photon2_wCAL,  "flag_photon2_wCAL/I");
 
   if(list_of_files.is_open()){
@@ -105,8 +107,6 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
         //double deutm = db -> GetParticle(1000010020) -> Mass();
         TLorentzVector deut (0,0,0,1.876);
 
-        cout << "BEFORE c12.next()" << endl;
-
         while(c12.next()) {   //loop over events
           n_events++;
           auto electronbuff = c12.getByID(11);
@@ -137,22 +137,21 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
                           photonbuff[1]->par()->getPz(),
                           0);
 
-            //set photon detector flags
+            //##############################################################################
+            // SET REGION FLAGS -- verbose
+            //##############################################################################
               if(photonbuff[0]->getRegion() ==1000){
                 flag_photon1_FT  = 1;
-                flag_photon1_CAL = 0;
                 n_FTreg_flags++;
               }
               else if(photonbuff[0]->getRegion()==2000) {
                 flag_photon1_FT  = 0;
-                flag_photon1_CAL = 1;
               }
               if(photonbuff[0]->ft(FTCAL)->getDetector()==10){
                 flag_photon1_ft = 1;
                 n_FTCAL_flags++;
               }
               else flag_photon1_ft = 0;
-              //cout << "FT out: " << photonbuff[0]->getRegion() << " FT flag: " << flag_photon1_FT <<"  FTCAL out: " << photonbuff[0]->ft(FTCAL)->getDetector() << " FTCAL flag: " << flag_photon1_ft << endl;
 
               if(photonbuff[0]->cal(PCAL)->getDetector()==7)  flag_photon1_wCAL=1;
               if(photonbuff[0]->cal(ECIN)->getDetector()==7)  flag_photon1_wCAL=2;
@@ -160,20 +159,41 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 
               if(photonbuff[1]->getRegion() ==1000){
                 flag_photon2_FT  = 1;
-                flag_photon2_CAL = 0;
+                n_FTreg_flags++;
               }
               else if(photonbuff[1]->getRegion()==2000) {
                 flag_photon2_FT  = 0;
-                flag_photon2_CAL = 1;
               }
-              if(photonbuff[1]->ft(FTCAL)->getDetector()==10) flag_photon2_ft = 1;
+              if(photonbuff[1]->ft(FTCAL)->getDetector()==10){
+                flag_photon2_ft = 1;
+                n_FTCAL_flags++;
+              }
+              else flag_photon2_ft = 0;
 
               if(photonbuff[1]->cal(PCAL)->getDetector()==7)  flag_photon2_wCAL=1;
               if(photonbuff[1]->cal(ECIN)->getDetector()==7)  flag_photon2_wCAL=2;
               if(photonbuff[1]->cal(ECOUT)->getDetector()==7) flag_photon2_wCAL=3;
+
+              if(flag_photon1_wCAL==1) flag_photon1_PCAL = 1;
+              else flag_photon1_PCAL = 0;
+              if(flag_photon1_wCAL==2 || flag_photon1_wCAL==3) flag_photon1_ECAL=1;
+              else flag_photon1_ECAL = 0;
+              if(flag_photon2_wCAL==1) flag_photon2_PCAL = 1;
+              else flag_photon2_PCAL = 0;
+              if(flag_photon2_wCAL==2 || flag_photon2_wCAL==3) flag_photon2_ECAL=1;
+              else flag_photon2_ECAL = 0;
+
+              if((flag_photon1_FT  == 1 && flag_photon1_ft == 0) ||
+                 (flag_photon1_FT  == 0 && flag_photon1_ft == 1) ||
+                 (flag_photon2_FT  == 1 && flag_photon2_ft == 0) ||
+                 (flag_photon2_FT  == 0 && flag_photon2_ft == 1)){
+                cout << "here's one" << endl;
+              }
+            //##############################################################################
+
           }//if one pair
 
-          else{                           //loop through combinations, keeping pair closest to pi0-mass
+          else{ //loop through combinations, keeping pair closest to pi0-mass
             double diff, mindiff = 10000; //mindiff initialised high
             TLorentzVector phot1buff, phot2buff, combobuff;
             int n_pairs = 0;
@@ -204,33 +224,64 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
                                     0);
 
                   mindiff = diff;
+                  if(DEBUG) cout << "new pair is ["<< i << "][" << j << "]" << endl;
 
-                  //set photon detector flags
+                  //##############################################################################
+                  // SET REGION FLAGS -- verbose
+                  //##############################################################################
                     if(photonbuff[i]->getRegion() ==1000){
                       flag_photon1_FT  = 1;
-                      flag_photon1_CAL = 0;
+                      n_FTreg_flags++;
                     }
                     else if(photonbuff[i]->getRegion()==2000) {
                       flag_photon1_FT  = 0;
-                      flag_photon1_CAL = 1;
                     }
+                    if(photonbuff[i]->ft(FTCAL)->getDetector()==10){
+                      flag_photon1_ft = 1;
+                      n_FTCAL_flags++;
+                    }
+                    else flag_photon1_ft = 0;
+
                     if(photonbuff[i]->cal(PCAL) ->getDetector()==7) flag_photon1_wCAL=1;
                     if(photonbuff[i]->cal(ECIN) ->getDetector()==7) flag_photon1_wCAL=2;
                     if(photonbuff[i]->cal(ECOUT)->getDetector()==7) flag_photon1_wCAL=3;
 
+
                     if(photonbuff[j]->getRegion() ==1000){
                       flag_photon2_FT  = 1;
-                      flag_photon2_CAL = 0;
+                      n_FTreg_flags++;
                     }
                     else if(photonbuff[j]->getRegion()==2000) {
                       flag_photon2_FT  = 0;
-                      flag_photon2_CAL = 1;
                     }
+                    if(photonbuff[j]->ft(FTCAL)->getDetector()==10){
+                      flag_photon2_ft = 1;
+                      n_FTCAL_flags++;
+                    }
+                    else flag_photon2_ft = 0;
+
                     if(photonbuff[j]->cal(PCAL) ->getDetector()==7) flag_photon2_wCAL=1;
                     if(photonbuff[j]->cal(ECIN) ->getDetector()==7) flag_photon2_wCAL=2;
                     if(photonbuff[j]->cal(ECOUT)->getDetector()==7) flag_photon2_wCAL=3;
 
-                  if(DEBUG) cout << "new pair is ["<< i << "][" << j << "]" << endl;
+                    if(flag_photon1_wCAL==1) flag_photon1_PCAL = 1;
+                    else flag_photon1_PCAL = 0;
+                    if(flag_photon1_wCAL==2 || flag_photon1_wCAL==3) flag_photon1_ECAL=1;
+                    else flag_photon1_ECAL = 0;
+                    if(flag_photon2_wCAL==1) flag_photon2_PCAL = 1;
+                    else flag_photon2_PCAL = 0;
+                    if(flag_photon2_wCAL==2 || flag_photon2_wCAL==3) flag_photon2_ECAL=1;
+                    else flag_photon2_ECAL = 0;
+
+                    if((flag_photon1_FT  == 1 && flag_photon1_ft == 0) ||
+                       (flag_photon1_FT  == 0 && flag_photon1_ft == 1) ||
+                       (flag_photon2_FT  == 1 && flag_photon2_ft == 0) ||
+                       (flag_photon2_FT  == 0 && flag_photon2_ft == 1)){
+                      cout << "here's one" << endl;
+                    }
+
+                    //##############################################################################
+
                 }//masscheck
                 n_pairs++;
               }//photons j-loop
@@ -255,7 +306,7 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
           TLorentzVector expected_pi0 = target+beam-e-prot;
           TLorentzVector reconstr_pi0 = phot1+phot2;
           pi0thetadiff = TMath::RadToDeg()*((target+beam-e-prot).Theta() - (phot1+phot2).Theta());
-          pi0anglediff = TMath::RadToDeg()*(expected_pi0.Angle(reconstr_pi0.Vect()));
+          pi0coneangle = TMath::RadToDeg()*(expected_pi0.Angle(reconstr_pi0.Vect()));
 
           TLorentzVector system = (beam+target)-(e+prot+phot1+phot2); //[e p -> e' p' g1 g2]
           TLorentzVector photcombo = phot1 + phot2;
@@ -270,92 +321,31 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
           specneutmp = recspecneut.P();
           specneutmm = recspecneut.M();
 
-          if((Q2 > 1) && (tneg < 1) && (W  > 4)){ //Set flag for pass/fail on exclusivity cuts.
-            flag_excl = 1;
-            n_excl_events++;
-          }
-          else flag_excl = 0;
+
+          //###################################################################################
+          // Set Flags -- DIS cuts, mass/mom' cuts.
+          //###################################################################################
+            if((Q2 > 1) && (tneg < 1) && (W  > 4)){ //Set flag for pass/fail on exclusivity cuts.
+              flag_excl = 1;
+              n_excl_events++;
+            }
+            else flag_excl = 0;
+
+            if(pi0mm2 < -0.0853 || pi0mm2 > 0.0718){//mu = -0.006743, sig = 0.02618
+              flag_pi0mm2 = 0;
+            }
+            else flag_pi0mm2 = 1; //cut passed
+
+            if(specneutmp > 0.3){//300MeV cut on spectator missing momentum
+              flag_spectneutmp = 0;
+            }
+            else flag_spectneutmp = 1;
+          //###################################################################################
 
           data->Fill();
 
-
-          // pi0thetadiff_h -> Fill(pi0thetadiff);
-
-          // /*=====PRE-CUT HISTOS=====*/
-          // pi0im_h[0]  -> Fill(pi0im);
-          // pi0mm2_h[0] -> Fill(pi0mm2);
-          // pi0mp_h[0]  -> Fill(pi0mp);
-          // Q2_h[0]     -> Fill(Q2);
-          // xB_h[0]     -> Fill(xB);
-          // Q2xB_h[0]   -> Fill(xB, Q2);
-          // tneg_h[0]   -> Fill(tneg);
-          // W_h[0]      -> Fill(W);
-
-          // pi0_immm2_h[0] -> Fill(pi0mm2, pi0im);
-          // pi0_immp_h[0]  -> Fill(pi0mp, pi0im);
-          // pi0_mm2mp_h[0] -> Fill(pi0mp, pi0mm2);
-
-          // recprotmm_h[0]      -> Fill(recprotmm);
-          // spectneutmm_h[0]    -> Fill(specneutmm);
-          // spectneutmp_h[0]    -> Fill(specneutmp);
-          // spectneut_mpmm_h[0] -> Fill(specneutmm, specneutmp);
-          // /*========================*/
-
-          if(pi0mm2 < -0.0853 || pi0mm2 > 0.0718){
-            flag_pi0mm2 = 0;
-            continue; //mu = -0.006743, sig = 0.02618
-          }
-          flag_pi0mm2 = 1; //cut passed
-
-          // /*=====POST-pi0MM2-CUT HISTOS=====*/
-          // pi0im_h[1]  -> Fill(pi0im);
-          // pi0mm2_h[1] -> Fill(pi0mm2);
-          // pi0mp_h[1]  -> Fill(pi0mp);
-          // Q2_h[1]     -> Fill(Q2);
-          // xB_h[1]     -> Fill(xB);
-          // Q2xB_h[1]   -> Fill(xB, Q2);
-          // tneg_h[1]   -> Fill(tneg);
-          // W_h[1]      -> Fill(W);
-
-          // pi0_immm2_h[1] -> Fill(pi0mm2, pi0im);
-          // pi0_immp_h[1]  -> Fill(pi0mp, pi0im);
-          // pi0_mm2mp_h[1] -> Fill(pi0mp, pi0mm2);
-
-          // recprotmm_h[1]      -> Fill(recprotmm);
-          // spectneutmm_h[1]    -> Fill(specneutmm);
-          // spectneutmp_h[1]    -> Fill(specneutmp);
-          // spectneut_mpmm_h[1] -> Fill(specneutmm, specneutmp);
-          // /*================================*/
-
-          if(specneutmp > 0.3){
-            continue; //300MeV cut on spectator missing momentum
-            flag_spectneutmp = 0;
-          }
-          flag_spectneutmp = 1;
-
-          // /*=====POST-spectMP-CUT HISTOS=====*/
-          // pi0im_h[2]  -> Fill(pi0im);
-          // pi0mm2_h[2] -> Fill(pi0mm2);
-          // pi0mp_h[2]  -> Fill(pi0mp);
-          // Q2_h[2]     -> Fill(Q2);
-          // xB_h[2]     -> Fill(xB);
-          // Q2xB_h[2]   -> Fill(xB, Q2);
-          // tneg_h[2]   -> Fill(tneg);
-          // W_h[2]      -> Fill(W);
-
-          // pi0_immm2_h[2] -> Fill(pi0mm2, pi0im);
-          // pi0_immp_h[2]  -> Fill(pi0mp, pi0im);
-          // pi0_mm2mp_h[2] -> Fill(pi0mp, pi0mm2);
-
-          // recprotmm_h[2]      -> Fill(recprotmm);
-          // spectneutmm_h[2]    -> Fill(specneutmm);
-          // spectneutmp_h[2]    -> Fill(specneutmp);
-          // spectneut_mpmm_h[2] -> Fill(specneutmm, specneutmp);
-          // /*================================*/
-
-          n_postcut_events++;
-          //if (n_events == 10) break;        }//event while-loop
-
+         //SUBSTITUTE THESE LINES TO PROCESS N-EVENTS
+         //if (n_events == 10) break;        }//event loop
         }//event loop
       }//duplicate check
       sprintf(last_file,"%s",file_name);     // save name of the current file into "last_file"
@@ -374,5 +364,5 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
   Out_File->Write();
   Out_File->Close();
 
-}//pi0analysis fxn
+} //pi0analysis fxn
 
