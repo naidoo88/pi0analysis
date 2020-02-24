@@ -41,16 +41,31 @@ void photonreg(){
   TString a   = "&&";
   TString o   = "||";
   TString s   = "specneutmp<0.3";
-  TString PC1 = "flag_photon1_wCAL==1";
-  TString PC2 = "flag_photon2_wCAL==1";
-  TString EI1 = "flag_photon1_wCAL==2";
-  TString EI2 = "flag_photon2_wCAL==2";
-  TString EO1 = "flag_photon1_wCAL==3";
-  TString EO2 = "flag_photon2_wCAL==3";
+  TString PC1 = "flag_photon1_PCAL==1";
+  TString PC2 = "flag_photon2_PCAL==1";
+  TString EC1 = "flag_photon1_ECAL==1";
+  TString EC2 = "flag_photon2_ECAL==1";
+  TString EI1 = "flag_photon1_EIN==1";
+  TString EI2 = "flag_photon2_EIN==1";
+  TString EO1 = "flag_photon1_EOUT==1";
+  TString EO2 = "flag_photon2_EOUT==1";
   TString FC1 = "flag_photon1_ft==1";
   TString FC2 = "flag_photon2_ft==1";
 
-  //BIN SIZES BIN SIZES BIN SIZES BIN SIZES BIN SIZES BIN SIZES BIN SIZES BIN SIZES BIN SIZES BIN SIZES BIN SIZES BIN SIZES BIN SIZES BIN SIZES
+  TCanvas *B1 = new TCanvas("B1", "E: Paired photons by region (COMBINED)");
+  B1->Divide(3,2);
+  B1->cd(1);
+  data->Draw("pi0im>>b1(150,0,0.2)",s+a+PC1+a+PC2,"");
+  B1->cd(2);
+  data->Draw("pi0im>>b2(150,0,0.2)",s+a+EC1+a+EC2,"");
+  B1->cd(3);
+  data->Draw("pi0im>>b3(50,0,0.2)", s+a+FC1+a+FC2,"");
+  B1->cd(4);
+  data->Draw("pi0im>>b4(200,0,0.2)",s+a+"(("+PC1+a+EC2+")"+o+"("+PC2+a+EC1+"))","");
+  B1->cd(5);
+  data->Draw("pi0im>>b5(50,0,0.2)",s+a+"(("+EC1+a+FC2+")"+o+"("+EC2+a+FC1+"))","");
+  B1->cd(6);
+  data->Draw("pi0im>>b6(50,0,0.2)",s+a+"(("+PC1+a+FC2+")"+o+"("+PC2+a+FC1+"))","");
 
   //EIN/EOUT SPLIT CAUSING DOUBLE COUNTS -- RECOMBINE
   TCanvas *C1 = new TCanvas("C1", "C: Paired photons by region (EIN/OUT SPLIT)");
