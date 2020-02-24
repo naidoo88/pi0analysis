@@ -2,7 +2,7 @@
 #define pi0analysis_h
 
 /*  Functions  */
-void photonflags(region_particle* p1, region_particle* p2);
+void photonflags(clas12::region_part_ptr p1, clas12::region_part_ptr p2, int &count_ECAL_doublehits);
 
 /*  Flags  */
 bool flag_excl;
@@ -28,6 +28,7 @@ int  flag_photon2_wCAL;
 int n_events;
 int n_excl_events;
 int n_postcut_events;
+int n_ECAL_doublehits;
 
 double Q2;
 double tneg;

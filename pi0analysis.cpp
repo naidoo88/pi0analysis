@@ -14,6 +14,7 @@
 #include "clas12reader.h"
 #include "pi0analysis.h"
 
+
 using namespace clas12;
 
 void pi0analysis(const Char_t in_list[], const TString outfilename){
@@ -31,11 +32,11 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
   cout << "list of files opened" << endl;
 
   int n_files = 0;
-  n_events         = 0;
-  n_excl_events    = 0;
-  n_postcut_events = 0;
-
-  //  histos();
+  int n_pairs = 0;
+  n_events          = 0;
+  n_excl_events     = 0;
+  n_postcut_events  = 0;
+  n_ECAL_doublehits = 0;
 
   //##############################################################################
   // Set up Tree/Branches
@@ -64,14 +65,12 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
      data->Branch("flag_pi0mm2",       &flag_pi0mm2,       "flag_pi0mm2/O");
      data->Branch("flag_spectneutmp",  &flag_spectneutmp,  "flag_spectneutmp/O");
 
-     data->Branch("flag_photon1_FT",   &flag_photon1_FT,   "flag_photon1_FT/O");
      data->Branch("flag_photon1_ft",   &flag_photon1_ft,   "flag_photon1_ft/O");
      data->Branch("flag_photon1_PCAL", &flag_photon1_PCAL, "flag_photon1_PCAL/O");
      data->Branch("flag_photon1_ECAL", &flag_photon1_ECAL, "flag_photon1_ECAL/O");
      data->Branch("flag_photon1_EIN",  &flag_photon1_EIN,  "flag_photon1_EIN/O");
      data->Branch("flag_photon1_EOUT", &flag_photon1_EOUT, "flag_photon1_EOUT/O");
      data->Branch("flag_photon1_wCAL", &flag_photon1_wCAL, "flag_photon1_wCAL/I");
-     data->Branch("flag_photon2_FT",   &flag_photon2_FT,   "flag_photon2_FT/O");
      data->Branch("flag_photon2_ft",   &flag_photon2_ft,   "flag_photon2_ft/O");
      data->Branch("flag_photon2_PCAL", &flag_photon2_PCAL, "flag_photon2_PCAL/O");
      data->Branch("flag_photon2_ECAL", &flag_photon2_ECAL, "flag_photon2_ECAL/O");
@@ -148,45 +147,8 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
                           photonbuff[1]->par()->getPz(),
                           0);
 
-            //##############################################################################
-            // SET REGION FLAGS -- verbose
-            //##############################################################################
-              if(photonbuff[0]->ft(FTCAL)->getDetector()==10){
-                flag_photon1_ft = 1;
-                n_FTCAL_flags++;
-              }
-              else flag_photon1_ft = 0;
-
-              if(photonbuff[0]->cal(PCAL)->getDetector()==7)  flag_photon1_wCAL=1;
-              if(photonbuff[0]->cal(ECIN)->getDetector()==7)  flag_photon1_wCAL=2;
-              if(photonbuff[0]->cal(ECOUT)->getDetector()==7) flag_photon1_wCAL=3;
-
-              if(photonbuff[1]->ft(FTCAL)->getDetector()==10){
-                flag_photon2_ft = 1;
-                n_FTCAL_flags++;
-              }
-              else flag_photon2_ft = 0;
-
-              if(photonbuff[1]->cal(PCAL)->getDetector()==7)  flag_photon2_wCAL=1;
-              if(photonbuff[1]->cal(ECIN)->getDetector()==7)  flag_photon2_wCAL=2;
-              if(photonbuff[1]->cal(ECOUT)->getDetector()==7) flag_photon2_wCAL=3;
-
-              if(flag_photon1_wCAL==1) flag_photon1_PCAL = 1;
-              else flag_photon1_PCAL = 0;
-              if(flag_photon1_wCAL==2 || flag_photon1_wCAL==3) flag_photon1_ECAL=1;
-              else flag_photon1_ECAL = 0;
-              if(flag_photon2_wCAL==1) flag_photon2_PCAL = 1;
-              else flag_photon2_PCAL = 0;
-              if(flag_photon2_wCAL==2 || flag_photon2_wCAL==3) flag_photon2_ECAL=1;
-              else flag_photon2_ECAL = 0;
-
-              if((flag_photon1_FT  == 1 && flag_photon1_ft == 0) ||
-                 (flag_photon1_FT  == 0 && flag_photon1_ft == 1) ||
-                 (flag_photon2_FT  == 1 && flag_photon2_ft == 0) ||
-                 (flag_photon2_FT  == 0 && flag_photon2_ft == 1)){
-                cout << "here's one" << endl;
-              }
-            //##############################################################################
+            //Set Photon flags:
+            photonflags(photonbuff[0], photonbuff[1], n_ECAL_doublehits);
 
           }//if one pair
 
@@ -223,47 +185,8 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
                   mindiff = diff;
                   if(DEBUG) cout << "new pair is ["<< i << "][" << j << "]" << endl;
 
-                  //##############################################################################
-                  // SET REGION FLAGS -- verbose
-                  //##############################################################################
-                    if(photonbuff[i]->ft(FTCAL)->getDetector()==10){
-                      flag_photon1_ft = 1;
-                      n_FTCAL_flags++;
-                    }
-                    else flag_photon1_ft = 0;
-
-                    if(photonbuff[i]->cal(PCAL) ->getDetector()==7) flag_photon1_wCAL=1;
-                    if(photonbuff[i]->cal(ECIN) ->getDetector()==7) flag_photon1_wCAL=2;
-                    if(photonbuff[i]->cal(ECOUT)->getDetector()==7) flag_photon1_wCAL=3;
-
-
-                    if(photonbuff[j]->ft(FTCAL)->getDetector()==10){
-                      flag_photon2_ft = 1;
-                      n_FTCAL_flags++;
-                    }
-                    else flag_photon2_ft = 0;
-
-                    if(photonbuff[j]->cal(PCAL) ->getDetector()==7) flag_photon2_wCAL=1;
-                    if(photonbuff[j]->cal(ECIN) ->getDetector()==7) flag_photon2_wCAL=2;
-                    if(photonbuff[j]->cal(ECOUT)->getDetector()==7) flag_photon2_wCAL=3;
-
-                    if(flag_photon1_wCAL==1) flag_photon1_PCAL = 1;
-                    else flag_photon1_PCAL = 0;
-                    if(flag_photon1_wCAL==2 || flag_photon1_wCAL==3) flag_photon1_ECAL=1;
-                    else flag_photon1_ECAL = 0;
-                    if(flag_photon2_wCAL==1) flag_photon2_PCAL = 1;
-                    else flag_photon2_PCAL = 0;
-                    if(flag_photon2_wCAL==2 || flag_photon2_wCAL==3) flag_photon2_ECAL=1;
-                    else flag_photon2_ECAL = 0;
-
-                    if((flag_photon1_FT  == 1 && flag_photon1_ft == 0) ||
-                       (flag_photon1_FT  == 0 && flag_photon1_ft == 1) ||
-                       (flag_photon2_FT  == 1 && flag_photon2_ft == 0) ||
-                       (flag_photon2_FT  == 0 && flag_photon2_ft == 1)){
-                      cout << "here's one" << endl;
-                    }
-
-                    //##############################################################################
+                  //Set Photon flags:
+                  photonflags(photonbuff[i], photonbuff[j], n_ECAL_doublehits);
 
                 }//masscheck
                 n_pairs++;
@@ -339,8 +262,9 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
   list_of_files.close();
   cout << "\nTotal no of files in list: " << n_files << endl;
   cout << "\nTotal no of events processed: " << n_events << endl;
-  cout << "\nTotal no of exclusive events: " << n_excl_events << endl;
-  cout << "\nTotal no of events post-cuts: " << n_postcut_events << endl;
+  //cout << "\nTotal no of exclusive events: " << n_excl_events << endl;
+  //cout << "\nTotal no of events post-cuts: " << n_postcut_events << endl;
+  cout << "\n There were " << n_ECAL_doublehits << " photons which hit both EIN and EOUT in the ECAL." << endl;
 
   Out_File->Write();
   Out_File->Close();
@@ -350,9 +274,7 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 } //pi0analysis fxn
 
 
-
-
-int photonflags(region_particle* p1, region_particle* p2){
+void photonflags(clas12::region_part_ptr p1, clas12::region_part_ptr p2, int &count_ECAL_doublehits){
 
   //first photon:
   if(p1->ft(FTCAL)->getDetector()==10) flag_photon1_ft = 1;
@@ -382,7 +304,10 @@ int photonflags(region_particle* p1, region_particle* p2){
   if(flag_photon2_EIN==1 || flag_photon2_EOUT==1) flag_photon2_ECAL=1;
   else flag_photon2_ECAL = 0;
 
-  ///////////////// COUNTERS FOR ECAL HITS 
+  if(flag_photon1_EIN == 1 && flag_photon1_EOUT == 0) count_ECAL_doublehits++;
+  if(flag_photon2_EIN == 1 && flag_photon2_EOUT == 0) count_ECAL_doublehits++;
+
+
 }//photonflags fxn
 
 //  LocalWords:  EIN EOUT PCAL ECAL wCAL
