@@ -41,6 +41,8 @@ void photonreg(){
   TString a   = "&&";
   TString o   = "||";
   TString s   = "specneutmp<0.3";
+  TString s5  = "specneutmp<0.5";
+  TString s8  = "specneutmp<0.8";
   TString PC1 = "flag_photon1_PCAL==1";
   TString PC2 = "flag_photon2_PCAL==1";
   TString EC1 = "flag_photon1_ECAL==1";
@@ -51,8 +53,9 @@ void photonreg(){
   TString EO2 = "flag_photon2_EOUT==1";
   TString FC1 = "flag_photon1_ft==1";
   TString FC2 = "flag_photon2_ft==1";
+  TString nED = "!((flag_photon1_EIN==1&&flag_photon1_EOUT==1)||(flag_photon2_EIN==1&&flag_photon2_EOUT==1))";
 
-  TCanvas *B1 = new TCanvas("B1", "E: Paired photons by region (COMBINED)");
+  TCanvas *B1 = new TCanvas("B1", "B: Paired photons by region (COMBINED)");
   B1->Divide(3,2);
   B1->cd(1);
   data->Draw("pi0im>>b1(150,0,0.2)",s+a+PC1+a+PC2,"");
@@ -92,9 +95,66 @@ void photonreg(){
   data->Draw("pi0im>>c10(200,0,0.2)",s+a+"(("+EO1+a+FC2+")"+o+"("+EO2+a+FC1+"))","");
 
 
-  TCanvas *C = new TCanvas("C", "C: Paired photons by region (EIN/OUT SPLIT)");
+  TCanvas *C = new TCanvas("C", "Spectator neutron cut only (for Ref)");
   C->cd();
   data->Draw("pi0im>>c(100,0,0.2)","specneutmp<0.3","");
+
+  TCanvas *D1 = new TCanvas("D1", "D: Paired photons by region (no duplicates)");
+  D1->Divide(3,2);
+  D1->cd(1);
+  data->Draw("pi0im>>d1(150,0,0.2)",s+a+PC1+a+PC2,"");
+  D1->cd(2);
+  data->Draw("pi0im>>d2(150,0,0.2)",s+a+EC1+a+EC2+a+nED,"");
+  D1->cd(3);
+  data->Draw("pi0im>>d3(50,0,0.2)", s+a+FC1+a+FC2,"");
+  D1->cd(4);
+  data->Draw("pi0im>>d4(200,0,0.2)",s+a+"(("+PC1+a+EC2+")"+o+"("+PC2+a+EC1+"))"+a+nED,"");
+  D1->cd(5);
+  data->Draw("pi0im>>d5(50,0,0.2)", s+a+"(("+EC1+a+FC2+")"+o+"("+EC2+a+FC1+"))"+a+nED,"");
+  D1->cd(6);
+  data->Draw("pi0im>>d6(50,0,0.2)", s+a+"(("+PC1+a+FC2+")"+o+"("+PC2+a+FC1+"))"+a+nED,"");
+
+
+
+  TCanvas *E1 = new TCanvas("E1", "E Varying spect-cut on region (no duplicates)");
+  E1->Divide(6,3);
+  E1->cd(1);
+  data->Draw("pi0im>>e1(150,0,0.2)",s+a+PC1+a+PC2,"");
+  E1->cd(2);
+  data->Draw("pi0im>>e2(150,0,0.2)",s+a+EC1+a+EC2+a+nED,"");
+  E1->cd(3);
+  data->Draw("pi0im>>e3(50,0,0.2)", s+a+FC1+a+FC2,"");
+  E1->cd(4);
+  data->Draw("pi0im>>e4(200,0,0.2)",s+a+"(("+PC1+a+EC2+")"+o+"("+PC2+a+EC1+"))"+a+nED,"");
+  E1->cd(5);
+  data->Draw("pi0im>>e5(50,0,0.2)", s+a+"(("+EC1+a+FC2+")"+o+"("+EC2+a+FC1+"))"+a+nED,"");
+  E1->cd(6);
+  data->Draw("pi0im>>e6(100,0,0.2)", s+a+"(("+PC1+a+FC2+")"+o+"("+PC2+a+FC1+"))"+a+nED,"");
+  E1->cd(7);
+  data->Draw("pi0im>>e7(150,0,0.2)",s5+a+PC1+a+PC2,"");
+  E1->cd(8);
+  data->Draw("pi0im>>e8(150,0,0.2)",s5+a+EC1+a+EC2+a+nED,"");
+  E1->cd(9);
+  data->Draw("pi0im>>e9(100,0,0.2)", s5+a+FC1+a+FC2,"");
+  E1->cd(10);
+  data->Draw("pi0im>>e10(200,0,0.2)",s5+a+"(("+PC1+a+EC2+")"+o+"("+PC2+a+EC1+"))"+a+nED,"");
+  E1->cd(11);
+  data->Draw("pi0im>>e11(75,0,0.2)", s5+a+"(("+EC1+a+FC2+")"+o+"("+EC2+a+FC1+"))"+a+nED,"");
+  E1->cd(12);
+  data->Draw("pi0im>>e12(75,0,0.2)", s5+a+"(("+PC1+a+FC2+")"+o+"("+PC2+a+FC1+"))"+a+nED,"");
+  E1->cd(13);
+  data->Draw("pi0im>>e13(150,0,0.2)",s8+a+PC1+a+PC2,"");
+  E1->cd(14);
+  data->Draw("pi0im>>e14(150,0,0.2)",s8+a+EC1+a+EC2+a+nED,"");
+  E1->cd(15);
+  data->Draw("pi0im>>e15(100,0,0.2)", s8+a+FC1+a+FC2,"");
+  E1->cd(16);
+  data->Draw("pi0im>>e16(200,0,0.2)",s8+a+"(("+PC1+a+EC2+")"+o+"("+PC2+a+EC1+"))"+a+nED,"");
+  E1->cd(17);
+  data->Draw("pi0im>>e17(75,0,0.2)", s8+a+"(("+EC1+a+FC2+")"+o+"("+EC2+a+FC1+"))"+a+nED,"");
+  E1->cd(18);
+  data->Draw("pi0im>>e18(75,0,0.2)", s8+a+"(("+PC1+a+FC2+")"+o+"("+PC2+a+FC1+"))"+a+nED,"");
+
 
   // TCanvas *D1 = new TCanvas("D1", "D: Paired photons by region");
   // D1->Divide(3,3);
