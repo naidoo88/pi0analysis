@@ -304,8 +304,8 @@ void photonflags(clas12::region_part_ptr p1, clas12::region_part_ptr p2, int &co
   if(flag_photon2_EIN==1 || flag_photon2_EOUT==1) flag_photon2_ECAL=1;
   else flag_photon2_ECAL = 0;
 
-  if(flag_photon1_EIN == 1 && flag_photon1_EOUT == 0) count_ECAL_doublehits++;
-  if(flag_photon2_EIN == 1 && flag_photon2_EOUT == 0) count_ECAL_doublehits++;
+  if(flag_photon1_EIN == 1 && flag_photon1_EOUT == 1) count_ECAL_doublehits++;
+  if(flag_photon2_EIN == 1 && flag_photon2_EOUT == 1) count_ECAL_doublehits++;
 
 
 }//photonflags fxn
