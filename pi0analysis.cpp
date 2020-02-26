@@ -48,20 +48,18 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
      data->Branch("W",    &W,    "W/D");
      data->Branch("xB",   &xB ,  "xB/D");
 
-     data->Branch("pi0thetadiff", &pi0thetadiff, "pi0thetadiff/D");
-     data->Branch("pi0coneangle", &pi0coneangle, "pi0coneangle/D");
-
+     data->Branch("n_photons_in_event", &n_photons_in_event, "n_photons_in_event/I");
      data->Branch("pi0im",  &pi0im,  "pi0im/D");
      data->Branch("pi0mm2", &pi0mm2, "pi0mm2/D");
      data->Branch("pi0mp",  &pi0mp,  "pi0mp/D");
 
+     data->Branch("pi0coneangle", &pi0coneangle, "pi0coneangle/D");
      data->Branch("recprotmm",  &recprotmm,  "recprotmm/D");
      data->Branch("recprotmp",  &recprotmp,  "recprotmp/D");
      data->Branch("specneutmp", &specneutmp, "specneutmp/D");
      data->Branch("specneutmm", &specneutmm, "specneutmm/D");
 
      data->Branch("flag_excl",         &flag_excl,         "flag_excl/O");
-     data->Branch("flag_pi0thetadiff", &flag_pi0thetadiff, "flag_pi0thetadiff/O");
      data->Branch("flag_pi0mm2",       &flag_pi0mm2,       "flag_pi0mm2/O");
      data->Branch("flag_spectneutmp",  &flag_spectneutmp,  "flag_spectneutmp/O");
 
@@ -112,8 +110,7 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
         double em    = db -> GetParticle(11)  -> Mass();
         double protm = db -> GetParticle(2212)-> Mass();
         double pi0m  = db -> GetParticle(111) -> Mass();
-        //double neutm = db -> GetParticle(2112)-> Mass();
-
+        double neutm = db -> GetParticle(2112)-> Mass();
         //double deutm = db -> GetParticle(1000010020) -> Mass();
         TLorentzVector deut (0,0,0,1.876);
 
@@ -133,122 +130,87 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
                     electronbuff[0]->par()->getPz(),
                     em);
 
-          int N = photonbuff.size();
-          if(DEBUG) cout << "PHOTON BUFF SIZE: " << N << endl;
+          int n_pairs = 0;
+          TLorentzVector system;  //[e p -> e' p' g1 g2]
+          TLorentzVector photcombo;
+          TLorentzVector recprot;
+          TLorentzVector recspecneut;
+          TLorentzVector expected_pi0;
 
-          if(N == 2){
-            if(DEBUG) cout << "ONE PAIR" << endl;
-            phot1.SetXYZM(photonbuff[0]->par()->getPx(),
-                          photonbuff[0]->par()->getPy(),
-                          photonbuff[0]->par()->getPz(),
-                          0);
-            phot2.SetXYZM(photonbuff[1]->par()->getPx(),
-                          photonbuff[1]->par()->getPy(),
-                          photonbuff[1]->par()->getPz(),
-                          0);
+          n_photons_in_event = photonbuff.size();
 
-            //Set Photon flags:
-            photonflags(photonbuff[0], photonbuff[1], n_ECAL_doublehits);
+          for (int i=0; i<n_photons_in_event-1; i++){
+            for (int j=i+1; j<n_photons_in_event; j++){
+              if(DEBUG) cout << "pair [" << i << "][" << j << "]" << endl;
+              phot1.SetXYZM(photonbuff[i]->par()->getPx(),
+                            photonbuff[i]->par()->getPy(),
+                            photonbuff[i]->par()->getPz(),
+                            0);
+              phot2.SetXYZM(photonbuff[j]->par()->getPx(),
+                            photonbuff[j]->par()->getPy(),
+                            photonbuff[j]->par()->getPz(),
+                            0);
 
-          }//if one pair
+              //Set Photon flags:
+              photonflags(photonbuff[i], photonbuff[j], n_ECAL_doublehits);
 
-          else{ //loop through combinations, keeping pair closest to pi0-mass
-            double diff, mindiff = 10000; //mindiff initialised high
-            TLorentzVector phot1buff, phot2buff, combobuff;
-            int n_pairs = 0;
+              Q2   = -1*(beam - e).M2();
+              xB   = Q2 / 2*(target*(beam - e));
+              tneg = -(prot-target).M2();
+              W    = (e + prot + phot1 + phot2).M2();
 
-            for (int i=0; i<N-1; i++){
-              for (int j=i+1; j<N; j++){
-                if(DEBUG) cout << "pair [" << i << "][" << j << "]" << endl;
-                phot1buff.SetXYZM(photonbuff[i]->par()->getPx(),
-                                  photonbuff[i]->par()->getPy(),
-                                  photonbuff[i]->par()->getPz(),
-                                  0);
-                phot2buff.SetXYZM(photonbuff[j]->par()->getPx(),
-                                  photonbuff[j]->par()->getPy(),
-                                  photonbuff[j]->par()->getPz(),
-                                  0);
+              /*======= DIS CUTS =======*/
+              //Q2   = -1*(beam - e).M2();
+              //if(Q2 < 1)   continue; // could be 1.5, 2... revisit at asymmetry stage
+              //tneg = -(prot-target).M2();
+              //if(tneg > 1) continue; //**DOUBLE CHECK THIS AGAINST THEORY PAPER**
+              //W    = (e + prot + phot1 + phot2).M2();
+              //if(W  < 4)   continue;
+              /*========================*/
 
-                combobuff = phot1buff + phot2buff;
-                diff = abs(pi0m - combobuff.M());
+              system = (beam+target)-(e+prot+phot1+phot2); //[e p -> e' p' g1 g2]
+              photcombo = phot1 + phot2;
+              pi0im  = photcombo.M();
+              pi0mm2 = system.M2();
+              pi0mp  = system.P();
 
-                if (diff < mindiff){
-                  phot1.SetXYZM(photonbuff[i]->par()->getPx(),
-                                    photonbuff[i]->par()->getPy(),
-                                    photonbuff[i]->par()->getPz(),
-                                    0);
-                  phot2.SetXYZM(photonbuff[j]->par()->getPx(),
-                                    photonbuff[j]->par()->getPy(),
-                                    photonbuff[j]->par()->getPz(),
-                                    0);
+              recprot     = (beam+target)-(e+phot1+phot2);
+              expected_pi0 = target+beam-e-prot;
+              pi0coneangle = TMath::RadToDeg()*(expected_pi0.Angle(photcombo.Vect()));
 
-                  mindiff = diff;
-                  if(DEBUG) cout << "new pair is ["<< i << "][" << j << "]" << endl;
+              recspecneut = (beam+deut)-(e+prot+phot1+phot2);
+              recprotmm  = recprot.M();
+              recprotmp =  recprot.P();
+              specneutmp = recspecneut.P();
+              specneutmm = recspecneut.M();
 
-                  //Set Photon flags:
-                  photonflags(photonbuff[i], photonbuff[j], n_ECAL_doublehits);
+              //###################################################################################
+              // Set Flags -- DIS cuts, mass/mom' cuts.
+              //###################################################################################
+              if((Q2 > 1) && (tneg < 1) && (W  > 4)){ //Set flag for pass/fail on exclusivity cuts.
+                flag_excl = 1;
+                n_excl_events++;
+              }
+              else flag_excl = 0;
 
-                }//masscheck
-                n_pairs++;
-              }//photons j-loop
-            }//photons i-loop
-            if(DEBUG) cout << "LOOPED THROUGH " << n_pairs << " PAIRS.\n" << endl;
-          }//close pair else
+              if(pi0mm2 < -0.0853 || pi0mm2 > 0.0718){//mu = -0.006743, sig = 0.02618
+                flag_pi0mm2 = 0;
+              }
+              else flag_pi0mm2 = 1; //cut passed
 
-          /*=====KINEMATIC CUTS=====*/
-          //Q2   = -1*(beam - e).M2();
-          //if(Q2 < 1)   continue; // could be 1.5, 2... revisit at asymmetry stage
-          //tneg = -(prot-target).M2();
-          //if(tneg > 1) continue; //**DOUBLE CHECK THIS AGAINST THEORY PAPER**
-          //W    = (e + prot + phot1 + phot2).M2();
-          //if(W  < 4)   continue;
-          /*========================*/
+              if(specneutmp > 0.3){//300MeV cut on spectator missing momentum
+                flag_spectneutmp = 0;
+              }
+              else flag_spectneutmp = 1;
+              //###################################################################################
 
-          Q2   = -1*(beam - e).M2();
-          xB   = Q2 / 2*(target*(beam - e));
-          tneg = -(prot-target).M2();
-          W    = (e + prot + phot1 + phot2).M2();
+              n_pairs++;
 
-          TLorentzVector expected_pi0 = target+beam-e-prot;
-          TLorentzVector reconstr_pi0 = phot1+phot2;
-          pi0thetadiff = TMath::RadToDeg()*((target+beam-e-prot).Theta() - (phot1+phot2).Theta());
-          pi0coneangle = TMath::RadToDeg()*(expected_pi0.Angle(reconstr_pi0.Vect()));
+              data->Fill();
+            }//photons j-loop
+          }//photons i-loop
+          if(DEBUG) cout << "LOOPED THROUGH " << n_pairs << " PAIRS.\n" << endl;
 
-          TLorentzVector system = (beam+target)-(e+prot+phot1+phot2); //[e p -> e' p' g1 g2]
-          TLorentzVector photcombo = phot1 + phot2;
-          pi0im  = photcombo.M();
-          pi0mm2 = system.M2();
-          pi0mp  = system.P();
-
-          TLorentzVector recprot     = (beam+target)-(e+phot1+phot2);
-          TLorentzVector recspecneut = (beam+deut)-(e+prot+phot1+phot2);
-          recprotmm  = recprot.M();
-          recprotmp =  recprot.P();
-          specneutmp = recspecneut.P();
-          specneutmm = recspecneut.M();
-
-
-          //###################################################################################
-          // Set Flags -- DIS cuts, mass/mom' cuts.
-          //###################################################################################
-            if((Q2 > 1) && (tneg < 1) && (W  > 4)){ //Set flag for pass/fail on exclusivity cuts.
-              flag_excl = 1;
-              n_excl_events++;
-            }
-            else flag_excl = 0;
-
-            if(pi0mm2 < -0.0853 || pi0mm2 > 0.0718){//mu = -0.006743, sig = 0.02618
-              flag_pi0mm2 = 0;
-            }
-            else flag_pi0mm2 = 1; //cut passed
-
-            if(specneutmp > 0.3){//300MeV cut on spectator missing momentum
-              flag_spectneutmp = 0;
-            }
-            else flag_spectneutmp = 1;
-          //###################################################################################
-
-          data->Fill();
 
          //SUBSTITUTE THESE LINES TO PROCESS N-EVENTS
          //if (n_events == 10) break;        }//event loop

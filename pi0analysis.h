@@ -6,7 +6,6 @@ void photonflags(clas12::region_part_ptr p1, clas12::region_part_ptr p2, int &co
 
 /*  Flags  */
 bool flag_excl;
-bool flag_pi0thetadiff;
 bool flag_pi0mm2;
 bool flag_spectneutmp;
 
@@ -29,13 +28,13 @@ int n_events;
 int n_excl_events;
 int n_postcut_events;
 int n_ECAL_doublehits;
+int n_photons_in_event;
 
 double Q2;
 double tneg;
 double W;
 double xB;
 
-double pi0thetadiff;
 double pi0coneangle;
 double pi0im;
 double pi0mm2;
