@@ -28,6 +28,8 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
   char file_name[200];
   char last_file[200];
 
+  DEG = TMath::RadToDeg(); //rad->deg conversion
+
   list_of_files.open(in_list);
   cout << "list of files opened" << endl;
 
@@ -53,15 +55,22 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
      data->Branch("pi0mm2", &pi0mm2, "pi0mm2/D");
      data->Branch("pi0mp",  &pi0mp,  "pi0mp/D");
 
-     data->Branch("pi0coneangle", &pi0coneangle, "pi0coneangle/D");
      data->Branch("recprotmm",  &recprotmm,  "recprotmm/D");
      data->Branch("recprotmp",  &recprotmp,  "recprotmp/D");
      data->Branch("specneutmp", &specneutmp, "specneutmp/D");
      data->Branch("specneutmm", &specneutmm, "specneutmm/D");
 
+     data->Branch("pi0coneangle",   &pi0coneangle,   "pi0coneangle/D");
+     data->Branch("phi_Nvg",        &phi_Nvg,        "phi_Nvg/D");
+     data->Branch("phi_Nnew",       &phi_Nnew,       "phi_Nnew/D");
+     data->Branch("phi_vgnew",      &phi_vgnew,      "phi_vgnew/D");
+     data->Branch("cop_Nvg_vgnew",  &cop_Nvg_vgnew,  "cop_Nvg_vgnew/D");
+     data->Branch("cop_Nvg_Nnew",   &cop_Nvg_Nnew,   "cop_Nvg_Nnew/D");
+     data->Branch("cop_Nnew_vgnew", &cop_Nnew_vgnew, "cop_Nnew_vgnew/D");
+
      data->Branch("flag_excl",         &flag_excl,         "flag_excl/O");
-     data->Branch("flag_pi0mm2",       &flag_pi0mm2,       "flag_pi0mm2/O");
-     data->Branch("flag_spectneutmp",  &flag_spectneutmp,  "flag_spectneutmp/O");
+     // data->Branch("flag_pi0mm2",       &flag_pi0mm2,       "flag_pi0mm2/O");
+     // data->Branch("flag_spectneutmp",  &flag_spectneutmp,  "flag_spectneutmp/O");
 
      data->Branch("flag_photon1_ft",   &flag_photon1_ft,   "flag_photon1_ft/O");
      data->Branch("flag_photon1_PCAL", &flag_photon1_PCAL, "flag_photon1_PCAL/O");
@@ -77,6 +86,7 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
      data->Branch("flag_photon2_wCAL", &flag_photon2_wCAL, "flag_photon2_wCAL/I");
 
   //##############################################################################
+
   if(list_of_files.is_open()){
     cout << "Successfully opened list:  " << in_list << endl;
 
@@ -150,9 +160,13 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
                             photonbuff[j]->par()->getPy(),
                             photonbuff[j]->par()->getPz(),
                             0);
+              photcombo = phot1 + phot2;
 
               //Set Photon flags:
               photonflags(photonbuff[i], photonbuff[j], n_ECAL_doublehits);
+
+              //Calc trento-phi and co-planarity angles:
+              calc_angles(beam.Vect(), e.Vect(), prot.Vect(), photcombo.Vect());
 
               Q2   = -1*(beam - e).M2();
               xB   = Q2 / 2*(target*(beam - e));
@@ -169,14 +183,13 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
               /*========================*/
 
               system = (beam+target)-(e+prot+phot1+phot2); //[e p -> e' p' g1 g2]
-              photcombo = phot1 + phot2;
               pi0im  = photcombo.M();
               pi0mm2 = system.M2();
               pi0mp  = system.P();
 
               recprot     = (beam+target)-(e+phot1+phot2);
               expected_pi0 = target+beam-e-prot;
-              pi0coneangle = TMath::RadToDeg()*(expected_pi0.Angle(photcombo.Vect()));
+              pi0coneangle = (expected_pi0.Angle(photcombo.Vect()))*DEG;
 
               recspecneut = (beam+deut)-(e+prot+phot1+phot2);
               recprotmm  = recprot.M();
@@ -193,15 +206,15 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
               }
               else flag_excl = 0;
 
-              if(pi0mm2 < -0.0853 || pi0mm2 > 0.0718){//mu = -0.006743, sig = 0.02618
-                flag_pi0mm2 = 0;
-              }
-              else flag_pi0mm2 = 1; //cut passed
+              // if(pi0mm2 < -0.0853 || pi0mm2 > 0.0718){//mu = -0.006743, sig = 0.02618
+              //   flag_pi0mm2 = 0;
+              // }
+              // else flag_pi0mm2 = 1; //cut passed
 
-              if(specneutmp > 0.3){//300MeV cut on spectator missing momentum
-                flag_spectneutmp = 0;
-              }
-              else flag_spectneutmp = 1;
+              // if(specneutmp > 0.3){//300MeV cut on spectator missing momentum
+              //   flag_spectneutmp = 0;
+              // }
+              // else flag_spectneutmp = 1;
               //###################################################################################
 
               n_pairs++;
@@ -269,7 +282,61 @@ void photonflags(clas12::region_part_ptr p1, clas12::region_part_ptr p2, int &co
   if(flag_photon1_EIN == 1 && flag_photon1_EOUT == 1) count_ECAL_doublehits++;
   if(flag_photon2_EIN == 1 && flag_photon2_EOUT == 1) count_ECAL_doublehits++;
 
-
 }//photonflags fxn
+
+
+void calc_angles(TVector3 Ebeam_vect, TVector3 Electron_vect, TVector3 Recoil_vect, TVector3 Newpart_vect){
+
+   //TVector3 Ebeam_vect;          // vector of incoming beam electron
+   TVector3 Virtual_photon;      // virtual photon vector
+   TVector3 vect_ee;             // vector in the leptonic plane
+   TVector3 vect_Nnew;           // three vectors in the hadronic plane
+   TVector3 vect_Nvg;
+   TVector3 vect_vgnew;
+
+   Virtual_photon = Ebeam_vect - Electron_vect;        // vector of the virtual photon
+
+   // Leptonic plane:
+   vect_ee = Ebeam_vect.Cross(Electron_vect);          // cross product of e and e', gives normal to leptonic plane
+
+   // Hadronic plane:
+   vect_Nnew = Recoil_vect.Cross(Newpart_vect);        // normal to hadronic plane formed by recoiling nucleon and new particle (photon, meson)
+   vect_Nvg = Recoil_vect.Cross(Virtual_photon);       // normal to hadronic plane formed by recoiling nucleon and virtual photon
+   vect_vgnew = Virtual_photon.Cross(Newpart_vect);    // gives normal to hadronic plane formed by virtual photon and new particle (photon, meson)
+
+   // Phi angles (between leptonic and hadronic planes):
+   // Phi convention here:
+      //- e from bottom left to center, e' from center to top left (so vect_ee is up out of page)
+      //- gamma* from center left to center right
+      //- N' from center to bottom right, new particle (gamma or pi0) from center to top right (so vect_Nnew, vect_Nvg, vect_vgnew all up out of page)
+      //
+      //- phi is 0 when both leptopnic and hadronic planes are parallel
+      //- phi increases as you rotate hadronic plane clockwise, if looking along trajectory of virtual photon
+      //- phi is 180 deg when the two planes are again parallel but the N' and the new particle (photon or meson) have swapped directions
+      //- phi continues to increase to 360 deg as you continue to rotate hadronic plane clockwise, from point of view of gamma*
+
+   phi_Nvg = (vect_ee.Angle(vect_Nvg))*DEG;            // angle between (e,e') and (N,gamma*) planes, in degrees.
+   if ((vect_ee.Dot(Recoil_vect)) > 0.) phi_Nvg = 360. - phi_Nvg;  // To make sure it runs from 0 - 360 degrees.
+
+   phi_Nnew = (vect_ee.Angle(vect_Nnew))*DEG;          // angle between (e,e') and (N,gamma) or (N,pi0) planes, in degrees.
+   if ((vect_ee.Dot(Newpart_vect)) < 0.) phi_Nnew = 360. - phi_Nnew;   // Note: the pi0 or gamma are called "New" for simplicity.
+
+   phi_vgnew = (vect_ee.Angle(vect_vgnew))*DEG;        // angle between (e,e') and (gamma*,gamma) or (gamma*,pi0) planes, in degrees.
+   if ((vect_ee.Dot(Newpart_vect)) < 0.) phi_vgnew = 360. - phi_vgnew; // Note: the pi0 or gamma are called "New" for simplicity.
+
+
+   // Coplanarity angles (to make sure the recoil nucleon, the virtual photon and the photon/meson are in the same plane):
+   // In the naming convention, "new" refers to produced gamma or pi0.
+
+   cop_Nvg_vgnew = (vect_Nvg.Angle(vect_vgnew))*DEG;     // angle between (N,gamma*) and (gamma*,gamma) or (gamma*,pi0) planes, in degrees.
+   if ((vect_Nvg.Dot(Newpart_vect)) < 0) cop_Nvg_vgnew = -1*cop_Nvg_vgnew;   // sort of arbitrary, but makes sure there's a nice peak at zero
+
+   cop_Nvg_Nnew = (vect_Nvg.Angle(vect_Nnew))*DEG;       // angle between (N,gamma*) and (N,gamma) or (N,pi0) planes, in degrees.
+   if ((vect_Nvg.Dot(Newpart_vect)) < 0) cop_Nvg_Nnew = -1*cop_Nvg_Nnew;   // sort of arbitrary, but makes sure there's a nice peak at zero
+
+   cop_Nnew_vgnew = (vect_Nnew.Angle(vect_vgnew))*DEG;       // angle between (N,gamma) and (gamma*,gamma) or between (N,pi0) and (gamma*,pi0) planes.
+   if ((vect_vgnew.Dot(Recoil_vect)) < 0) cop_Nnew_vgnew = -1*cop_Nnew_vgnew;   // sort of arbitrary, but makes sure there's a nice peak at zero
+
+}//calc_angles fxn
 
 //  LocalWords:  EIN EOUT PCAL ECAL wCAL
