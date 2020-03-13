@@ -1,5 +1,8 @@
 void cuts(){
 
+  TStopwatch time;
+  time.Start();
+
   TString a   = "&&";
   TString o   = "||";
   TString s   = "specneutmp<0.3";
@@ -25,124 +28,125 @@ void cuts(){
   TString FC2 = "flag_photon2_ft==1";
   TString nED = "!((flag_photon1_EIN==1&&flag_photon1_EOUT==1)||(flag_photon2_EIN==1&&flag_photon2_EOUT==1))";
 
+  //reg-split cone angle <30,20,10,8,5
+  TCanvas *A2 = new TCanvas("A2", "A2: pi0-mass split by region (Cone angle < 30',20',10')");
+  A2->Divide(6,5);
+  A2->cd(1);
+  data->Draw("pi0im>>aa1(150,0,0.2)",  PC1+a+PC2,"");
+  A2->cd(2);
+  data->Draw("pi0im>>aa2(150,0,0.2)",  EC1+a+EC2,"");
+  A2->cd(3);
+  data->Draw("pi0im>>aa3(50,0,0.2)",   FC1+a+FC2,"");
+  A2->cd(4);
+  data->Draw("pi0im>>aa4(200,0,0.2)",  "(("+PC1+a+EC2+")"+o+"("+PC2+a+EC1+"))","");
+  A2->cd(5);
+  data->Draw("pi0im>>aa5(50,0,0.2)",   "(("+EC1+a+FC2+")"+o+"("+EC2+a+FC1+"))","");
+  A2->cd(6);
+  data->Draw("pi0im>>aa6(100,0,0.2)",  "(("+PC1+a+FC2+")"+o+"("+PC2+a+FC1+"))","");
+  A2->cd(7);
+  data->Draw("pi0im>>aa7(150,0,0.2)",  c20+a+PC1+a+PC2,"");
+  A2->cd(8);
+  data->Draw("pi0im>>aa8(150,0,0.2)",  c20+a+EC1+a+EC2,"");
+  A2->cd(9);
+  data->Draw("pi0im>>aa9(100,0,0.2)",  c20+a+FC1+a+FC2,"");
+  A2->cd(10);
+  data->Draw("pi0im>>aa10(200,0,0.2)", c20+a+"(("+PC1+a+EC2+")"+o+"("+PC2+a+EC1+"))","");
+  A2->cd(11);
+  data->Draw("pi0im>>aa11(75,0,0.2)",  c20+a+"(("+EC1+a+FC2+")"+o+"("+EC2+a+FC1+"))","");
+  A2->cd(12);
+  data->Draw("pi0im>>aa12(75,0,0.2)",  c20+a+"(("+PC1+a+FC2+")"+o+"("+PC2+a+FC1+"))","");
+  A2->cd(13);
+  data->Draw("pi0im>>aa13(150,0,0.2)", c10+a+PC1+a+PC2,"");
+  A2->cd(14);
+  data->Draw("pi0im>>aa14(150,0,0.2)", c10+a+EC1+a+EC2,"");
+  A2->cd(15);
+  data->Draw("pi0im>>aa15(100,0,0.2)", c10+a+FC1+a+FC2,"");
+  A2->cd(16);
+  data->Draw("pi0im>>aa16(200,0,0.2)", c10+a+"(("+PC1+a+EC2+")"+o+"("+PC2+a+EC1+"))","");
+  A2->cd(17);
+  data->Draw("pi0im>>aa17(75,0,0.2)",  c10+a+"(("+EC1+a+FC2+")"+o+"("+EC2+a+FC1+"))","");
+  A2->cd(18);
+  data->Draw("pi0im>>aa18(75,0,0.2)",  c10+a+"(("+PC1+a+FC2+")"+o+"("+PC2+a+FC1+"))","");
+  A2->cd(19);
+  data->Draw("pi0im>>aa19(150,0,0.2)", c8+a+PC1+a+PC2,"");
+  A2->cd(20);
+  data->Draw("pi0im>>aa20(150,0,0.2)", c8+a+EC1+a+EC2,"");
+  A2->cd(21);
+  data->Draw("pi0im>>aa21(100,0,0.2)", c8+a+FC1+a+FC2,"");
+  A2->cd(22);
+  data->Draw("pi0im>>aa22(200,0,0.2)", c8+a+"(("+PC1+a+EC2+")"+o+"("+PC2+a+EC1+"))","");
+  A2->cd(23);
+  data->Draw("pi0im>>aa23(75,0,0.2)",  c8+a+"(("+EC1+a+FC2+")"+o+"("+EC2+a+FC1+"))","");
+  A2->cd(24);
+  data->Draw("pi0im>>aa24(75,0,0.2)",  c8+a+"(("+PC1+a+FC2+")"+o+"("+PC2+a+FC1+"))","");
+  A2->cd(25);
+  data->Draw("pi0im>>aa25(150,0,0.2)", c5+a+PC1+a+PC2,"");
+  A2->cd(26);
+  data->Draw("pi0im>>aa26(150,0,0.2)", c5+a+EC1+a+EC2,"");
+  A2->cd(27);
+  data->Draw("pi0im>>aa27(100,0,0.2)", c5+a+FC1+a+FC2,"");
+  A2->cd(28);
+  data->Draw("pi0im>>aa28(200,0,0.2)", c5+a+"(("+PC1+a+EC2+")"+o+"("+PC2+a+EC1+"))","");
+  A2->cd(29);
+  data->Draw("pi0im>>aa29(75,0,0.2)",  c5+a+"(("+EC1+a+FC2+")"+o+"("+EC2+a+FC1+"))","");
+  A2->cd(30);
+  data->Draw("pi0im>>aa30(75,0,0.2)",  c5+a+"(("+PC1+a+FC2+")"+o+"("+PC2+a+FC1+"))","");
 
-  TCanvas *A1 = new TCanvas("A1", "A: pi0-mass split by region (Cone angle < 30',20',10')");
-  A1->Divide(6,5);
-  A1->cd(1);
-  data->Draw("pi0im>>a1(150,0,0.2)",  PC1+a+PC2,"");
-  A1->cd(2);
-  data->Draw("pi0im>>a2(150,0,0.2)",  EC1+a+EC2+a+nED,"");
-  A1->cd(3);
-  data->Draw("pi0im>>a3(50,0,0.2)",   FC1+a+FC2,"");
-  A1->cd(4);
-  data->Draw("pi0im>>a4(200,0,0.2)",  "(("+PC1+a+EC2+")"+o+"("+PC2+a+EC1+"))"+a+nED,"");
-  A1->cd(5);
-  data->Draw("pi0im>>a5(50,0,0.2)",   "(("+EC1+a+FC2+")"+o+"("+EC2+a+FC1+"))"+a+nED,"");
-  A1->cd(6);
-  data->Draw("pi0im>>a6(100,0,0.2)",  "(("+PC1+a+FC2+")"+o+"("+PC2+a+FC1+"))"+a+nED,"");
-  A1->cd(7);
-  data->Draw("pi0im>>a7(150,0,0.2)",  c20+a+PC1+a+PC2,"");
-  A1->cd(8);
-  data->Draw("pi0im>>a8(150,0,0.2)",  c20+a+EC1+a+EC2+a+nED,"");
-  A1->cd(9);
-  data->Draw("pi0im>>a9(100,0,0.2)",  c20+a+FC1+a+FC2,"");
-  A1->cd(10);
-  data->Draw("pi0im>>a10(200,0,0.2)", c20+a+"(("+PC1+a+EC2+")"+o+"("+PC2+a+EC1+"))"+a+nED,"");
-  A1->cd(11);
-  data->Draw("pi0im>>a11(75,0,0.2)",  c20+a+"(("+EC1+a+FC2+")"+o+"("+EC2+a+FC1+"))"+a+nED,"");
-  A1->cd(12);
-  data->Draw("pi0im>>a12(75,0,0.2)",  c20+a+"(("+PC1+a+FC2+")"+o+"("+PC2+a+FC1+"))"+a+nED,"");
-  A1->cd(13);
-  data->Draw("pi0im>>a13(150,0,0.2)", c10+a+PC1+a+PC2,"");
-  A1->cd(14);
-  data->Draw("pi0im>>a14(150,0,0.2)", c10+a+EC1+a+EC2+a+nED,"");
-  A1->cd(15);
-  data->Draw("pi0im>>a15(100,0,0.2)", c10+a+FC1+a+FC2,"");
-  A1->cd(16);
-  data->Draw("pi0im>>a16(200,0,0.2)", c10+a+"(("+PC1+a+EC2+")"+o+"("+PC2+a+EC1+"))"+a+nED,"");
-  A1->cd(17);
-  data->Draw("pi0im>>a17(75,0,0.2)",  c10+a+"(("+EC1+a+FC2+")"+o+"("+EC2+a+FC1+"))"+a+nED,"");
-  A1->cd(18);
-  data->Draw("pi0im>>a18(75,0,0.2)",  c10+a+"(("+PC1+a+FC2+")"+o+"("+PC2+a+FC1+"))"+a+nED,"");
-  A1->cd(19);
-  data->Draw("pi0im>>a19(150,0,0.2)", c8+a+PC1+a+PC2,"");
-  A1->cd(20);
-  data->Draw("pi0im>>a20(150,0,0.2)", c8+a+EC1+a+EC2+a+nED,"");
-  A1->cd(21);
-  data->Draw("pi0im>>a21(100,0,0.2)", c8+a+FC1+a+FC2,"");
-  A1->cd(22);
-  data->Draw("pi0im>>a22(200,0,0.2)", c8+a+"(("+PC1+a+EC2+")"+o+"("+PC2+a+EC1+"))"+a+nED,"");
-  A1->cd(23);
-  data->Draw("pi0im>>a23(75,0,0.2)",  c8+a+"(("+EC1+a+FC2+")"+o+"("+EC2+a+FC1+"))"+a+nED,"");
-  A1->cd(24);
-  data->Draw("pi0im>>a24(75,0,0.2)",  c8+a+"(("+PC1+a+FC2+")"+o+"("+PC2+a+FC1+"))"+a+nED,"");
-  A1->cd(25);
-  data->Draw("pi0im>>a25(150,0,0.2)", c5+a+PC1+a+PC2,"");
-  A1->cd(26);
-  data->Draw("pi0im>>a26(150,0,0.2)", c5+a+EC1+a+EC2+a+nED,"");
-  A1->cd(27);
-  data->Draw("pi0im>>a27(100,0,0.2)", c5+a+FC1+a+FC2,"");
-  A1->cd(28);
-  data->Draw("pi0im>>a28(200,0,0.2)", c5+a+"(("+PC1+a+EC2+")"+o+"("+PC2+a+EC1+"))"+a+nED,"");
-  A1->cd(29);
-  data->Draw("pi0im>>a29(75,0,0.2)",  c5+a+"(("+EC1+a+FC2+")"+o+"("+EC2+a+FC1+"))"+a+nED,"");
-  A1->cd(30);
-  data->Draw("pi0im>>a30(75,0,0.2)",  c5+a+"(("+PC1+a+FC2+")"+o+"("+PC2+a+FC1+"))"+a+nED,"");
-
-  TCanvas *B1 = new TCanvas("B1", "B: pi0-mass split by region (mm2(ep->e'p'g1g2) +/- 0.4, 0.3, 0.2)");
-  B1->Divide(6,4);
-  B1->cd(1);
-  data->Draw("pi0im>>b1(150,0,0.2)",  PC1+a+PC2,"");
-  B1->cd(2);
-  data->Draw("pi0im>>b2(150,0,0.2)",  EC1+a+EC2+a+nED,"");
-  B1->cd(3);
-  data->Draw("pi0im>>b3(50,0,0.2)",   FC1+a+FC2,"");
-  B1->cd(4);
-  data->Draw("pi0im>>b4(200,0,0.2)",  "(("+PC1+a+EC2+")"+o+"("+PC2+a+EC1+"))"+a+nED,"");
-  B1->cd(5);
-  data->Draw("pi0im>>b5(50,0,0.2)",   "(("+EC1+a+FC2+")"+o+"("+EC2+a+FC1+"))"+a+nED,"");
-  B1->cd(6);
-  data->Draw("pi0im>>b6(100,0,0.2)",  "(("+PC1+a+FC2+")"+o+"("+PC2+a+FC1+"))"+a+nED,"");
-  B1->cd(7);
-  data->Draw("pi0im>>b7(150,0,0.2)",  m4+a+PC1+a+PC2,"");
-  B1->cd(8);
-  data->Draw("pi0im>>b8(150,0,0.2)",  m4+a+EC1+a+EC2+a+nED,"");
-  B1->cd(9);
-  data->Draw("pi0im>>b9(50,0,0.2)",   m4+a+FC1+a+FC2,"");
-  B1->cd(10);
-  data->Draw("pi0im>>b10(200,0,0.2)", m4+a+"(("+PC1+a+EC2+")"+o+"("+PC2+a+EC1+"))"+a+nED,"");
-  B1->cd(11);
-  data->Draw("pi0im>>b11(50,0,0.2)",  m4+a+"(("+EC1+a+FC2+")"+o+"("+EC2+a+FC1+"))"+a+nED,"");
-  B1->cd(12);
-  data->Draw("pi0im>>b12(100,0,0.2)", m4+a+"(("+PC1+a+FC2+")"+o+"("+PC2+a+FC1+"))"+a+nED,"");
-  B1->cd(13);
-  data->Draw("pi0im>>b13(150,0,0.2)", m3+a+PC1+a+PC2,"");
-  B1->cd(14);
-  data->Draw("pi0im>>b14(150,0,0.2)", m3+a+EC1+a+EC2+a+nED,"");
-  B1->cd(15);
-  data->Draw("pi0im>>b15(100,0,0.2)", m3+a+FC1+a+FC2,"");
-  B1->cd(16);
-  data->Draw("pi0im>>b16(200,0,0.2)", m3+a+"(("+PC1+a+EC2+")"+o+"("+PC2+a+EC1+"))"+a+nED,"");
-  B1->cd(17);
-  data->Draw("pi0im>>b17(75,0,0.2)",  m3+a+"(("+EC1+a+FC2+")"+o+"("+EC2+a+FC1+"))"+a+nED,"");
-  B1->cd(18);
-  data->Draw("pi0im>>b18(75,0,0.2)",  m3+a+"(("+PC1+a+FC2+")"+o+"("+PC2+a+FC1+"))"+a+nED,"");
-  B1->cd(19);
-  data->Draw("pi0im>>b19(150,0,0.2)", m2+a+PC1+a+PC2,"");
-  B1->cd(20);
-  data->Draw("pi0im>>b20(150,0,0.2)", m2+a+EC1+a+EC2+a+nED,"");
-  B1->cd(21);
-  data->Draw("pi0im>>b21(100,0,0.2)", m2+a+FC1+a+FC2,"");
-  B1->cd(22);
-  data->Draw("pi0im>>b22(200,0,0.2)", m2+a+"(("+PC1+a+EC2+")"+o+"("+PC2+a+EC1+"))"+a+nED,"");
-  B1->cd(23);
-  data->Draw("pi0im>>b23(75,0,0.2)",  m2+a+"(("+EC1+a+FC2+")"+o+"("+EC2+a+FC1+"))"+a+nED,"");
-  B1->cd(24);
-  data->Draw("pi0im>>b24(75,0,0.2)",  m2+a+"(("+PC1+a+FC2+")"+o+"("+PC2+a+FC1+"))"+a+nED,"");
+  //reg-split mm2  +/-0.4, 0.3, 0.2
+  TCanvas *B2 = new TCanvas("B2", "B2: pi0-mass split by region (mm2(ep->e'p'g1g2) +/- 0.4, 0.3, 0.2)");
+  B2->Divide(6,4);
+  B2->cd(1);
+  data->Draw("pi0im>>bb1(150,0,0.2)",  PC1+a+PC2,"");
+  B2->cd(2);
+  data->Draw("pi0im>>bb2(150,0,0.2)",  EC1+a+EC2,"");
+  B2->cd(3);
+  data->Draw("pi0im>>bb3(50,0,0.2)",   FC1+a+FC2,"");
+  B2->cd(4);
+  data->Draw("pi0im>>bb4(200,0,0.2)",  "(("+PC1+a+EC2+")"+o+"("+PC2+a+EC1+"))","");
+  B2->cd(5);
+  data->Draw("pi0im>>bb5(50,0,0.2)",   "(("+EC1+a+FC2+")"+o+"("+EC2+a+FC1+"))","");
+  B2->cd(6);
+  data->Draw("pi0im>>bb6(100,0,0.2)",  "(("+PC1+a+FC2+")"+o+"("+PC2+a+FC1+"))","");
+  B2->cd(7);
+  data->Draw("pi0im>>bb7(150,0,0.2)",  m4+a+PC1+a+PC2,"");
+  B2->cd(8);
+  data->Draw("pi0im>>bb8(150,0,0.2)",  m4+a+EC1+a+EC2,"");
+  B2->cd(9);
+  data->Draw("pi0im>>bb9(50,0,0.2)",   m4+a+FC1+a+FC2,"");
+  B2->cd(10);
+  data->Draw("pi0im>>bb10(200,0,0.2)", m4+a+"(("+PC1+a+EC2+")"+o+"("+PC2+a+EC1+"))","");
+  B2->cd(11);
+  data->Draw("pi0im>>bb11(50,0,0.2)",  m4+a+"(("+EC1+a+FC2+")"+o+"("+EC2+a+FC1+"))","");
+  B2->cd(12);
+  data->Draw("pi0im>>bb12(100,0,0.2)", m4+a+"(("+PC1+a+FC2+")"+o+"("+PC2+a+FC1+"))","");
+  B2->cd(13);
+  data->Draw("pi0im>>bb13(150,0,0.2)", m3+a+PC1+a+PC2,"");
+  B2->cd(14);
+  data->Draw("pi0im>>bb14(150,0,0.2)", m3+a+EC1+a+EC2,"");
+  B2->cd(15);
+  data->Draw("pi0im>>bb15(100,0,0.2)", m3+a+FC1+a+FC2,"");
+  B2->cd(16);
+  data->Draw("pi0im>>bb16(200,0,0.2)", m3+a+"(("+PC1+a+EC2+")"+o+"("+PC2+a+EC1+"))","");
+  B2->cd(17);
+  data->Draw("pi0im>>bb17(75,0,0.2)",  m3+a+"(("+EC1+a+FC2+")"+o+"("+EC2+a+FC1+"))","");
+  B2->cd(18);
+  data->Draw("pi0im>>bb18(75,0,0.2)",  m3+a+"(("+PC1+a+FC2+")"+o+"("+PC2+a+FC1+"))","");
+  B2->cd(19);
+  data->Draw("pi0im>>bb19(150,0,0.2)", m2+a+PC1+a+PC2,"");
+  B2->cd(20);
+  data->Draw("pi0im>>bb20(150,0,0.2)", m2+a+EC1+a+EC2,"");
+  B2->cd(21);
+  data->Draw("pi0im>>bb21(100,0,0.2)", m2+a+FC1+a+FC2,"");
+  B2->cd(22);
+  data->Draw("pi0im>>bb22(200,0,0.2)", m2+a+"(("+PC1+a+EC2+")"+o+"("+PC2+a+EC1+"))","");
+  B2->cd(23);
+  data->Draw("pi0im>>bb23(75,0,0.2)",  m2+a+"(("+EC1+a+FC2+")"+o+"("+EC2+a+FC1+"))","");
+  B2->cd(24);
+  data->Draw("pi0im>>bb24(75,0,0.2)",  m2+a+"(("+PC1+a+FC2+")"+o+"("+PC2+a+FC1+"))","");
 
 
   //look at pi0 coneangle effect on pi0im:pi0mm2
-  TCanvas *C1 = new TCanvas("C1", "Coneangle cuts effects on pi0im:mm2", 2000, 1500);
+  TCanvas *C1 = new TCanvas("C1", "C1: Coneangle cuts effects on pi0im:mm2");
   C1->Divide(6,3);
   C1->cd(1);
   data->Draw("pi0im:pi0mm2>>c1(200, -.5, .5, 200, 0, 0.2)","","colz");
@@ -181,7 +185,8 @@ void cuts(){
   C1->cd(18);
   data->Draw("pi0mm2>>c18(200, -.5, .5)",c5,"");
 
-  TCanvas *D1 = new TCanvas("D1", "broad mm2(ep-e'p'g1g2) cuts effects on pi0im:mm2", 2000, 1500);
+
+  TCanvas *D1 = new TCanvas("D1", "D1: broad mm2(ep-e'p'g1g2) cuts effects on pi0im:mm2");
   D1->Divide(4,3);
   D1->cd(1);
   data->Draw("pi0im:pi0mm2>>d1(200, -.5, .5, 200, 0, 0.2)","","colz");
@@ -208,7 +213,397 @@ void cuts(){
   D1->cd(12);
   data->Draw("pi0mm2>>d12(200, -.5, .5)",m2,"");
 
-  // TCanvas *D1 = new TCanvas("D1", "broad mm2(ep-e'p'g1g2) cuts effects on pi0im:mm2", 2000, 1500);
+
+  //reg-split: coneangle<20 over mm2 cuts
+  TCanvas *F2 = new TCanvas("F2", "F2: pi0-mass split by region coneangle<20 (mm2(ep->e'p'g1g2) +/- 0.4, 0.3, 0.2)");
+  F2->Divide(6,4);
+  F2->cd(1);
+  data->Draw("pi0im>>ff1(150,0,0.2)",  c20+a+PC1+a+PC2,"");
+  F2->cd(2);
+  data->Draw("pi0im>>ff2(150,0,0.2)",  c20+a+EC1+a+EC2,"");
+  F2->cd(3);
+  data->Draw("pi0im>>ff3(50,0,0.2)",   c20+a+FC1+a+FC2,"");
+  F2->cd(4);
+  data->Draw("pi0im>>ff4(200,0,0.2)",  c20+a+"(("+PC1+a+EC2+")"+o+"("+PC2+a+EC1+"))","");
+  F2->cd(5);
+  data->Draw("pi0im>>ff5(50,0,0.2)",   c20+a+"(("+EC1+a+FC2+")"+o+"("+EC2+a+FC1+"))","");
+  F2->cd(6);
+  data->Draw("pi0im>>ff6(100,0,0.2)",  c20+a+"(("+PC1+a+FC2+")"+o+"("+PC2+a+FC1+"))","");
+  F2->cd(7);
+  data->Draw("pi0im>>ff7(150,0,0.2)",  c20+a+m4+a+PC1+a+PC2,"");
+  F2->cd(8);
+  data->Draw("pi0im>>ff8(150,0,0.2)",  c20+a+m4+a+EC1+a+EC2,"");
+  F2->cd(9);
+  data->Draw("pi0im>>ff9(50,0,0.2)",   c20+a+m4+a+FC1+a+FC2,"");
+  F2->cd(10);
+  data->Draw("pi0im>>ff10(200,0,0.2)", c20+a+m4+a+"(("+PC1+a+EC2+")"+o+"("+PC2+a+EC1+"))","");
+  F2->cd(11);
+  data->Draw("pi0im>>ff11(50,0,0.2)",  c20+a+m4+a+"(("+EC1+a+FC2+")"+o+"("+EC2+a+FC1+"))","");
+  F2->cd(12);
+  data->Draw("pi0im>>ff12(100,0,0.2)", c20+a+m4+a+"(("+PC1+a+FC2+")"+o+"("+PC2+a+FC1+"))","");
+  F2->cd(13);
+  data->Draw("pi0im>>ff13(150,0,0.2)", c20+a+m3+a+PC1+a+PC2,"");
+  F2->cd(14);
+  data->Draw("pi0im>>ff14(150,0,0.2)", c20+a+m3+a+EC1+a+EC2,"");
+  F2->cd(15);
+  data->Draw("pi0im>>ff15(100,0,0.2)", c20+a+m3+a+FC1+a+FC2,"");
+  F2->cd(16);
+  data->Draw("pi0im>>ff16(200,0,0.2)", c20+a+m3+a+"(("+PC1+a+EC2+")"+o+"("+PC2+a+EC1+"))","");
+  F2->cd(17);
+  data->Draw("pi0im>>ff17(75,0,0.2)",  c20+a+m3+a+"(("+EC1+a+FC2+")"+o+"("+EC2+a+FC1+"))","");
+  F2->cd(18);
+  data->Draw("pi0im>>ff18(75,0,0.2)",  c20+a+m3+a+"(("+PC1+a+FC2+")"+o+"("+PC2+a+FC1+"))","");
+  F2->cd(19);
+  data->Draw("pi0im>>ff19(150,0,0.2)", c20+a+m2+a+PC1+a+PC2,"");
+  F2->cd(20);
+  data->Draw("pi0im>>ff20(150,0,0.2)", c20+a+m2+a+EC1+a+EC2,"");
+  F2->cd(21);
+  data->Draw("pi0im>>ff21(100,0,0.2)", c20+a+m2+a+FC1+a+FC2,"");
+  F2->cd(22);
+  data->Draw("pi0im>>ff22(200,0,0.2)", c20+a+m2+a+"(("+PC1+a+EC2+")"+o+"("+PC2+a+EC1+"))","");
+  F2->cd(23);
+  data->Draw("pi0im>>ff23(75,0,0.2)",  c20+a+m2+a+"(("+EC1+a+FC2+")"+o+"("+EC2+a+FC1+"))","");
+  F2->cd(24);
+  data->Draw("pi0im>>ff24(75,0,0.2)",  c20+a+m2+a+"(("+PC1+a+FC2+")"+o+"("+PC2+a+FC1+"))","");
+
+
+  //reg-split: coneangle<10 over mm2 cuts
+  TCanvas *G2 = new TCanvas("G2", "G2: pi0-mass split by region coneangle<10 (mm2(ep->e'p'g1g2) +/- 0.4, 0.3, 0.2)");
+  G2->Divide(6,4);
+  G2->cd(1);
+  data->Draw("pi0im>>gg1(150,0,0.2)",  c10+a+PC1+a+PC2,"");
+  G2->cd(2);
+  data->Draw("pi0im>>gg2(150,0,0.2)",  c10+a+EC1+a+EC2,"");
+  G2->cd(3);
+  data->Draw("pi0im>>gg3(50,0,0.2)",   c10+a+FC1+a+FC2,"");
+  G2->cd(4);
+  data->Draw("pi0im>>gg4(200,0,0.2)",  c10+a+"(("+PC1+a+EC2+")"+o+"("+PC2+a+EC1+"))","");
+  G2->cd(5);
+  data->Draw("pi0im>>gg5(50,0,0.2)",   c10+a+"(("+EC1+a+FC2+")"+o+"("+EC2+a+FC1+"))","");
+  G2->cd(6);
+  data->Draw("pi0im>>gg6(100,0,0.2)",  c10+a+"(("+PC1+a+FC2+")"+o+"("+PC2+a+FC1+"))","");
+  G2->cd(7);
+  data->Draw("pi0im>>gg7(150,0,0.2)",  c10+a+m4+a+PC1+a+PC2,"");
+  G2->cd(8);
+  data->Draw("pi0im>>gg8(150,0,0.2)",  c10+a+m4+a+EC1+a+EC2,"");
+  G2->cd(9);
+  data->Draw("pi0im>>gg9(50,0,0.2)",   c10+a+m4+a+FC1+a+FC2,"");
+  G2->cd(10);
+  data->Draw("pi0im>>gg10(200,0,0.2)", c10+a+m4+a+"(("+PC1+a+EC2+")"+o+"("+PC2+a+EC1+"))","");
+  G2->cd(11);
+  data->Draw("pi0im>>gg11(50,0,0.2)",  c10+a+m4+a+"(("+EC1+a+FC2+")"+o+"("+EC2+a+FC1+"))","");
+  G2->cd(12);
+  data->Draw("pi0im>>gg12(100,0,0.2)", c10+a+m4+a+"(("+PC1+a+FC2+")"+o+"("+PC2+a+FC1+"))","");
+  G2->cd(13);
+  data->Draw("pi0im>>gg13(150,0,0.2)", c10+a+m3+a+PC1+a+PC2,"");
+  G2->cd(14);
+  data->Draw("pi0im>>gg14(150,0,0.2)", c10+a+m3+a+EC1+a+EC2,"");
+  G2->cd(15);
+  data->Draw("pi0im>>gg15(100,0,0.2)", c10+a+m3+a+FC1+a+FC2,"");
+  G2->cd(16);
+  data->Draw("pi0im>>gg16(200,0,0.2)", c10+a+m3+a+"(("+PC1+a+EC2+")"+o+"("+PC2+a+EC1+"))","");
+  G2->cd(17);
+  data->Draw("pi0im>>gg17(75,0,0.2)",  c10+a+m3+a+"(("+EC1+a+FC2+")"+o+"("+EC2+a+FC1+"))","");
+  G2->cd(18);
+  data->Draw("pi0im>>gg18(75,0,0.2)",  c10+a+m3+a+"(("+PC1+a+FC2+")"+o+"("+PC2+a+FC1+"))","");
+  G2->cd(19);
+  data->Draw("pi0im>>gg19(150,0,0.2)", c10+a+m2+a+PC1+a+PC2,"");
+  G2->cd(20);
+  data->Draw("pi0im>>gg20(150,0,0.2)", c10+a+m2+a+EC1+a+EC2,"");
+  G2->cd(21);
+  data->Draw("pi0im>>gg21(100,0,0.2)", c10+a+m2+a+FC1+a+FC2,"");
+  G2->cd(22);
+  data->Draw("pi0im>>gg22(200,0,0.2)", c10+a+m2+a+"(("+PC1+a+EC2+")"+o+"("+PC2+a+EC1+"))","");
+  G2->cd(23);
+  data->Draw("pi0im>>gg23(75,0,0.2)",  c10+a+m2+a+"(("+EC1+a+FC2+")"+o+"("+EC2+a+FC1+"))","");
+  G2->cd(24);
+  data->Draw("pi0im>>gg24(75,0,0.2)",  c10+a+m2+a+"(("+PC1+a+FC2+")"+o+"("+PC2+a+FC1+"))","");
+
+  //pi0im combined w/ cone<20
+  TCanvas *H1 = new TCanvas("H1", "H1: broad mm2(ep-e'p'g1g2), cone<20 - effects on pi0im:mm2");
+  H1->Divide(4,3);
+  H1->cd(1);
+  data->Draw("pi0im:pi0mm2>>h1(200, -.5, .5, 200, 0, 0.2)",c20,"colz");
+  H1->cd(2);
+  data->Draw("pi0im:pi0mm2>>h2(200, -.5, .5, 200, 0, 0.2)",c20+a+m4,"colz");
+  H1->cd(3);
+  data->Draw("pi0im:pi0mm2>>h3(200, -.5, .5, 200, 0, 0.2)",c20+a+m3,"colz");
+  H1->cd(4);
+  data->Draw("pi0im:pi0mm2>>h4(200, -.5, .5, 200, 0, 0.2)",c20+a+m2,"colz");
+  H1->cd(5);
+  data->Draw("pi0im>>h5(200, 0, 0.2)",c20,"");
+  H1->cd(6);
+  data->Draw("pi0im>>h6(200, 0, 0.2)",c20+a+m4,"");
+  H1->cd(7);
+  data->Draw("pi0im>>h7(200, 0, 0.2)",c20+a+m3,"");
+  H1->cd(8);
+  data->Draw("pi0im>>h8(200, 0, 0.2)",c20+a+m2,"");
+  H1->cd(9);
+  data->Draw("pi0mm2>>h9(200, -.5, .5)",c20,"");
+  H1->cd(10);
+  data->Draw("pi0mm2>>h10(200, -.5, .5)",c20+a+m4,"");
+  H1->cd(11);
+  data->Draw("pi0mm2>>h11(200, -.5, .5)",c20+a+m3,"");
+  H1->cd(12);
+  data->Draw("pi0mm2>>h12(200, -.5, .5)",c20+a+m2,"");
+
+
+  //pi0im combined w/ cone<10
+  TCanvas *I1 = new TCanvas("I1", "I1: broad mm2(ep-e'p'g1g2), cone<10 - effects on pi0im:mm2");
+  I1->Divide(4,3);
+  I1->cd(1);
+  data->Draw("pi0im:pi0mm2>>i1(200, -.5, .5, 200, 0, 0.2)",c10,"colz");
+  I1->cd(2);
+  data->Draw("pi0im:pi0mm2>>i2(200, -.5, .5, 200, 0, 0.2)",c10+a+m4,"colz");
+  I1->cd(3);
+  data->Draw("pi0im:pi0mm2>>i3(200, -.5, .5, 200, 0, 0.2)",c10+a+m3,"colz");
+  I1->cd(4);
+  data->Draw("pi0im:pi0mm2>>i4(200, -.5, .5, 200, 0, 0.2)",c10+a+m2,"colz");
+  I1->cd(5);
+  data->Draw("pi0im>>i5(200, 0, 0.2)",c10,"");
+  I1->cd(6);
+  data->Draw("pi0im>>i6(200, 0, 0.2)",c10+a+m4,"");
+  I1->cd(7);
+  data->Draw("pi0im>>i7(200, 0, 0.2)",c10+a+m3,"");
+  I1->cd(8);
+  data->Draw("pi0im>>i8(200, 0, 0.2)",c10+a+m2,"");
+  I1->cd(9);
+  data->Draw("pi0mm2>>i9(200, -.5, .5)",c10,"");
+  I1->cd(10);
+  data->Draw("pi0mm2>>i10(200, -.5, .5)",c10+a+m4,"");
+  I1->cd(11);
+  data->Draw("pi0mm2>>i11(200, -.5, .5)",c10+a+m3,"");
+  I1->cd(12);
+  data->Draw("pi0mm2>>i12(200, -.5, .5)",c10+a+m2,"");
+
+  time.Stop();
+  time.Print();
+}//macro
+
+
+
+  // // TCanvas *A1 = new TCanvas("A1", "A1: pi0-mass split by region (Cone angle < 30',20',10') -nED");
+  // A1->Divide(6,5);
+  // A1->cd(1);
+  // data->Draw("pi0im>>a1(150,0,0.2)",  PC1+a+PC2,"");
+  // A1->cd(2);
+  // data->Draw("pi0im>>a2(150,0,0.2)",  EC1+a+EC2+a+nED,"");
+  // A1->cd(3);
+  // data->Draw("pi0im>>a3(50,0,0.2)",   FC1+a+FC2,"");
+  // A1->cd(4);
+  // data->Draw("pi0im>>a4(200,0,0.2)",  "(("+PC1+a+EC2+")"+o+"("+PC2+a+EC1+"))"+a+nED,"");
+  // A1->cd(5);
+  // data->Draw("pi0im>>a5(50,0,0.2)",   "(("+EC1+a+FC2+")"+o+"("+EC2+a+FC1+"))"+a+nED,"");
+  // A1->cd(6);
+  // data->Draw("pi0im>>a6(100,0,0.2)",  "(("+PC1+a+FC2+")"+o+"("+PC2+a+FC1+"))"+a+nED,"");
+  // A1->cd(7);
+  // data->Draw("pi0im>>a7(150,0,0.2)",  c20+a+PC1+a+PC2,"");
+  // A1->cd(8);
+  // data->Draw("pi0im>>a8(150,0,0.2)",  c20+a+EC1+a+EC2+a+nED,"");
+  // A1->cd(9);
+  // data->Draw("pi0im>>a9(100,0,0.2)",  c20+a+FC1+a+FC2,"");
+  // A1->cd(10);
+  // data->Draw("pi0im>>a10(200,0,0.2)", c20+a+"(("+PC1+a+EC2+")"+o+"("+PC2+a+EC1+"))"+a+nED,"");
+  // A1->cd(11);
+  // data->Draw("pi0im>>a11(75,0,0.2)",  c20+a+"(("+EC1+a+FC2+")"+o+"("+EC2+a+FC1+"))"+a+nED,"");
+  // A1->cd(12);
+  // data->Draw("pi0im>>a12(75,0,0.2)",  c20+a+"(("+PC1+a+FC2+")"+o+"("+PC2+a+FC1+"))"+a+nED,"");
+  // A1->cd(13);
+  // data->Draw("pi0im>>a13(150,0,0.2)", c10+a+PC1+a+PC2,"");
+  // A1->cd(14);
+  // data->Draw("pi0im>>a14(150,0,0.2)", c10+a+EC1+a+EC2+a+nED,"");
+  // A1->cd(15);
+  // data->Draw("pi0im>>a15(100,0,0.2)", c10+a+FC1+a+FC2,"");
+  // A1->cd(16);
+  // data->Draw("pi0im>>a16(200,0,0.2)", c10+a+"(("+PC1+a+EC2+")"+o+"("+PC2+a+EC1+"))"+a+nED,"");
+  // A1->cd(17);
+  // data->Draw("pi0im>>a17(75,0,0.2)",  c10+a+"(("+EC1+a+FC2+")"+o+"("+EC2+a+FC1+"))"+a+nED,"");
+  // A1->cd(18);
+  // data->Draw("pi0im>>a18(75,0,0.2)",  c10+a+"(("+PC1+a+FC2+")"+o+"("+PC2+a+FC1+"))"+a+nED,"");
+  // A1->cd(19);
+  // data->Draw("pi0im>>a19(150,0,0.2)", c8+a+PC1+a+PC2,"");
+  // A1->cd(20);
+  // data->Draw("pi0im>>a20(150,0,0.2)", c8+a+EC1+a+EC2+a+nED,"");
+  // A1->cd(21);
+  // data->Draw("pi0im>>a21(100,0,0.2)", c8+a+FC1+a+FC2,"");
+  // A1->cd(22);
+  // data->Draw("pi0im>>a22(200,0,0.2)", c8+a+"(("+PC1+a+EC2+")"+o+"("+PC2+a+EC1+"))"+a+nED,"");
+  // A1->cd(23);
+  // data->Draw("pi0im>>a23(75,0,0.2)",  c8+a+"(("+EC1+a+FC2+")"+o+"("+EC2+a+FC1+"))"+a+nED,"");
+  // A1->cd(24);
+  // data->Draw("pi0im>>a24(75,0,0.2)",  c8+a+"(("+PC1+a+FC2+")"+o+"("+PC2+a+FC1+"))"+a+nED,"");
+  // A1->cd(25);
+  // data->Draw("pi0im>>a25(150,0,0.2)", c5+a+PC1+a+PC2,"");
+  // A1->cd(26);
+  // data->Draw("pi0im>>a26(150,0,0.2)", c5+a+EC1+a+EC2+a+nED,"");
+  // A1->cd(27);
+  // data->Draw("pi0im>>a27(100,0,0.2)", c5+a+FC1+a+FC2,"");
+  // A1->cd(28);
+  // data->Draw("pi0im>>a28(200,0,0.2)", c5+a+"(("+PC1+a+EC2+")"+o+"("+PC2+a+EC1+"))"+a+nED,"");
+  // A1->cd(29);
+  // data->Draw("pi0im>>a29(75,0,0.2)",  c5+a+"(("+EC1+a+FC2+")"+o+"("+EC2+a+FC1+"))"+a+nED,"");
+  // A1->cd(30);
+  // data->Draw("pi0im>>a30(75,0,0.2)",  c5+a+"(("+PC1+a+FC2+")"+o+"("+PC2+a+FC1+"))"+a+nED,"");
+
+  // TCanvas *B1 = new TCanvas("B1", "B1: pi0-mass split by region (mm2(ep->e'p'g1g2) +/- 0.4, 0.3, 0.2) -nED");
+  // B1->Divide(6,4);
+  // B1->cd(1);
+  // data->Draw("pi0im>>b1(150,0,0.2)",  PC1+a+PC2,"");
+  // B1->cd(2);
+  // data->Draw("pi0im>>b2(150,0,0.2)",  EC1+a+EC2+a+nED,"");
+  // B1->cd(3);
+  // data->Draw("pi0im>>b3(50,0,0.2)",   FC1+a+FC2,"");
+  // B1->cd(4);
+  // data->Draw("pi0im>>b4(200,0,0.2)",  "(("+PC1+a+EC2+")"+o+"("+PC2+a+EC1+"))"+a+nED,"");
+  // B1->cd(5);
+  // data->Draw("pi0im>>b5(50,0,0.2)",   "(("+EC1+a+FC2+")"+o+"("+EC2+a+FC1+"))"+a+nED,"");
+  // B1->cd(6);
+  // data->Draw("pi0im>>b6(100,0,0.2)",  "(("+PC1+a+FC2+")"+o+"("+PC2+a+FC1+"))"+a+nED,"");
+  // B1->cd(7);
+  // data->Draw("pi0im>>b7(150,0,0.2)",  m4+a+PC1+a+PC2,"");
+  // B1->cd(8);
+  // data->Draw("pi0im>>b8(150,0,0.2)",  m4+a+EC1+a+EC2+a+nED,"");
+  // B1->cd(9);
+  // data->Draw("pi0im>>b9(50,0,0.2)",   m4+a+FC1+a+FC2,"");
+  // B1->cd(10);
+  // data->Draw("pi0im>>b10(200,0,0.2)", m4+a+"(("+PC1+a+EC2+")"+o+"("+PC2+a+EC1+"))"+a+nED,"");
+  // B1->cd(11);
+  // data->Draw("pi0im>>b11(50,0,0.2)",  m4+a+"(("+EC1+a+FC2+")"+o+"("+EC2+a+FC1+"))"+a+nED,"");
+  // B1->cd(12);
+  // data->Draw("pi0im>>b12(100,0,0.2)", m4+a+"(("+PC1+a+FC2+")"+o+"("+PC2+a+FC1+"))"+a+nED,"");
+  // B1->cd(13);
+  // data->Draw("pi0im>>b13(150,0,0.2)", m3+a+PC1+a+PC2,"");
+  // B1->cd(14);
+  // data->Draw("pi0im>>b14(150,0,0.2)", m3+a+EC1+a+EC2+a+nED,"");
+  // B1->cd(15);
+  // data->Draw("pi0im>>b15(100,0,0.2)", m3+a+FC1+a+FC2,"");
+  // B1->cd(16);
+  // data->Draw("pi0im>>b16(200,0,0.2)", m3+a+"(("+PC1+a+EC2+")"+o+"("+PC2+a+EC1+"))"+a+nED,"");
+  // B1->cd(17);
+  // data->Draw("pi0im>>b17(75,0,0.2)",  m3+a+"(("+EC1+a+FC2+")"+o+"("+EC2+a+FC1+"))"+a+nED,"");
+  // B1->cd(18);
+  // data->Draw("pi0im>>b18(75,0,0.2)",  m3+a+"(("+PC1+a+FC2+")"+o+"("+PC2+a+FC1+"))"+a+nED,"");
+  // B1->cd(19);
+  // data->Draw("pi0im>>b19(150,0,0.2)", m2+a+PC1+a+PC2,"");
+  // B1->cd(20);
+  // data->Draw("pi0im>>b20(150,0,0.2)", m2+a+EC1+a+EC2+a+nED,"");
+  // B1->cd(21);
+  // data->Draw("pi0im>>b21(100,0,0.2)", m2+a+FC1+a+FC2,"");
+  // B1->cd(22);
+  // data->Draw("pi0im>>b22(200,0,0.2)", m2+a+"(("+PC1+a+EC2+")"+o+"("+PC2+a+EC1+"))"+a+nED,"");
+  // B1->cd(23);
+  // data->Draw("pi0im>>b23(75,0,0.2)",  m2+a+"(("+EC1+a+FC2+")"+o+"("+EC2+a+FC1+"))"+a+nED,"");
+  // B1->cd(24);
+  // data->Draw("pi0im>>b24(75,0,0.2)",  m2+a+"(("+PC1+a+FC2+")"+o+"("+PC2+a+FC1+"))"+a+nED,"");
+
+
+  // //reg-split -nED: coneangle<20 over mm2 cuts
+  // TCanvas *F1 = new TCanvas("F1", "F1: pi0-mass split by region coneangle<20 (mm2(ep->e'p'g1g2) +/- 0.4, 0.3, 0.2) -nED");
+  // F1->Divide(6,4);
+  // F1->cd(1);
+  // data->Draw("pi0im>>f1(150,0,0.2)",  c20+a+PC1+a+PC2,"");
+  // F1->cd(2);
+  // data->Draw("pi0im>>f2(150,0,0.2)",  c20+a+EC1+a+EC2+a+nED,"");
+  // F1->cd(3);
+  // data->Draw("pi0im>>f3(50,0,0.2)",   c20+a+FC1+a+FC2,"");
+  // F1->cd(4);
+  // data->Draw("pi0im>>f4(200,0,0.2)",  c20+a+"(("+PC1+a+EC2+")"+o+"("+PC2+a+EC1+"))"+a+nED,"");
+  // F1->cd(5);
+  // data->Draw("pi0im>>f5(50,0,0.2)",   c20+a+"(("+EC1+a+FC2+")"+o+"("+EC2+a+FC1+"))"+a+nED,"");
+  // F1->cd(6);
+  // data->Draw("pi0im>>f6(100,0,0.2)",  c20+a+"(("+PC1+a+FC2+")"+o+"("+PC2+a+FC1+"))"+a+nED,"");
+  // F1->cd(7);
+  // data->Draw("pi0im>>f7(150,0,0.2)",  c20+a+m4+a+PC1+a+PC2,"");
+  // F1->cd(8);
+  // data->Draw("pi0im>>f8(150,0,0.2)",  c20+a+m4+a+EC1+a+EC2+a+nED,"");
+  // F1->cd(9);
+  // data->Draw("pi0im>>f9(50,0,0.2)",   c20+a+m4+a+FC1+a+FC2,"");
+  // F1->cd(10);
+  // data->Draw("pi0im>>f10(200,0,0.2)", c20+a+m4+a+"(("+PC1+a+EC2+")"+o+"("+PC2+a+EC1+"))"+a+nED,"");
+  // F1->cd(11);
+  // data->Draw("pi0im>>f11(50,0,0.2)",  c20+a+m4+a+"(("+EC1+a+FC2+")"+o+"("+EC2+a+FC1+"))"+a+nED,"");
+  // F1->cd(12);
+  // data->Draw("pi0im>>f12(100,0,0.2)", c20+a+m4+a+"(("+PC1+a+FC2+")"+o+"("+PC2+a+FC1+"))"+a+nED,"");
+  // F1->cd(13);
+  // data->Draw("pi0im>>f13(150,0,0.2)", c20+a+m3+a+PC1+a+PC2,"");
+  // F1->cd(14);
+  // data->Draw("pi0im>>f14(150,0,0.2)", c20+a+m3+a+EC1+a+EC2+a+nED,"");
+  // F1->cd(15);
+  // data->Draw("pi0im>>f15(100,0,0.2)", c20+a+m3+a+FC1+a+FC2,"");
+  // F1->cd(16);
+  // data->Draw("pi0im>>f16(200,0,0.2)", c20+a+m3+a+"(("+PC1+a+EC2+")"+o+"("+PC2+a+EC1+"))"+a+nED,"");
+  // F1->cd(17);
+  // data->Draw("pi0im>>f17(75,0,0.2)",  c20+a+m3+a+"(("+EC1+a+FC2+")"+o+"("+EC2+a+FC1+"))"+a+nED,"");
+  // F1->cd(18);
+  // data->Draw("pi0im>>f18(75,0,0.2)",  c20+a+m3+a+"(("+PC1+a+FC2+")"+o+"("+PC2+a+FC1+"))"+a+nED,"");
+  // F1->cd(19);
+  // data->Draw("pi0im>>f19(150,0,0.2)", c20+a+m2+a+PC1+a+PC2,"");
+  // F1->cd(20);
+  // data->Draw("pi0im>>f20(150,0,0.2)", c20+a+m2+a+EC1+a+EC2+a+nED,"");
+  // F1->cd(21);
+  // data->Draw("pi0im>>f21(100,0,0.2)", c20+a+m2+a+FC1+a+FC2,"");
+  // F1->cd(22);
+  // data->Draw("pi0im>>f22(200,0,0.2)", c20+a+m2+a+"(("+PC1+a+EC2+")"+o+"("+PC2+a+EC1+"))"+a+nED,"");
+  // F1->cd(23);
+  // data->Draw("pi0im>>f23(75,0,0.2)",  c20+a+m2+a+"(("+EC1+a+FC2+")"+o+"("+EC2+a+FC1+"))"+a+nED,"");
+  // F1->cd(24);
+  // data->Draw("pi0im>>f24(75,0,0.2)",  c20+a+m2+a+"(("+PC1+a+FC2+")"+o+"("+PC2+a+FC1+"))"+a+nED,"");
+
+
+  // //reg-split - nED: coneangle<10 over mm2 cuts
+  // TCanvas *G1 = new TCanvas("G1", "G1: pi0-mass split by region coneangle<10 (mm2(ep->e'p'g1g2) +/- 0.4, 0.3, 0.2) -nED");
+  // G1->Divide(6,4);
+  // G1->cd(1);
+  // data->Draw("pi0im>>g1(150,0,0.2)",  c10+a+PC1+a+PC2,"");
+  // G1->cd(2);
+  // data->Draw("pi0im>>g2(150,0,0.2)",  c10+a+EC1+a+EC2+a+nED,"");
+  // G1->cd(3);
+  // data->Draw("pi0im>>g3(50,0,0.2)",   c10+a+FC1+a+FC2,"");
+  // G1->cd(4);
+  // data->Draw("pi0im>>g4(200,0,0.2)",  c10+a+"(("+PC1+a+EC2+")"+o+"("+PC2+a+EC1+"))"+a+nED,"");
+  // G1->cd(5);
+  // data->Draw("pi0im>>g5(50,0,0.2)",   c10+a+"(("+EC1+a+FC2+")"+o+"("+EC2+a+FC1+"))"+a+nED,"");
+  // G1->cd(6);
+  // data->Draw("pi0im>>g6(100,0,0.2)",  c10+a+"(("+PC1+a+FC2+")"+o+"("+PC2+a+FC1+"))"+a+nED,"");
+  // G1->cd(7);
+  // data->Draw("pi0im>>g7(150,0,0.2)",  c10+a+m4+a+PC1+a+PC2,"");
+  // G1->cd(8);
+  // data->Draw("pi0im>>g8(150,0,0.2)",  c10+a+m4+a+EC1+a+EC2+a+nED,"");
+  // G1->cd(9);
+  // data->Draw("pi0im>>g9(50,0,0.2)",   c10+a+m4+a+FC1+a+FC2,"");
+  // G1->cd(10);
+  // data->Draw("pi0im>>g10(200,0,0.2)", c10+a+m4+a+"(("+PC1+a+EC2+")"+o+"("+PC2+a+EC1+"))"+a+nED,"");
+  // G1->cd(11);
+  // data->Draw("pi0im>>g11(50,0,0.2)",  c10+a+m4+a+"(("+EC1+a+FC2+")"+o+"("+EC2+a+FC1+"))"+a+nED,"");
+  // G1->cd(12);
+  // data->Draw("pi0im>>g12(100,0,0.2)", c10+a+m4+a+"(("+PC1+a+FC2+")"+o+"("+PC2+a+FC1+"))"+a+nED,"");
+  // G1->cd(13);
+  // data->Draw("pi0im>>g13(150,0,0.2)", c10+a+m3+a+PC1+a+PC2,"");
+  // G1->cd(14);
+  // data->Draw("pi0im>>g14(150,0,0.2)", c10+a+m3+a+EC1+a+EC2+a+nED,"");
+  // G1->cd(15);
+  // data->Draw("pi0im>>g15(100,0,0.2)", c10+a+m3+a+FC1+a+FC2,"");
+  // G1->cd(16);
+  // data->Draw("pi0im>>g16(200,0,0.2)", c10+a+m3+a+"(("+PC1+a+EC2+")"+o+"("+PC2+a+EC1+"))"+a+nED,"");
+  // G1->cd(17);
+  // data->Draw("pi0im>>g17(75,0,0.2)",  c10+a+m3+a+"(("+EC1+a+FC2+")"+o+"("+EC2+a+FC1+"))"+a+nED,"");
+  // G1->cd(18);
+  // data->Draw("pi0im>>g18(75,0,0.2)",  c10+a+m3+a+"(("+PC1+a+FC2+")"+o+"("+PC2+a+FC1+"))"+a+nED,"");
+  // G1->cd(19);
+  // data->Draw("pi0im>>g19(150,0,0.2)", c10+a+m2+a+PC1+a+PC2,"");
+  // G1->cd(20);
+  // data->Draw("pi0im>>g20(150,0,0.2)", c10+a+m2+a+EC1+a+EC2+a+nED,"");
+  // G1->cd(21);
+  // data->Draw("pi0im>>g21(100,0,0.2)", c10+a+m2+a+FC1+a+FC2,"");
+  // G1->cd(22);
+  // data->Draw("pi0im>>g22(200,0,0.2)", c10+a+m2+a+"(("+PC1+a+EC2+")"+o+"("+PC2+a+EC1+"))"+a+nED,"");
+  // G1->cd(23);
+  // data->Draw("pi0im>>g23(75,0,0.2)",  c10+a+m2+a+"(("+EC1+a+FC2+")"+o+"("+EC2+a+FC1+"))"+a+nED,"");
+  // G1->cd(24);
+  // data->Draw("pi0im>>g24(75,0,0.2)",  c10+a+m2+a+"(("+PC1+a+FC2+")"+o+"("+PC2+a+FC1+"))"+a+nED,"");
+
+
+  // TCanvas *D1 = new TCanvas("D1", "broad mm2(ep-e'p'g1g2) cuts effects on pi0im:mm2");
   // D1->Divide(4,3);
   // D1->cd(1);
   // data->Draw("pi0im:pi0mm2>>d1(200, -.5, .5, 200, 0, 0.2)","","colz");
@@ -264,9 +659,9 @@ void cuts(){
   // C1->cd(12);
   // data->Draw("pi0mm2:pi0mp>>h12(200, 0, 6, 200, -.5, .5)","pi0anglediff<10","colz");
 
+
   // //look at mm2 cut effect on on pi0:mm2,im,mp -- still crude fit (flat bg) [+/- 5,4,3 sig]
   // //mu  = -0.006743, sig = 0.02618
-
   // TCanvas *C2 = new TCanvas("C2", "pi0MM2 cuts on pi0:mm2,im,mp", 2000, 1500);
   // C2->Divide(4,3);
   // C2->cd(1);
@@ -294,6 +689,7 @@ void cuts(){
   // C2->cd(12);
   // data->Draw("pi0mm2:pi0mp>>i12(200, 0, 6, 200, -.5, .5)","pi0mm2>-0.085283000&&pi0mm2<0.071797000","colz");
 
+
   // //look at pi0mm2 cut effect on reconstructed particles -- notes above
   // TCanvas *C3 = new TCanvas("C3", "pi0MM2 cuts on rec particles", 2000, 1000);
   // C3->Divide(4,2);
@@ -314,6 +710,7 @@ void cuts(){
   // C3->cd(8);
   // data->Draw("specneutmm:specneutmp>>j8(200, 0, 10, 200, -5, 5)", "pi0mm2>-0.085283000&&pi0mm2<0.071797000", "colz");
 
+
   // //look at spectator neutron MP cut effect on pi0:mm2,im,mp
   // TCanvas *C4 = new TCanvas("C4", "spectator neutron MP cuts on rec particles", 2000, 1000);
   // C4->Divide(2,3);
@@ -329,6 +726,7 @@ void cuts(){
   // data->Draw("pi0mm2:pi0mp>>k5(200, 0, 6, 200, -.5, .5)","","colz");
   // C4->cd(6);
   // data->Draw("pi0mm2:pi0mp>>k6(200, 0, 6, 200, -.5, .5)","specneutmp<0.3","colz");
+
 
   // //combined angle and pi0mm2 cuts
   // TCanvas *C5 = new TCanvas("C5", "combined pi0mm2 and angle cuts", 2000, 1000);
@@ -357,6 +755,7 @@ void cuts(){
   // data->Draw("pi0im:pi0mp>>l11(200, 0, 6, 200, 0, 0.2)","pi0anglediff<10&&pi0mm2>-0.085283000&&pi0mm2<0.071797000","colz");
   // C5->cd(12);
   // data->Draw("pi0mm2:pi0mp>>l12(200, 0, 6, 200, -.5, .5)","pi0anglediff<10&&pi0mm2>-0.085283000&&pi0mm2<0.071797000","colz");
+
 
   // TCanvas *C6 = new TCanvas("C6", "combined pi0mm2, angle and spect neutron MP cuts", 2000, 1000);
   // C6->Divide(3,4);
@@ -473,6 +872,7 @@ void cuts(){
   // D1->cd(24);
   // data->Draw("pi0im>>d24(200, 0, 0.2)","pi0anglediff<10&&pi0mm2>-0.085283000&&pi0mm2<0.071797000&&specneutmp<0.4","");
 
+
   // TCanvas *D1 = new TCanvas("D1", "vary spect_MP cut", 2000, 2000);
   // D1->Divide(6,3);
   // D1->cd(1);
@@ -511,6 +911,7 @@ void cuts(){
   // data->Draw("pi0mm2>>d17(200,-.5,.5)","specneutmp<0.5","");
   // D1->cd(18);
   // data->Draw("pi0mm2>>d18(200,-.5,.5)","specneutmp<0.6","");
+
 
   // TCanvas *E1 = new TCanvas("E1", "vary spect_MP cut", 2000, 2000);
   // E1->Divide(6,3);
@@ -551,4 +952,3 @@ void cuts(){
   // E1->cd(18);
   // data->Draw("pi0mm2>>e18(200,-.5,.5)","specneutmp<1.2","");
 
-}//macro
