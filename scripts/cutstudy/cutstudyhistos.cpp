@@ -47,6 +47,7 @@ void cutstudyhistos(TString datafile){
 
   cuthistos();
 
+  std::cout << "Filling Histograms..." << '\n';
   for(Int_t i=0;i<chain.GetEntries();i++){
     chain.GetEntry(i);
 
@@ -101,7 +102,6 @@ void cutstudyhistos(TString datafile){
     }
 
     /*=====MM2 histos=====*/
-
     if(pi0mm2>-0.4&&pi0mm2<0.4) {
       if (flag_photon1_PCAL==1 && flag_photon2_PCAL==1) ggIM_mm2_h[0][0]  -> Fill(pi0im);
       if (flag_photon1_ECAL==1 && flag_photon2_ECAL==1) ggIM_mm2_h[0][1]  -> Fill(pi0im);
@@ -129,45 +129,34 @@ void cutstudyhistos(TString datafile){
 
   }//chain-loop
 
+  /*=====Plot some canvases=====*/
   //int numpads = ggIM_conecuts_c->GetListOfPrimitives()->GetSize();  //retrieves number of panels in a divided canvas.  May have uses.
-  TCanvas *ggIM_conecuts_c = new TCanvas("ggIM_conecuts_c", "#gamma_{1}#gamma_{2}-mass split by region (Cone angle < 30',20',10')");
+  TCanvas *ggIM_conecuts_c = new TCanvas("ggIM_conecuts_c", "#gamma_{1}#gamma_{2}-mass split by region (Cone angle < 30',20',10', 8', 5')");
   ggIM_conecuts_c->Divide(6,5);
-
   int n=0;
   for (int i = 0; i <= 4; i++) {
     for (int j = 0; j <= 5; j++){
       ggIM_conecuts_c->cd(n+1);
-      if(n<7){
-        ggIM_h[j]->Draw();
-        n++;
-      }
-      else{
-        ggIM_coneangle_h[i][j]->Draw();
-        n++;
-      }
+      ggIM_coneangle_h[i][j]->Draw();
+      n++;
     }
   }
 
-  TCanvas *ggIM_MM2cuts_c = new TCanvas("ggIM_MM2cuts_c", "#gamma_{1}#gamma_{2}-mass split by region (MM2 #pm 0.4. 0.3, 0.2 Gev^{2}/c^{4})");
+  TCanvas *ggIM_MM2cuts_c = new TCanvas("ggIM_MM2cuts_c", "#gamma_{1}#gamma_{2}-mass split by region (MM2 +/- 0.4. 0.3, 0.2 Gev^{2}/c^{4})");
   ggIM_MM2cuts_c->Divide(6,3);
-
   n=0;
   for (int i = 0; i <= 2; i++) {
     for (int j = 0; j <= 5; j++){
       ggIM_MM2cuts_c->cd(n+1);
-      if(n<7){
-        ggIM_h[j]->Draw();
-        n++;
-      }
-      else{
-        ggIM_mm2_h[i][j]->Draw();
-        n++;
-      }
+      ggIM_mm2_h[i][j]->Draw();
+      n++;
     }
   }
 
-  TFile *Out_File = new TFile("cutstudyhistos.root", "recreate");
 
+  /*=====Write out to file=====*/
+  std::cout << "Writting out to file..." << '\n';
+  TFile *Out_File = new TFile("cutstudyhistos.root", "recreate");
 
   for (int i = 0; i <= 5; i++) {
     ggIM_h[i]->Write();
@@ -180,25 +169,26 @@ void cutstudyhistos(TString datafile){
       ggIM_mm2_h[j][i]->Write();
     }
   }
+  ggIM_MM2cuts_c->Write();
   ggIM_conecuts_c->Write();
 
   Out_File->Close();
 
-  cout << "seems coo" << endl;
-}//fxn
-
+}//macro
 
 void cuthistos(){
+  std::cout << "Generating histograms..." << '\n';
+
   /* For reg-splits:
-  [0] - both photons in PCAL
-  [1] - both photons in ECAL
-  [2] - both photons in FCAL
-  [3] - one in PCAL one in ECAL
-  [4] - one in ECAL one in FCAL
-  [5] - one in PCAL one in FCAL
+  [*][0] - both photons in PCAL
+  [*][1] - both photons in ECAL
+  [*][2] - both photons in FCAL
+  [*][3] - one in PCAL one in ECAL
+  [*][4] - one in ECAL one in FCAL
+  [*][5] - one in PCAL one in FCAL
   */
 
-  //Channel masses etc.
+  //Raw g1g2-inv.mass split by region.
   //---------------------------------------------------------------------------------------------------------------
   ggIM_h[0] = new TH1F("ggIM_bothPCAL_h", "Invariant mass[#gamma_{1} #gamma_{2}] - both PCAL; Inv.Mass (GeV/c^{2}); counts", 200, 0, 0.2);
   ggIM_h[1] = new TH1F("ggIM_bothECAL_h", "Invariant mass[#gamma_{1} #gamma_{2}] - both ECAL; Inv.Mass (GeV/c^{2}); counts", 200, 0, 0.2);
@@ -207,6 +197,8 @@ void cuthistos(){
   ggIM_h[4] = new TH1F("ggIM_ECALFCAL_h", "Invariant mass[#gamma_{1} #gamma_{2}] - ECAL/FCAL; Inv.Mass (GeV/c^{2}); counts", 200, 0, 0.2);
   ggIM_h[5] = new TH1F("ggIM_PCALFCAL_h", "Invariant mass[#gamma_{1} #gamma_{2}] - PCAL/FCAL; Inv.Mass (GeV/c^{2}); counts", 200, 0, 0.2);
 
+  //Cone angle cuts - g1g2-inv.mass split by region.
+  //---------------------------------------------------------------------------------------------------------------
   ggIM_coneangle_h[0][0] = new TH1F("ggIM_bothPCAL_coneangleL30_h", "Invariant mass[#gamma_{1} #gamma_{2}] - both PCAL - ConeAngle<30^{o}; Inv.Mass (GeV/c^{2}); counts", 200, 0, 0.2);
   ggIM_coneangle_h[0][1] = new TH1F("ggIM_bothECAL_coneangleL30_h", "Invariant mass[#gamma_{1} #gamma_{2}] - both ECAL - ConeAngle<30^{o}; Inv.Mass (GeV/c^{2}); counts", 200, 0, 0.2);
   ggIM_coneangle_h[0][2] = new TH1F("ggIM_bothFCAL_coneangleL30_h", "Invariant mass[#gamma_{1} #gamma_{2}] - both FCAL - ConeAngle<30^{o}; Inv.Mass (GeV/c^{2}); counts", 200, 0, 0.2);
@@ -242,6 +234,8 @@ void cuthistos(){
   ggIM_coneangle_h[4][4] = new TH1F("ggIM_ECALFCAL_coneangleL5_h",  "Invariant mass[#gamma_{1} #gamma_{2}] - ECAL/FCAL - ConeAngle<5^{o};  Inv.Mass (GeV/c^{2}); counts", 200, 0, 0.2);
   ggIM_coneangle_h[4][5] = new TH1F("ggIM_PCALFCAL_coneangleL5_h",  "Invariant mass[#gamma_{1} #gamma_{2}] - PCAL/FCAL - ConeAngle<5^{o};  Inv.Mass (GeV/c^{2}); counts", 200, 0, 0.2);
 
+  //Broad MM2 cuts - g1g2-inv.mass split by region.
+  //---------------------------------------------------------------------------------------------------------------
   TString namebuff;
   TString titlebuff;
   TString base         = "ggIM_";
@@ -256,47 +250,12 @@ void cuthistos(){
   double xmin  = 0;
   double xmax  = 0.2;
 
-  for (int i = 0; i <= det.size(); i++){
-    for (int j = 0; j <= cut.size(); j++) {
+  for (int i = 0; i < det.size(); i++){
+    for (int j = 0; j < cut.size(); j++) {
       namebuff = base + det[i] + cut[j];
       titlebuff = titlebase+titledet[i]+titlecut[j]+xlable+ylable;
       ggIM_mm2_h[j][i] = new TH1F(namebuff, titlebuff, nbins[i], xmin, xmax);
     }
   }
 
-
-  // pi0mm2_h[0] = new TH1F("pi0mm2_0_h", "Missing Mass-Squared [e p -> e' p' #gamma_{1} #gamma_{2}] - Before pi0MM^{2} cut; MissingMass-Sq (GeV^{2}); counts", 200, -.5, .5);
-  // pi0mm2_h[1] = new TH1F("pi0mm2_1_h", "Missing Mass-Squared [e p -> e' p' #gamma_{1} #gamma_{2}]; MissingMass-Sq (GeV^{2}); counts",                        200, -.5, .5);
-  // pi0mm2_h[2] = new TH1F("pi0mm2_2_h", "Missing Mass-Squared [e p -> e' p' #gamma_{1} #gamma_{2}] - Post spectMP cut; MissingMass-Sq (GeV^{2}); counts",     200, -.5, .5);
-  //
-  //
-  // pi0_immm2_h[0] = new TH2F ("pi0_immm2_0_h", "Inv. Mass of photon-pair vs. MM^{2}[e p -> e' p' #gamma_{1} #gamma_{2}] Pre-pi0MM^{2} cut; MissingMass-Sq (GeV^{2}); Inv.Mass (GeV)", 200, -.5, .5, 200, 0, 0.2);
-  // pi0_immm2_h[1] = new TH2F ("pi0_immm2_1_h", "Inv. Mass of photon-pair vs. MM^{2}[e p -> e' p' #gamma_{1} #gamma_{2}]; MissingMass-Sq (GeV^{2}); Inv.Mass (GeV)",                   200, -.5, .5, 200, 0, 0.2);
-  // pi0_immm2_h[2] = new TH2F ("pi0_immm2_2_h", "Inv. Mass of photon-pair vs. MM^{2}[e p -> e' p' #gamma_{1} #gamma_{2}]- Post spectMP cut; MissingMass-Sq (GeV^{2}); Inv.Mass (GeV)", 200, -.5, .5, 200, 0, 0.2);
-  //
-  // pi0_immp_h[0]  = new TH2F ("pi0_immp_0_h", "Inv.Mass [#gamma_{1}#gamma_{2}] vs. MP[e p -> e' p' #gamma_{1} #gamma_{2}] - Pre-pi0MM^{2} cut; MissingMomentum (GeV); Inv.Mass (GeV)",   200, 0, 6, 200, 0, 0.2);
-  // pi0_immp_h[1]  = new TH2F ("pi0_immp_1_h", "Inv.Mass [#gamma_{1}#gamma_{2}] vs. MP[e p -> e' p' #gamma_{1} #gamma_{2}]; MissingMomentum (GeV); Inv.Mass (GeV)",                       200, 0, 6, 200, 0, 0.2);
-  // pi0_immp_h[2]  = new TH2F ("pi0_immp_2_h", "Inv.Mass [#gamma_{1}#gamma_{2}] vs. MP[e p -> e' p' #gamma_{1} #gamma_{2}] - Post spectMP cut; MissingMomentum (GeV); Inv.Mass (GeV)",    200, 0, 6, 200, 0, 0.2);
-  //
-  // pi0_mm2mp_h[0] = new TH2F ("pi0_mm2mp_0_h", "[e p -> e' p' #gamma_{1} #gamma_{2}]: MM^{2} vs. Mp - Pre-pi0MM^{2} cut; MissingMomentum (GeV); MissingMass-Sq (GeV^{2})",              200, 0, 6, 200, -.5, .5);
-  // pi0_mm2mp_h[1] = new TH2F ("pi0_mm2mp_1_h", "[e p -> e' p' #gamma_{1} #gamma_{2}]: MM^{2} vs. Mp; MissingMomentum (GeV); MissingMass-Sq (GeV^{2})",                                  200, 0, 6, 200, -.5, .5);
-  // pi0_mm2mp_h[2] = new TH2F ("pi0_mm2mp_2_h", "[e p -> e' p' #gamma_{1} #gamma_{2}]: MM^{2} vs. Mp - Post spectMP cut; MissingMomentum (GeV); MissingMass-Sq (GeV^{2})",               200, 0, 6, 200, -.5, .5);
-  //
-  // //Reconstructed particles for BG clean-up
-  // //---------------------------------------------------------------------------------------------------------------
-  // recprotmm_h[0]   = new TH1F("recprotmm_0_h", "MM[e p -> e' #gamma_{1} #gamma_{2}] - Before pi0MM^{2} cut; MM of reconstructed proton (GeV); counts",                180, 0, 3);
-  // recprotmm_h[1]   = new TH1F("recprotmm_1_h", "MM[e p -> e' #gamma_{1} #gamma_{2}]; MM of reconstructed proton (GeV); counts",                                       180, 0, 3);
-  // recprotmm_h[2]   = new TH1F("recprotmm_2_h", "MM[e p -> e' #gamma_{1} #gamma_{2}] - Post spectMP cut; MM of reconstructed proton (GeV); counts",                    180, 0, 3);
-  //
-  // spectneutmp_h[0] = new TH1F("spectneutmp_0_h", "MP[e d -> e' p' #gamma_{1} #gamma_{2}] - Before pi0MM^{2} cut; MP of reconstructed spect. neutron (GeV/c); counts", 200, 0, 6);
-  // spectneutmp_h[1] = new TH1F("spectneutmp_1_h", "MP[e d -> e' p' #gamma_{1} #gamma_{2}]; MP of reconstructed spect. neutron (GeV/c); counts",                        200, 0, 6);
-  // spectneutmp_h[2] = new TH1F("spectneutmp_2_h", "MP[e d -> e' p' #gamma_{1} #gamma_{2}]- Post spectMP cut; MP of reconstructed spect. neutron (GeV/c); counts",      200, 0, 6);
-  //
-  // spectneutmm_h[0] = new TH1F("spectneutmm_0_h", "MM[e d -> e' p' #gamma_{1} #gamma_{2}] - Before pi0MM^{2} cut; MM of reconstructed spect. neutron (GeV); counts",   200, 0, 6);
-  // spectneutmm_h[1] = new TH1F("spectneutmm_1_h", "MM[e d -> e' p' #gamma_{1} #gamma_{2}]; MM of reconstructed spect. neutron (GeV); counts",                          200, 0, 6);
-  // spectneutmm_h[2] = new TH1F("spectneutmm_2_h", "MM[e d -> e' p' #gamma_{1} #gamma_{2}] - Post spectMP cut; MM of reconstructed spect. neutron (GeV); counts",       200, 0, 6);
-  //
-  // spectneut_mpmm_h[0] = new TH2F("spectneut_mpmm_0_h", "[e d -> e' p' #gamma_{1} #gamma_{2}]: MP vs. MM - Before pi0MM^{2} cut; MM of rec. spect. neutron (GeV); MissingMom. (GeV/c)", 200, 0, 6, 200, 0, 6);
-  // spectneut_mpmm_h[1] = new TH2F("spectneut_mpmm_1_h", "[e d -> e' p' #gamma_{1} #gamma_{2}]: MP vs. MM; MM of rec. spect. neutron (GeV); MissingMom. (GeV/c)",                        200, 0, 6, 200, 0, 6);
-  // spectneut_mpmm_h[2] = new TH2F("spectneut_mpmm_2_h", "[e d -> e' p' #gamma_{1} #gamma_{2}]: MP vs. MM - Post spectMP cut; MM of rec. spect. neutron (GeV); MissingMom. (GeV/c)",     200, 0, 6, 200, 0, 6);
 }//histos fxn
