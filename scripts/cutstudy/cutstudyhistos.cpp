@@ -21,7 +21,8 @@
 
 using namespace clas12;
 
-void cutstudyhistos(TString datafile){
+void cutstudyhistos(TString datafile, TString outfile){
+
   TChain chain("data");
   chain.AddFile(datafile);
 
@@ -156,7 +157,7 @@ void cutstudyhistos(TString datafile){
 
   /*=====Write out to file=====*/
   std::cout << "Writting out to file..." << '\n';
-  TFile *Out_File = new TFile("cutstudyhistos.root", "recreate");
+  TFile *Out_File = new TFile(outfile, "recreate");
 
   for (int i = 0; i <= 5; i++) {
     ggIM_h[i]->Write();
