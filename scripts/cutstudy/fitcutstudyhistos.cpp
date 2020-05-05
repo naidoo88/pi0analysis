@@ -81,14 +81,17 @@ void fitcutstudyhistos(TString inputFile){
 	TString namebuff;
   TString base         = "ggIM_";
   vector<TString> det  = {"bothPCAL_", "bothECAL_", "bothFCAL_", "PCALECAL_", "ECALFCAL_", "PCALFCAL_"};
-  vector<TString> cut  = {"mm2PM0.4_h", "mm2PM0.3_h","mm2PM0.2_h"};
+  vector<TString> mm2cut  = {"mm2PM0.4_h", "mm2PM0.3_h","mm2PM0.2_h"};
 
   for (int i = 0; i < det.size(); i++){
-    for (int j = 0; j < cut.size(); j++) {
-      namebuff = base + det[i] + cut[j];
+    for (int j = 0; j < mm2cut.size(); j++) {
+      namebuff = base + det[i] + mm2cut[j];
       ggIM_mm2_h[j][i] = (TH1F*) infile->Get(namebuff);
     }
   }
+	ggIM_mm2_h[0][0]->Draw();
+
+	TCanvas *ggIM_conecuts_c = new TCanvas("ggIM_conecuts_c", "#gamma_{1}#gamma_{2}-mass split by region (Cone angle < 30',20',10', 8', 5')");
 
 	TF1* ggIM_coneangle_fits[5][6];
 	TF1* ggIM_mm2_fits[3][6];
@@ -102,6 +105,15 @@ void fitcutstudyhistos(TString inputFile){
 
 	ggIM_coneangle_h[0][0]->Fit(ggIM_coneangle_fits[0][0], "R");
 
-
+	ggIM_conecuts_c->Clear(); //Clear canvas of any fit-drawings.
+	ggIM_conecuts_c->Divide(6,5);
+	int n=0;
+	for (int i = 0; i <= 4; i++) {
+		for (int j = 0; j <= 5; j++){
+			ggIM_conecuts_c->cd(n+1);
+			ggIM_coneangle_h[i][j]->Draw();
+			n++;
+		}
+	}
 
 }//macro
