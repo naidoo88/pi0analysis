@@ -86,8 +86,8 @@ void cutstudyhistos(TString datafile, TString outfile){
       if ((flag_photon1_PCAL==1 && flag_photon2_ft  ==1) || (flag_photon2_PCAL==1 && flag_photon1_ft  ==1)) ggIM_coneangle_h[2][5]  -> Fill(pi0im);
     }
     if (pi0coneangle < 8){
-      if (flag_photon1_ECAL==1 && flag_photon2_ECAL==1) ggIM_coneangle_h[3][0]  -> Fill(pi0im);
-      if (flag_photon1_PCAL==1 && flag_photon2_PCAL==1) ggIM_coneangle_h[3][1]  -> Fill(pi0im);
+      if (flag_photon1_PCAL==1 && flag_photon2_PCAL==1) ggIM_coneangle_h[3][0]  -> Fill(pi0im);
+      if (flag_photon1_ECAL==1 && flag_photon2_ECAL==1) ggIM_coneangle_h[3][1]  -> Fill(pi0im);
       if (flag_photon1_ft  ==1 && flag_photon2_ft  ==1) ggIM_coneangle_h[3][2]  -> Fill(pi0im);
       if ((flag_photon1_PCAL==1 && flag_photon2_ECAL==1) || (flag_photon2_PCAL==1 && flag_photon1_ECAL==1)) ggIM_coneangle_h[3][3]  -> Fill(pi0im);
       if ((flag_photon1_ECAL==1 && flag_photon2_ft  ==1) || (flag_photon2_ECAL==1 && flag_photon1_ft  ==1)) ggIM_coneangle_h[3][4]  -> Fill(pi0im);
