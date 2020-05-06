@@ -32,12 +32,12 @@ void fitcutstudyhistos(TString inputFile){
 	// gStyle->SetTitleH(0.1); //title height
 
 	TString fitfxn = "gaus(0)+pol2(3)";
-	Double_t gausamp  = 0;
-	Double_t gausmean = 0;
-	Double_t gaussig  = 0;
-	Double_t polconst = 0;
-	Double_t polx     = 0;
-	Double_t polx2    = 0;
+	Double_t cone_gausamp [5][6];
+	Double_t cone_gausmean[5][6];
+	Double_t cone_gaussig [5][6];
+	Double_t cone_polconst[5][6];
+	// Double_t cone_polx [5][6];
+	// Double_t cone_polx2[5][6];
 
   /*=====Read histos from file=====*/
 	TFile* infile = new TFile(inputFile,"READ");
@@ -92,8 +92,10 @@ void fitcutstudyhistos(TString inputFile){
 
 	TCanvas *ggIM_conecuts_c = new TCanvas("ggIM_conecuts_c", "#gamma_{1}#gamma_{2}-mass split by region (Cone angle < 30',20',10', 8', 5')");
 
+	/*===== Fit Histograms =====*/
 	TF1* ggIM_coneangle_fits[5][6];
 	TF1* ggIM_mm2_fits[3][6];
+	TPaveStats* statspanel; //buffer for TPaneStats obj, to reposition/resize etc.
 
 	for (int i = 0; i < det.size(); i++){
 		for (int j = 0; j < conecut.size(); j++) {
@@ -107,8 +109,13 @@ void fitcutstudyhistos(TString inputFile){
 
 			ggIM_coneangle_h[j][i]->Fit(ggIM_coneangle_fits[j][i], "R"); //removed M opt
 
+			cone_gausmean[j][i] = ggIM_coneangle_fits[j][i]->GetParameter(0);
+			cone_gausmean[j][i] = ggIM_coneangle_fits[j][i]->GetParameter(1);
+			cone_gaussig [j][i] = ggIM_coneangle_fits[j][i]->GetParameter(2);
+			cone_polconst[j][i] = ggIM_coneangle_fits[j][i]->GetParameter(3);
 		}
 	}
+
 
 	ggIM_conecuts_c->Clear(); //Clear canvas of any fit-drawings.
 	ggIM_conecuts_c->Divide(6,5);
@@ -116,6 +123,16 @@ void fitcutstudyhistos(TString inputFile){
 	for (int i = 0; i <= 4; i++) {
 		for (int j = 0; j <= 5; j++){
 			ggIM_conecuts_c->cd(n+1);
+			ggIM_coneangle_h[i][j]->Draw();
+
+			gPad->Update(); //allows following TPaveStats retrieval to be done.
+			statspanel = (TPaveStats*) ggIM_coneangle_h[i][j]->FindObject("stats");
+			statspanel->SetX1NDC(0.11);
+			statspanel->SetX2NDC(0.5);
+			statspanel->SetY1NDC(0.89);
+			statspanel->SetY2NDC(0.4);
+
+			//re-draw to refresh stats panel position on canvas
 			ggIM_coneangle_h[i][j]->Draw();
 
 			n++;
