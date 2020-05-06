@@ -103,7 +103,7 @@ void fitcutstudyhistos(TString inputFile){
 			ggIM_coneangle_fits[j][i]->SetParameter(1, 0.135);
 			ggIM_coneangle_fits[j][i]->SetParLimits(1, 0.12, 0.14);
 			ggIM_coneangle_fits[j][i]->SetParameter(2, 0.01);
-			ggIM_coneangle_fits[j][i]->SetParLimits(2, -1, 1);
+			ggIM_coneangle_fits[j][i]->SetParLimits(2, 0, 1);
 
 			ggIM_coneangle_h[j][i]->Fit(ggIM_coneangle_fits[j][i], "R"); //removed M opt
 
