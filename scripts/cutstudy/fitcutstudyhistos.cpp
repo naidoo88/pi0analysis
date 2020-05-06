@@ -23,8 +23,8 @@ void fitcutstudyhistos(TString inputFile){
 	TString outputFile = "fitted_"+inputFile;
 
 	gStyle->SetOptFit(01111);
-	gStyle->SetOptStat(0);
-	gStyle->SetOptFit(0);
+	gStyle->SetOptStat(11);
+	//gStyle->SetOptFit(0);
 	// gStyle->SetTitleFont(132,"a");
 	// gStyle->SetTitleX(0.6); //title X location
 	// gStyle->SetTitleY(1);   //title Y location
@@ -38,7 +38,6 @@ void fitcutstudyhistos(TString inputFile){
 	Double_t polconst = 0;
 	Double_t polx     = 0;
 	Double_t polx2    = 0;
-
 
   /*=====Read histos from file=====*/
 	TFile* infile = new TFile(inputFile,"READ");
@@ -81,6 +80,7 @@ void fitcutstudyhistos(TString inputFile){
 	TString namebuff;
   TString base         = "ggIM_";
   vector<TString> det  = {"bothPCAL_", "bothECAL_", "bothFCAL_", "PCALECAL_", "ECALFCAL_", "PCALFCAL_"};
+	vector<TString> conecut = {"coneangleL30_h", "coneangleL20_h", "coneangleL10_h", "coneangleL8_h", "coneangleL5_h"};
   vector<TString> mm2cut  = {"mm2PM0.4_h", "mm2PM0.3_h","mm2PM0.2_h"};
 
   for (int i = 0; i < det.size(); i++){
@@ -89,21 +89,26 @@ void fitcutstudyhistos(TString inputFile){
       ggIM_mm2_h[j][i] = (TH1F*) infile->Get(namebuff);
     }
   }
-	ggIM_mm2_h[0][0]->Draw();
 
 	TCanvas *ggIM_conecuts_c = new TCanvas("ggIM_conecuts_c", "#gamma_{1}#gamma_{2}-mass split by region (Cone angle < 30',20',10', 8', 5')");
 
 	TF1* ggIM_coneangle_fits[5][6];
 	TF1* ggIM_mm2_fits[3][6];
 
-	ggIM_coneangle_fits[0][0] = new TF1("ggIM_bothPCAL_coneangleL30_fit", fitfxn, 0, 0.2);
-	ggIM_coneangle_fits[0][0]->SetRange(0.08, 0.18);
-	ggIM_coneangle_fits[0][0]->SetParameter(1, 0.135);
-	ggIM_coneangle_fits[0][0]->SetParLimits(1, 0.12, 0.14);
-	ggIM_coneangle_fits[0][0]->SetParameter(2, 0.1);
-	ggIM_coneangle_fits[0][0]->SetParLimits(2, -1, 1);
+	for (int i = 0; i < det.size(); i++){
+		for (int j = 0; j < conecut.size(); j++) {
+			namebuff = base + det[i] + conecut[j] + "_fit";
+			ggIM_coneangle_fits[j][i] = new TF1(namebuff, fitfxn, 0, 0.2);
+			ggIM_coneangle_fits[j][i]->SetRange(0.08, 0.18);
+			ggIM_coneangle_fits[j][i]->SetParameter(1, 0.135);
+			ggIM_coneangle_fits[j][i]->SetParLimits(1, 0.12, 0.14);
+			ggIM_coneangle_fits[j][i]->SetParameter(2, 0.01);
+			ggIM_coneangle_fits[j][i]->SetParLimits(2, -1, 1);
 
-	ggIM_coneangle_h[0][0]->Fit(ggIM_coneangle_fits[0][0], "R");
+			ggIM_coneangle_h[j][i]->Fit(ggIM_coneangle_fits[j][i], "R"); //removed M opt
+
+		}
+	}
 
 	ggIM_conecuts_c->Clear(); //Clear canvas of any fit-drawings.
 	ggIM_conecuts_c->Divide(6,5);
@@ -112,6 +117,7 @@ void fitcutstudyhistos(TString inputFile){
 		for (int j = 0; j <= 5; j++){
 			ggIM_conecuts_c->cd(n+1);
 			ggIM_coneangle_h[i][j]->Draw();
+
 			n++;
 		}
 	}
