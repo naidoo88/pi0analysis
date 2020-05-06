@@ -202,40 +202,40 @@ void cuthistos(){
 
   //Cone angle cuts - g1g2-inv.mass split by region.
   //---------------------------------------------------------------------------------------------------------------
-  ggIM_coneangle_h[0][0] = new TH1F("ggIM_bothPCAL_coneangleL30_h", "Invariant mass[#gamma_{1} #gamma_{2}] - both PCAL - ConeAngle<30^{o}; Inv.Mass (GeV/c^{2}); counts", 200, 0, 0.2);
-  ggIM_coneangle_h[0][1] = new TH1F("ggIM_bothECAL_coneangleL30_h", "Invariant mass[#gamma_{1} #gamma_{2}] - both ECAL - ConeAngle<30^{o}; Inv.Mass (GeV/c^{2}); counts", 200, 0, 0.2);
-  ggIM_coneangle_h[0][2] = new TH1F("ggIM_bothFCAL_coneangleL30_h", "Invariant mass[#gamma_{1} #gamma_{2}] - both FCAL - ConeAngle<30^{o}; Inv.Mass (GeV/c^{2}); counts", 200, 0, 0.2);
+  ggIM_coneangle_h[0][0] = new TH1F("ggIM_bothPCAL_coneangleL30_h", "Invariant mass[#gamma_{1} #gamma_{2}] - both PCAL - ConeAngle<30^{o}; Inv.Mass (GeV/c^{2}); counts", 180, 0, 0.2);
+  ggIM_coneangle_h[0][1] = new TH1F("ggIM_bothECAL_coneangleL30_h", "Invariant mass[#gamma_{1} #gamma_{2}] - both ECAL - ConeAngle<30^{o}; Inv.Mass (GeV/c^{2}); counts", 180, 0, 0.2);
+  ggIM_coneangle_h[0][2] = new TH1F("ggIM_bothFCAL_coneangleL30_h", "Invariant mass[#gamma_{1} #gamma_{2}] - both FCAL - ConeAngle<30^{o}; Inv.Mass (GeV/c^{2}); counts", 100, 0, 0.2);
   ggIM_coneangle_h[0][3] = new TH1F("ggIM_PCALECAL_coneangleL30_h", "Invariant mass[#gamma_{1} #gamma_{2}] - PCAL/ECAL - ConeAngle<30^{o}; Inv.Mass (GeV/c^{2}); counts", 200, 0, 0.2);
-  ggIM_coneangle_h[0][4] = new TH1F("ggIM_ECALFCAL_coneangleL30_h", "Invariant mass[#gamma_{1} #gamma_{2}] - ECAL/FCAL - ConeAngle<30^{o}; Inv.Mass (GeV/c^{2}); counts", 200, 0, 0.2);
-  ggIM_coneangle_h[0][5] = new TH1F("ggIM_PCALFCAL_coneangleL30_h", "Invariant mass[#gamma_{1} #gamma_{2}] - PCAL/FCAL - ConeAngle<30^{o}; Inv.Mass (GeV/c^{2}); counts", 200, 0, 0.2);
+  ggIM_coneangle_h[0][4] = new TH1F("ggIM_ECALFCAL_coneangleL30_h", "Invariant mass[#gamma_{1} #gamma_{2}] - ECAL/FCAL - ConeAngle<30^{o}; Inv.Mass (GeV/c^{2}); counts", 100, 0, 0.2);
+  ggIM_coneangle_h[0][5] = new TH1F("ggIM_PCALFCAL_coneangleL30_h", "Invariant mass[#gamma_{1} #gamma_{2}] - PCAL/FCAL - ConeAngle<30^{o}; Inv.Mass (GeV/c^{2}); counts", 100, 0, 0.2);
 
-  ggIM_coneangle_h[1][0] = new TH1F("ggIM_bothPCAL_coneangleL20_h", "Invariant mass[#gamma_{1} #gamma_{2}] - both PCAL - ConeAngle<20^{o}; Inv.Mass (GeV/c^{2}); counts", 200, 0, 0.2);
-  ggIM_coneangle_h[1][1] = new TH1F("ggIM_bothECAL_coneangleL20_h", "Invariant mass[#gamma_{1} #gamma_{2}] - both ECAL - ConeAngle<20^{o}; Inv.Mass (GeV/c^{2}); counts", 200, 0, 0.2);
-  ggIM_coneangle_h[1][2] = new TH1F("ggIM_bothFCAL_coneangleL20_h", "Invariant mass[#gamma_{1} #gamma_{2}] - both FCAL - ConeAngle<20^{o}; Inv.Mass (GeV/c^{2}); counts", 200, 0, 0.2);
+  ggIM_coneangle_h[1][0] = new TH1F("ggIM_bothPCAL_coneangleL20_h", "Invariant mass[#gamma_{1} #gamma_{2}] - both PCAL - ConeAngle<20^{o}; Inv.Mass (GeV/c^{2}); counts", 180, 0, 0.2);
+  ggIM_coneangle_h[1][1] = new TH1F("ggIM_bothECAL_coneangleL20_h", "Invariant mass[#gamma_{1} #gamma_{2}] - both ECAL - ConeAngle<20^{o}; Inv.Mass (GeV/c^{2}); counts", 180, 0, 0.2);
+  ggIM_coneangle_h[1][2] = new TH1F("ggIM_bothFCAL_coneangleL20_h", "Invariant mass[#gamma_{1} #gamma_{2}] - both FCAL - ConeAngle<20^{o}; Inv.Mass (GeV/c^{2}); counts", 100, 0, 0.2);
   ggIM_coneangle_h[1][3] = new TH1F("ggIM_PCALECAL_coneangleL20_h", "Invariant mass[#gamma_{1} #gamma_{2}] - PCAL/ECAL - ConeAngle<20^{o}; Inv.Mass (GeV/c^{2}); counts", 200, 0, 0.2);
-  ggIM_coneangle_h[1][4] = new TH1F("ggIM_ECALFCAL_coneangleL20_h", "Invariant mass[#gamma_{1} #gamma_{2}] - ECAL/FCAL - ConeAngle<20^{o}; Inv.Mass (GeV/c^{2}); counts", 200, 0, 0.2);
-  ggIM_coneangle_h[1][5] = new TH1F("ggIM_PCALFCAL_coneangleL20_h", "Invariant mass[#gamma_{1} #gamma_{2}] - PCAL/FCAL - ConeAngle<20^{o}; Inv.Mass (GeV/c^{2}); counts", 200, 0, 0.2);
+  ggIM_coneangle_h[1][4] = new TH1F("ggIM_ECALFCAL_coneangleL20_h", "Invariant mass[#gamma_{1} #gamma_{2}] - ECAL/FCAL - ConeAngle<20^{o}; Inv.Mass (GeV/c^{2}); counts", 100, 0, 0.2);
+  ggIM_coneangle_h[1][5] = new TH1F("ggIM_PCALFCAL_coneangleL20_h", "Invariant mass[#gamma_{1} #gamma_{2}] - PCAL/FCAL - ConeAngle<20^{o}; Inv.Mass (GeV/c^{2}); counts", 100, 0, 0.2);
 
-  ggIM_coneangle_h[2][0] = new TH1F("ggIM_bothPCAL_coneangleL10_h", "Invariant mass[#gamma_{1} #gamma_{2}] - both PCAL - ConeAngle<10^{o}; Inv.Mass (GeV/c^{2}); counts", 200, 0, 0.2);
-  ggIM_coneangle_h[2][1] = new TH1F("ggIM_bothECAL_coneangleL10_h", "Invariant mass[#gamma_{1} #gamma_{2}] - both ECAL - ConeAngle<10^{o}; Inv.Mass (GeV/c^{2}); counts", 200, 0, 0.2);
-  ggIM_coneangle_h[2][2] = new TH1F("ggIM_bothFCAL_coneangleL10_h", "Invariant mass[#gamma_{1} #gamma_{2}] - both FCAL - ConeAngle<10^{o}; Inv.Mass (GeV/c^{2}); counts", 200, 0, 0.2);
+  ggIM_coneangle_h[2][0] = new TH1F("ggIM_bothPCAL_coneangleL10_h", "Invariant mass[#gamma_{1} #gamma_{2}] - both PCAL - ConeAngle<10^{o}; Inv.Mass (GeV/c^{2}); counts", 180, 0, 0.2);
+  ggIM_coneangle_h[2][1] = new TH1F("ggIM_bothECAL_coneangleL10_h", "Invariant mass[#gamma_{1} #gamma_{2}] - both ECAL - ConeAngle<10^{o}; Inv.Mass (GeV/c^{2}); counts", 180, 0, 0.2);
+  ggIM_coneangle_h[2][2] = new TH1F("ggIM_bothFCAL_coneangleL10_h", "Invariant mass[#gamma_{1} #gamma_{2}] - both FCAL - ConeAngle<10^{o}; Inv.Mass (GeV/c^{2}); counts", 100, 0, 0.2);
   ggIM_coneangle_h[2][3] = new TH1F("ggIM_PCALECAL_coneangleL10_h", "Invariant mass[#gamma_{1} #gamma_{2}] - PCAL/ECAL - ConeAngle<10^{o}; Inv.Mass (GeV/c^{2}); counts", 200, 0, 0.2);
-  ggIM_coneangle_h[2][4] = new TH1F("ggIM_ECALFCAL_coneangleL10_h", "Invariant mass[#gamma_{1} #gamma_{2}] - ECAL/FCAL - ConeAngle<10^{o}; Inv.Mass (GeV/c^{2}); counts", 200, 0, 0.2);
-  ggIM_coneangle_h[2][5] = new TH1F("ggIM_PCALFCAL_coneangleL10_h", "Invariant mass[#gamma_{1} #gamma_{2}] - PCAL/FCAL - ConeAngle<10^{o}; Inv.Mass (GeV/c^{2}); counts", 200, 0, 0.2);
+  ggIM_coneangle_h[2][4] = new TH1F("ggIM_ECALFCAL_coneangleL10_h", "Invariant mass[#gamma_{1} #gamma_{2}] - ECAL/FCAL - ConeAngle<10^{o}; Inv.Mass (GeV/c^{2}); counts", 100, 0, 0.2);
+  ggIM_coneangle_h[2][5] = new TH1F("ggIM_PCALFCAL_coneangleL10_h", "Invariant mass[#gamma_{1} #gamma_{2}] - PCAL/FCAL - ConeAngle<10^{o}; Inv.Mass (GeV/c^{2}); counts", 100, 0, 0.2);
 
-  ggIM_coneangle_h[3][0] = new TH1F("ggIM_bothPCAL_coneangleL8_h",  "Invariant mass[#gamma_{1} #gamma_{2}] - both PCAL - ConeAngle<8^{o};  Inv.Mass (GeV/c^{2}); counts", 200, 0, 0.2);
-  ggIM_coneangle_h[3][1] = new TH1F("ggIM_bothECAL_coneangleL8_h",  "Invariant mass[#gamma_{1} #gamma_{2}] - both ECAL - ConeAngle<8^{o};  Inv.Mass (GeV/c^{2}); counts", 200, 0, 0.2);
-  ggIM_coneangle_h[3][2] = new TH1F("ggIM_bothFCAL_coneangleL8_h",  "Invariant mass[#gamma_{1} #gamma_{2}] - both FCAL - ConeAngle<8^{o};  Inv.Mass (GeV/c^{2}); counts", 200, 0, 0.2);
+  ggIM_coneangle_h[3][0] = new TH1F("ggIM_bothPCAL_coneangleL8_h",  "Invariant mass[#gamma_{1} #gamma_{2}] - both PCAL - ConeAngle<8^{o};  Inv.Mass (GeV/c^{2}); counts", 180, 0, 0.2);
+  ggIM_coneangle_h[3][1] = new TH1F("ggIM_bothECAL_coneangleL8_h",  "Invariant mass[#gamma_{1} #gamma_{2}] - both ECAL - ConeAngle<8^{o};  Inv.Mass (GeV/c^{2}); counts", 180, 0, 0.2);
+  ggIM_coneangle_h[3][2] = new TH1F("ggIM_bothFCAL_coneangleL8_h",  "Invariant mass[#gamma_{1} #gamma_{2}] - both FCAL - ConeAngle<8^{o};  Inv.Mass (GeV/c^{2}); counts", 100, 0, 0.2);
   ggIM_coneangle_h[3][3] = new TH1F("ggIM_PCALECAL_coneangleL8_h",  "Invariant mass[#gamma_{1} #gamma_{2}] - PCAL/ECAL - ConeAngle<8^{o};  Inv.Mass (GeV/c^{2}); counts", 200, 0, 0.2);
-  ggIM_coneangle_h[3][4] = new TH1F("ggIM_ECALFCAL_coneangleL8_h",  "Invariant mass[#gamma_{1} #gamma_{2}] - ECAL/FCAL - ConeAngle<8^{o};  Inv.Mass (GeV/c^{2}); counts", 200, 0, 0.2);
-  ggIM_coneangle_h[3][5] = new TH1F("ggIM_PCALFCAL_coneangleL8_h",  "Invariant mass[#gamma_{1} #gamma_{2}] - PCAL/FCAL - ConeAngle<8^{o};  Inv.Mass (GeV/c^{2}); counts", 200, 0, 0.2);
+  ggIM_coneangle_h[3][4] = new TH1F("ggIM_ECALFCAL_coneangleL8_h",  "Invariant mass[#gamma_{1} #gamma_{2}] - ECAL/FCAL - ConeAngle<8^{o};  Inv.Mass (GeV/c^{2}); counts", 100, 0, 0.2);
+  ggIM_coneangle_h[3][5] = new TH1F("ggIM_PCALFCAL_coneangleL8_h",  "Invariant mass[#gamma_{1} #gamma_{2}] - PCAL/FCAL - ConeAngle<8^{o};  Inv.Mass (GeV/c^{2}); counts", 100, 0, 0.2);
 
-  ggIM_coneangle_h[4][0] = new TH1F("ggIM_bothPCAL_coneangleL5_h",  "Invariant mass[#gamma_{1} #gamma_{2}] - both PCAL - ConeAngle<5^{o};  Inv.Mass (GeV/c^{2}); counts", 200, 0, 0.2);
-  ggIM_coneangle_h[4][1] = new TH1F("ggIM_bothECAL_coneangleL5_h",  "Invariant mass[#gamma_{1} #gamma_{2}] - both ECAL - ConeAngle<5^{o};  Inv.Mass (GeV/c^{2}); counts", 200, 0, 0.2);
-  ggIM_coneangle_h[4][2] = new TH1F("ggIM_bothFCAL_coneangleL5_h",  "Invariant mass[#gamma_{1} #gamma_{2}] - both FCAL - ConeAngle<5^{o};  Inv.Mass (GeV/c^{2}); counts", 200, 0, 0.2);
+  ggIM_coneangle_h[4][0] = new TH1F("ggIM_bothPCAL_coneangleL5_h",  "Invariant mass[#gamma_{1} #gamma_{2}] - both PCAL - ConeAngle<5^{o};  Inv.Mass (GeV/c^{2}); counts", 180, 0, 0.2);
+  ggIM_coneangle_h[4][1] = new TH1F("ggIM_bothECAL_coneangleL5_h",  "Invariant mass[#gamma_{1} #gamma_{2}] - both ECAL - ConeAngle<5^{o};  Inv.Mass (GeV/c^{2}); counts", 180, 0, 0.2);
+  ggIM_coneangle_h[4][2] = new TH1F("ggIM_bothFCAL_coneangleL5_h",  "Invariant mass[#gamma_{1} #gamma_{2}] - both FCAL - ConeAngle<5^{o};  Inv.Mass (GeV/c^{2}); counts", 100, 0, 0.2);
   ggIM_coneangle_h[4][3] = new TH1F("ggIM_PCALECAL_coneangleL5_h",  "Invariant mass[#gamma_{1} #gamma_{2}] - PCAL/ECAL - ConeAngle<5^{o};  Inv.Mass (GeV/c^{2}); counts", 200, 0, 0.2);
-  ggIM_coneangle_h[4][4] = new TH1F("ggIM_ECALFCAL_coneangleL5_h",  "Invariant mass[#gamma_{1} #gamma_{2}] - ECAL/FCAL - ConeAngle<5^{o};  Inv.Mass (GeV/c^{2}); counts", 200, 0, 0.2);
-  ggIM_coneangle_h[4][5] = new TH1F("ggIM_PCALFCAL_coneangleL5_h",  "Invariant mass[#gamma_{1} #gamma_{2}] - PCAL/FCAL - ConeAngle<5^{o};  Inv.Mass (GeV/c^{2}); counts", 200, 0, 0.2);
+  ggIM_coneangle_h[4][4] = new TH1F("ggIM_ECALFCAL_coneangleL5_h",  "Invariant mass[#gamma_{1} #gamma_{2}] - ECAL/FCAL - ConeAngle<5^{o};  Inv.Mass (GeV/c^{2}); counts", 100, 0, 0.2);
+  ggIM_coneangle_h[4][5] = new TH1F("ggIM_PCALFCAL_coneangleL5_h",  "Invariant mass[#gamma_{1} #gamma_{2}] - PCAL/FCAL - ConeAngle<5^{o};  Inv.Mass (GeV/c^{2}); counts", 100, 0, 0.2);
 
   //Broad MM2 cuts - g1g2-inv.mass split by region.
   //---------------------------------------------------------------------------------------------------------------
