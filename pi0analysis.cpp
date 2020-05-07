@@ -74,6 +74,7 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 
      data->Branch("flag_cuts_dis",  &flag_cuts_dis,  "flag_cuts_dis/O");
      data->Branch("flag_cuts_excl", &flag_cuts_excl, "flag_cuts_excl/O");
+     data->Branch("flag_goodpi0",   &flag_goodpi0,   "flag_goodpi0/O");
      // data->Branch("flag_MM2_total",       &flag_MM2_total,       "flag_MM2_total/O");
      // data->Branch("flag_spectneutmp",  &flag_spectneutmp,  "flag_spectneutmp/O");
 
