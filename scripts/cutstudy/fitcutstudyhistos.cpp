@@ -19,7 +19,7 @@
 
 using namespace clas12;
 
-void fitcutstudyhistos(TString inputFile){
+void fitcutstudyhistos(TString inputFile){ //TODO - Figure out less crude SBR, no fit yet for MM^2 ranges.
 	TString outputFile = "fitted_"+inputFile;
 
 	gStyle->SetOptFit(01111);
@@ -31,13 +31,15 @@ void fitcutstudyhistos(TString inputFile){
 	// gStyle->SetTitleW(0.8); //title width
 	// gStyle->SetTitleH(0.1); //title height
 
-	TString fitfxn = "gaus(0)+pol2(3)";
+	//TString fitfxn = "gaus(0)+pol3(3)";
+	TString fitfxn[6] = {"gaus(0)+pol2(3)","gaus(0)+pol2(3)","gaus(0)+pol2(3)","gaus(0)+pol2(3)","gaus(0)+pol3(3)","gaus(0)+pol3(3)"}; //
 	Double_t cone_gausamp [5][6];
 	Double_t cone_gausmean[5][6];
 	Double_t cone_gaussig [5][6];
 	Double_t cone_polconst[5][6];
 	// Double_t cone_polx [5][6];
 	// Double_t cone_polx2[5][6];
+	Double_t cone_bg_const[5][5];
 
   /*=====Read histos from file=====*/
 	TFile* infile = new TFile(inputFile,"READ");
@@ -94,25 +96,43 @@ void fitcutstudyhistos(TString inputFile){
 
 	/*===== Fit Histograms =====*/
 	TF1* ggIM_coneangle_fits[5][6];
+	TF1* ggIM_coneangle_sig [5][6];
+	TF1* ggIM_coneangle_bg  [5][6];
 	TF1* ggIM_mm2_fits[3][6];
 	TPaveStats* statspanel; //buffer for TPaneStats obj, to reposition/resize etc.
 
 	for (int i = 0; i < det.size(); i++){
 		for (int j = 0; j < conecut.size(); j++) {
-			namebuff = base + det[i] + conecut[j] + "_fit";
-			ggIM_coneangle_fits[j][i] = new TF1(namebuff, fitfxn, 0, 0.2);
+			namebuff = base + det[i] + conecut[j];
+			ggIM_coneangle_fits[j][i] = new TF1(namebuff+"_fit", fitfxn[i], 0, 0.2);
+			//ggIM_coneangle_fits[j][i] = new TF1(namebuff+"_fit", fitfxn[i], 0, 0.2);
 			ggIM_coneangle_fits[j][i]->SetRange(0.08, 0.18);
 			ggIM_coneangle_fits[j][i]->SetParameter(1, 0.135);
 			ggIM_coneangle_fits[j][i]->SetParLimits(1, 0.12, 0.14);
 			ggIM_coneangle_fits[j][i]->SetParameter(2, 0.01);
 			ggIM_coneangle_fits[j][i]->SetParLimits(2, 0, 1);
 
-			ggIM_coneangle_h[j][i]->Fit(ggIM_coneangle_fits[j][i], "R"); //removed M opt
+			ggIM_coneangle_h[j][i]->Fit(ggIM_coneangle_fits[j][i], "NQR"); //N: don't save gfx or draw; Q: Quiet
 
-			cone_gausmean[j][i] = ggIM_coneangle_fits[j][i]->GetParameter(0);
-			cone_gausmean[j][i] = ggIM_coneangle_fits[j][i]->GetParameter(1);
-			cone_gaussig [j][i] = ggIM_coneangle_fits[j][i]->GetParameter(2);
-			cone_polconst[j][i] = ggIM_coneangle_fits[j][i]->GetParameter(3);
+			/*Broaden range & re-fit*/
+			ggIM_coneangle_fits[j][i]->SetRange(0.07, 0.2);
+			ggIM_coneangle_h[j][i]->Fit(ggIM_coneangle_fits[j][i], "RM"); //removed M opt
+
+			/*Extract signal fit*/
+			ggIM_coneangle_sig [j][i] = new TF1(namebuff+"_sig", "gaus", 0, 0.2);
+			ggIM_coneangle_sig [j][i]->SetParameter(0, ggIM_coneangle_fits[j][i]->GetParameter(0));
+			ggIM_coneangle_sig [j][i]->SetParameter(1, ggIM_coneangle_fits[j][i]->GetParameter(1));
+			ggIM_coneangle_sig [j][i]->SetParameter(2, ggIM_coneangle_fits[j][i]->GetParameter(2));
+
+			/*Extract background fit (of N degree polynomial)*/
+			int poldeg = ggIM_coneangle_fits[j][i]->GetNpar() - 4; //polynomial degree is N parameters of fit - 3(gaus) -1(const.)
+			TString poldegstr = TString::Itoa(poldeg,10);
+
+			ggIM_coneangle_bg  [j][i] = new TF1(namebuff+"_bg" , "pol"+poldegstr, 0, 0.2);
+			for (int k = 0; k <= poldeg; k++) {
+				ggIM_coneangle_bg  [j][i]->SetParameter(k, ggIM_coneangle_fits[j][i]->GetParameter(k+3));
+			}
+
 		}
 	}
 
@@ -128,9 +148,9 @@ void fitcutstudyhistos(TString inputFile){
 			gPad->Update(); //allows following TPaveStats retrieval to be done.
 			statspanel = (TPaveStats*) ggIM_coneangle_h[i][j]->FindObject("stats");
 			statspanel->SetX1NDC(0.11);
-			statspanel->SetX2NDC(0.5);
+			statspanel->SetX2NDC(0.45);
 			statspanel->SetY1NDC(0.89);
-			statspanel->SetY2NDC(0.4);
+			statspanel->SetY2NDC(0.35);
 
 			//re-draw to refresh stats panel position on canvas
 			ggIM_coneangle_h[i][j]->Draw();
@@ -138,5 +158,22 @@ void fitcutstudyhistos(TString inputFile){
 			n++;
 		}
 	}
+
+
+	TCanvas* C = new TCanvas("C");
+	C->Divide(2,3);
+
+	for (int i=0; i<6; i++){
+		C->cd(i+1);
+		ggIM_coneangle_fits[1][i]->SetLineColor(kBlack);
+		ggIM_coneangle_h   [1][i]->Draw();  //fitted histo
+		ggIM_coneangle_sig [1][i]->SetLineColor(kGreen);
+		ggIM_coneangle_sig [1][i]->Draw("SAME"); //new signal function
+		ggIM_coneangle_bg  [1][i]->SetLineColor(kOrange);
+		ggIM_coneangle_bg  [1][i]->SetLineWidth(1);
+		ggIM_coneangle_bg  [1][i]->Draw("SAME"); //new background
+	}
+	C->SetWindowSize(1920, 1080);
+	C->SetCanvasSize(1920, 1080);
 
 }//macro
