@@ -55,16 +55,17 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
      data->Branch("n_goodpi0_candidates", &n_goodpi0_candidates, "n_goodpi0_candidates/I");
 
 
-     data->Branch("IM_g1g2",   &IM_g1g2,   "IM_g1g2/D");
-     data->Branch("MM2_total", &MM2_total, "MM2_total/D");
-     data->Branch("MM2_total", &MM2_total, "MM2_total/D");
+     data->Branch("IM_g1g2",      &IM_g1g2,      "IM_g1g2/D");
+     data->Branch("MM2_total",    &MM2_total,    "MM2_total/D");
+     data->Branch("MM2_total",    &MM2_total,    "MM2_total/D");
+     data->Branch("pi0coneangle", &pi0coneangle, "pi0coneangle/D");
+
 
      data->Branch("MM_rec_recoil",    &MM_rec_recoil,    "MM_rec_recoil/D");
      data->Branch("MM_rec_recoil",    &MM_rec_recoil,    "MM_rec_recoil/D");
      data->Branch("MP_rec_spectator", &MP_rec_spectator, "MP_rec_spectator/D");
      data->Branch("MM_rec_spectator", &MM_rec_spectator, "MM_rec_spectator/D");
 
-     data->Branch("pi0coneangle",   &pi0coneangle,   "pi0coneangle/D");
      data->Branch("phi_Nvg",        &phi_Nvg,        "phi_Nvg/D");
      data->Branch("phi_Nnew",       &phi_Nnew,       "phi_Nnew/D");
      data->Branch("phi_vgnew",      &phi_vgnew,      "phi_vgnew/D");
@@ -72,9 +73,10 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
      data->Branch("cop_Nvg_Nnew",   &cop_Nvg_Nnew,   "cop_Nvg_Nnew/D");
      data->Branch("cop_Nnew_vgnew", &cop_Nnew_vgnew, "cop_Nnew_vgnew/D");
 
+     data->Branch("flag_goodpi0",   &flag_goodpi0,   "flag_goodpi0/O");
      data->Branch("flag_cuts_dis",  &flag_cuts_dis,  "flag_cuts_dis/O");
      data->Branch("flag_cuts_excl", &flag_cuts_excl, "flag_cuts_excl/O");
-     data->Branch("flag_goodpi0",   &flag_goodpi0,   "flag_goodpi0/O");
+
      // data->Branch("flag_MM2_total",       &flag_MM2_total,       "flag_MM2_total/O");
      // data->Branch("flag_spectneutmp",  &flag_spectneutmp,  "flag_spectneutmp/O");
 
@@ -97,7 +99,10 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
     cout << "Successfully opened list:  " << in_list << endl;
 
     while(!list_of_files.eof()) {
-      if (!list_of_files.good()) break;
+      if (!list_of_files.good()) {
+        cout << "Error: Issue with list." << endl;
+        break;
+      }
 
       list_of_files >> file_name;
 
