@@ -52,9 +52,9 @@ double pi0im;
 double pi0mm2;
 double pi0mp;
 
-double recprotmm;
-double recprotmp;
-double specneutmp;
-double specneutmm;
+double mm_eN_to_eg1g2;
+double mp_eN_to_eg1g2;
+double mp_eD_to_epg1g2;
+double mm_eD_to_epg1g2;
 
 #endif

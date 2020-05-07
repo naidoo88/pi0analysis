@@ -26,8 +26,8 @@ void cutstudyhistos(TString datafile, TString outfile){
   TChain chain("data");
   chain.AddFile(datafile);
 
-  double pi0im;
-  double pi0mm2;
+  double IM_g1g2;
+  double MM2_total;
   double pi0coneangle;
   bool flag_photon1_PCAL;
   bool flag_photon2_PCAL;
@@ -36,8 +36,8 @@ void cutstudyhistos(TString datafile, TString outfile){
   bool flag_photon1_ft;
   bool flag_photon2_ft;
 
-  chain.SetBranchAddress("pi0im",             &pi0im);
-  chain.SetBranchAddress("pi0mm2",            &pi0mm2);
+  chain.SetBranchAddress("IM_g1g2",             &IM_g1g2);
+  chain.SetBranchAddress("MM2_total",            &MM2_total);
   chain.SetBranchAddress("pi0coneangle",      &pi0coneangle);
   chain.SetBranchAddress("flag_photon1_PCAL", &flag_photon1_PCAL);
   chain.SetBranchAddress("flag_photon2_PCAL", &flag_photon2_PCAL);
@@ -53,81 +53,81 @@ void cutstudyhistos(TString datafile, TString outfile){
     chain.GetEntry(i);
 
     /*=====PRE-CUT HISTOS=====*/
-    if (flag_photon1_PCAL==1 && flag_photon2_PCAL==1) ggIM_h[0]  -> Fill(pi0im);
-    if (flag_photon1_ECAL==1 && flag_photon2_ECAL==1) ggIM_h[1]  -> Fill(pi0im);
-    if (flag_photon1_ft  ==1 && flag_photon2_ft  ==1) ggIM_h[2]  -> Fill(pi0im);
-    if ((flag_photon1_PCAL==1 && flag_photon2_ECAL==1) || (flag_photon2_PCAL==1 && flag_photon1_ECAL==1)) ggIM_h[3]  -> Fill(pi0im);
-    if ((flag_photon1_ECAL==1 && flag_photon2_ft  ==1) || (flag_photon2_ECAL==1 && flag_photon1_ft  ==1)) ggIM_h[4]  -> Fill(pi0im);
-    if ((flag_photon1_PCAL==1 && flag_photon2_ft  ==1) || (flag_photon2_PCAL==1 && flag_photon1_ft  ==1)) ggIM_h[5]  -> Fill(pi0im);
+    if (flag_photon1_PCAL==1 && flag_photon2_PCAL==1) ggIM_h[0]  -> Fill(IM_g1g2);
+    if (flag_photon1_ECAL==1 && flag_photon2_ECAL==1) ggIM_h[1]  -> Fill(IM_g1g2);
+    if (flag_photon1_ft  ==1 && flag_photon2_ft  ==1) ggIM_h[2]  -> Fill(IM_g1g2);
+    if ((flag_photon1_PCAL==1 && flag_photon2_ECAL==1) || (flag_photon2_PCAL==1 && flag_photon1_ECAL==1)) ggIM_h[3]  -> Fill(IM_g1g2);
+    if ((flag_photon1_ECAL==1 && flag_photon2_ft  ==1) || (flag_photon2_ECAL==1 && flag_photon1_ft  ==1)) ggIM_h[4]  -> Fill(IM_g1g2);
+    if ((flag_photon1_PCAL==1 && flag_photon2_ft  ==1) || (flag_photon2_PCAL==1 && flag_photon1_ft  ==1)) ggIM_h[5]  -> Fill(IM_g1g2);
 
     /*=====Cone angle histos=====*/
-    if (pi0mm2>-0.5&&pi0mm2<0.5){ //Apply very broad MM2 cut to kill some background.
+    if (MM2_total>-0.5&&MM2_total<0.5){ //Apply very broad MM2 cut to kill some background.
       if (pi0coneangle < 30){
-        if (flag_photon1_PCAL==1 && flag_photon2_PCAL==1) ggIM_coneangle_h[0][0]  -> Fill(pi0im);
-        if (flag_photon1_ECAL==1 && flag_photon2_ECAL==1) ggIM_coneangle_h[0][1]  -> Fill(pi0im);
-        if (flag_photon1_ft  ==1 && flag_photon2_ft  ==1) ggIM_coneangle_h[0][2]  -> Fill(pi0im);
-        if ((flag_photon1_PCAL==1 && flag_photon2_ECAL==1) || (flag_photon2_PCAL==1 && flag_photon1_ECAL==1)) ggIM_coneangle_h[0][3]  -> Fill(pi0im);
-        if ((flag_photon1_ECAL==1 && flag_photon2_ft  ==1) || (flag_photon2_ECAL==1 && flag_photon1_ft  ==1)) ggIM_coneangle_h[0][4]  -> Fill(pi0im);
-        if ((flag_photon1_PCAL==1 && flag_photon2_ft  ==1) || (flag_photon2_PCAL==1 && flag_photon1_ft  ==1)) ggIM_coneangle_h[0][5]  -> Fill(pi0im);
+        if (flag_photon1_PCAL==1 && flag_photon2_PCAL==1) ggIM_coneangle_h[0][0]  -> Fill(IM_g1g2);
+        if (flag_photon1_ECAL==1 && flag_photon2_ECAL==1) ggIM_coneangle_h[0][1]  -> Fill(IM_g1g2);
+        if (flag_photon1_ft  ==1 && flag_photon2_ft  ==1) ggIM_coneangle_h[0][2]  -> Fill(IM_g1g2);
+        if ((flag_photon1_PCAL==1 && flag_photon2_ECAL==1) || (flag_photon2_PCAL==1 && flag_photon1_ECAL==1)) ggIM_coneangle_h[0][3]  -> Fill(IM_g1g2);
+        if ((flag_photon1_ECAL==1 && flag_photon2_ft  ==1) || (flag_photon2_ECAL==1 && flag_photon1_ft  ==1)) ggIM_coneangle_h[0][4]  -> Fill(IM_g1g2);
+        if ((flag_photon1_PCAL==1 && flag_photon2_ft  ==1) || (flag_photon2_PCAL==1 && flag_photon1_ft  ==1)) ggIM_coneangle_h[0][5]  -> Fill(IM_g1g2);
       }
       if (pi0coneangle < 20){
-        if (flag_photon1_PCAL==1 && flag_photon2_PCAL==1) ggIM_coneangle_h[1][0]  -> Fill(pi0im);
-        if (flag_photon1_ECAL==1 && flag_photon2_ECAL==1) ggIM_coneangle_h[1][1]  -> Fill(pi0im);
-        if (flag_photon1_ft  ==1 && flag_photon2_ft  ==1) ggIM_coneangle_h[1][2]  -> Fill(pi0im);
-        if ((flag_photon1_PCAL==1 && flag_photon2_ECAL==1) || (flag_photon2_PCAL==1 && flag_photon1_ECAL==1)) ggIM_coneangle_h[1][3]  -> Fill(pi0im);
-        if ((flag_photon1_ECAL==1 && flag_photon2_ft  ==1) || (flag_photon2_ECAL==1 && flag_photon1_ft  ==1)) ggIM_coneangle_h[1][4]  -> Fill(pi0im);
-        if ((flag_photon1_PCAL==1 && flag_photon2_ft  ==1) || (flag_photon2_PCAL==1 && flag_photon1_ft  ==1)) ggIM_coneangle_h[1][5]  -> Fill(pi0im);
+        if (flag_photon1_PCAL==1 && flag_photon2_PCAL==1) ggIM_coneangle_h[1][0]  -> Fill(IM_g1g2);
+        if (flag_photon1_ECAL==1 && flag_photon2_ECAL==1) ggIM_coneangle_h[1][1]  -> Fill(IM_g1g2);
+        if (flag_photon1_ft  ==1 && flag_photon2_ft  ==1) ggIM_coneangle_h[1][2]  -> Fill(IM_g1g2);
+        if ((flag_photon1_PCAL==1 && flag_photon2_ECAL==1) || (flag_photon2_PCAL==1 && flag_photon1_ECAL==1)) ggIM_coneangle_h[1][3]  -> Fill(IM_g1g2);
+        if ((flag_photon1_ECAL==1 && flag_photon2_ft  ==1) || (flag_photon2_ECAL==1 && flag_photon1_ft  ==1)) ggIM_coneangle_h[1][4]  -> Fill(IM_g1g2);
+        if ((flag_photon1_PCAL==1 && flag_photon2_ft  ==1) || (flag_photon2_PCAL==1 && flag_photon1_ft  ==1)) ggIM_coneangle_h[1][5]  -> Fill(IM_g1g2);
       }
       if (pi0coneangle < 10){
-        if (flag_photon1_PCAL==1 && flag_photon2_PCAL==1) ggIM_coneangle_h[2][0]  -> Fill(pi0im);
-        if (flag_photon1_ECAL==1 && flag_photon2_ECAL==1) ggIM_coneangle_h[2][1]  -> Fill(pi0im);
-        if (flag_photon1_ft  ==1 && flag_photon2_ft  ==1) ggIM_coneangle_h[2][2]  -> Fill(pi0im);
-        if ((flag_photon1_PCAL==1 && flag_photon2_ECAL==1) || (flag_photon2_PCAL==1 && flag_photon1_ECAL==1)) ggIM_coneangle_h[2][3]  -> Fill(pi0im);
-        if ((flag_photon1_ECAL==1 && flag_photon2_ft  ==1) || (flag_photon2_ECAL==1 && flag_photon1_ft  ==1)) ggIM_coneangle_h[2][4]  -> Fill(pi0im);
-        if ((flag_photon1_PCAL==1 && flag_photon2_ft  ==1) || (flag_photon2_PCAL==1 && flag_photon1_ft  ==1)) ggIM_coneangle_h[2][5]  -> Fill(pi0im);
+        if (flag_photon1_PCAL==1 && flag_photon2_PCAL==1) ggIM_coneangle_h[2][0]  -> Fill(IM_g1g2);
+        if (flag_photon1_ECAL==1 && flag_photon2_ECAL==1) ggIM_coneangle_h[2][1]  -> Fill(IM_g1g2);
+        if (flag_photon1_ft  ==1 && flag_photon2_ft  ==1) ggIM_coneangle_h[2][2]  -> Fill(IM_g1g2);
+        if ((flag_photon1_PCAL==1 && flag_photon2_ECAL==1) || (flag_photon2_PCAL==1 && flag_photon1_ECAL==1)) ggIM_coneangle_h[2][3]  -> Fill(IM_g1g2);
+        if ((flag_photon1_ECAL==1 && flag_photon2_ft  ==1) || (flag_photon2_ECAL==1 && flag_photon1_ft  ==1)) ggIM_coneangle_h[2][4]  -> Fill(IM_g1g2);
+        if ((flag_photon1_PCAL==1 && flag_photon2_ft  ==1) || (flag_photon2_PCAL==1 && flag_photon1_ft  ==1)) ggIM_coneangle_h[2][5]  -> Fill(IM_g1g2);
       }
       if (pi0coneangle < 8){
-        if (flag_photon1_PCAL==1 && flag_photon2_PCAL==1) ggIM_coneangle_h[3][0]  -> Fill(pi0im);
-        if (flag_photon1_ECAL==1 && flag_photon2_ECAL==1) ggIM_coneangle_h[3][1]  -> Fill(pi0im);
-        if (flag_photon1_ft  ==1 && flag_photon2_ft  ==1) ggIM_coneangle_h[3][2]  -> Fill(pi0im);
-        if ((flag_photon1_PCAL==1 && flag_photon2_ECAL==1) || (flag_photon2_PCAL==1 && flag_photon1_ECAL==1)) ggIM_coneangle_h[3][3]  -> Fill(pi0im);
-        if ((flag_photon1_ECAL==1 && flag_photon2_ft  ==1) || (flag_photon2_ECAL==1 && flag_photon1_ft  ==1)) ggIM_coneangle_h[3][4]  -> Fill(pi0im);
-        if ((flag_photon1_PCAL==1 && flag_photon2_ft  ==1) || (flag_photon2_PCAL==1 && flag_photon1_ft  ==1)) ggIM_coneangle_h[3][5]  -> Fill(pi0im);
+        if (flag_photon1_PCAL==1 && flag_photon2_PCAL==1) ggIM_coneangle_h[3][0]  -> Fill(IM_g1g2);
+        if (flag_photon1_ECAL==1 && flag_photon2_ECAL==1) ggIM_coneangle_h[3][1]  -> Fill(IM_g1g2);
+        if (flag_photon1_ft  ==1 && flag_photon2_ft  ==1) ggIM_coneangle_h[3][2]  -> Fill(IM_g1g2);
+        if ((flag_photon1_PCAL==1 && flag_photon2_ECAL==1) || (flag_photon2_PCAL==1 && flag_photon1_ECAL==1)) ggIM_coneangle_h[3][3]  -> Fill(IM_g1g2);
+        if ((flag_photon1_ECAL==1 && flag_photon2_ft  ==1) || (flag_photon2_ECAL==1 && flag_photon1_ft  ==1)) ggIM_coneangle_h[3][4]  -> Fill(IM_g1g2);
+        if ((flag_photon1_PCAL==1 && flag_photon2_ft  ==1) || (flag_photon2_PCAL==1 && flag_photon1_ft  ==1)) ggIM_coneangle_h[3][5]  -> Fill(IM_g1g2);
       }
       if (pi0coneangle < 5){
-        if (flag_photon1_PCAL==1 && flag_photon2_PCAL==1) ggIM_coneangle_h[4][0]  -> Fill(pi0im);
-        if (flag_photon1_ECAL==1 && flag_photon2_ECAL==1) ggIM_coneangle_h[4][1]  -> Fill(pi0im);
-        if (flag_photon1_ft  ==1 && flag_photon2_ft  ==1) ggIM_coneangle_h[4][2]  -> Fill(pi0im);
-        if ((flag_photon1_PCAL==1 && flag_photon2_ECAL==1) || (flag_photon2_PCAL==1 && flag_photon1_ECAL==1)) ggIM_coneangle_h[4][3]  -> Fill(pi0im);
-        if ((flag_photon1_ECAL==1 && flag_photon2_ft  ==1) || (flag_photon2_ECAL==1 && flag_photon1_ft  ==1)) ggIM_coneangle_h[4][4]  -> Fill(pi0im);
-        if ((flag_photon1_PCAL==1 && flag_photon2_ft  ==1) || (flag_photon2_PCAL==1 && flag_photon1_ft  ==1)) ggIM_coneangle_h[4][5]  -> Fill(pi0im);
+        if (flag_photon1_PCAL==1 && flag_photon2_PCAL==1) ggIM_coneangle_h[4][0]  -> Fill(IM_g1g2);
+        if (flag_photon1_ECAL==1 && flag_photon2_ECAL==1) ggIM_coneangle_h[4][1]  -> Fill(IM_g1g2);
+        if (flag_photon1_ft  ==1 && flag_photon2_ft  ==1) ggIM_coneangle_h[4][2]  -> Fill(IM_g1g2);
+        if ((flag_photon1_PCAL==1 && flag_photon2_ECAL==1) || (flag_photon2_PCAL==1 && flag_photon1_ECAL==1)) ggIM_coneangle_h[4][3]  -> Fill(IM_g1g2);
+        if ((flag_photon1_ECAL==1 && flag_photon2_ft  ==1) || (flag_photon2_ECAL==1 && flag_photon1_ft  ==1)) ggIM_coneangle_h[4][4]  -> Fill(IM_g1g2);
+        if ((flag_photon1_PCAL==1 && flag_photon2_ft  ==1) || (flag_photon2_PCAL==1 && flag_photon1_ft  ==1)) ggIM_coneangle_h[4][5]  -> Fill(IM_g1g2);
       }
     }//broad MM2 cut (+/- 0.5)
 
     /*=====MM2 histos=====*/
-    if(pi0mm2>-0.4&&pi0mm2<0.4) {
-      if (flag_photon1_PCAL==1 && flag_photon2_PCAL==1) ggIM_mm2_h[0][0]  -> Fill(pi0im);
-      if (flag_photon1_ECAL==1 && flag_photon2_ECAL==1) ggIM_mm2_h[0][1]  -> Fill(pi0im);
-      if (flag_photon1_ft  ==1 && flag_photon2_ft  ==1) ggIM_mm2_h[0][2]  -> Fill(pi0im);
-      if ((flag_photon1_PCAL==1 && flag_photon2_ECAL==1) || (flag_photon2_PCAL==1 && flag_photon1_ECAL==1)) ggIM_mm2_h[0][3]  -> Fill(pi0im);
-      if ((flag_photon1_ECAL==1 && flag_photon2_ft  ==1) || (flag_photon2_ECAL==1 && flag_photon1_ft  ==1)) ggIM_mm2_h[0][4]  -> Fill(pi0im);
-      if ((flag_photon1_PCAL==1 && flag_photon2_ft  ==1) || (flag_photon2_PCAL==1 && flag_photon1_ft  ==1)) ggIM_mm2_h[0][5]  -> Fill(pi0im);
+    if(MM2_total>-0.4&&MM2_total<0.4) {
+      if (flag_photon1_PCAL==1 && flag_photon2_PCAL==1) ggIM_mm2_h[0][0]  -> Fill(IM_g1g2);
+      if (flag_photon1_ECAL==1 && flag_photon2_ECAL==1) ggIM_mm2_h[0][1]  -> Fill(IM_g1g2);
+      if (flag_photon1_ft  ==1 && flag_photon2_ft  ==1) ggIM_mm2_h[0][2]  -> Fill(IM_g1g2);
+      if ((flag_photon1_PCAL==1 && flag_photon2_ECAL==1) || (flag_photon2_PCAL==1 && flag_photon1_ECAL==1)) ggIM_mm2_h[0][3]  -> Fill(IM_g1g2);
+      if ((flag_photon1_ECAL==1 && flag_photon2_ft  ==1) || (flag_photon2_ECAL==1 && flag_photon1_ft  ==1)) ggIM_mm2_h[0][4]  -> Fill(IM_g1g2);
+      if ((flag_photon1_PCAL==1 && flag_photon2_ft  ==1) || (flag_photon2_PCAL==1 && flag_photon1_ft  ==1)) ggIM_mm2_h[0][5]  -> Fill(IM_g1g2);
     }
-    if(pi0mm2>-0.3&&pi0mm2<0.3){
-      if (flag_photon1_PCAL==1 && flag_photon2_PCAL==1) ggIM_mm2_h[1][0]  -> Fill(pi0im);
-      if (flag_photon1_ECAL==1 && flag_photon2_ECAL==1) ggIM_mm2_h[1][1]  -> Fill(pi0im);
-      if (flag_photon1_ft  ==1 && flag_photon2_ft  ==1) ggIM_mm2_h[1][2]  -> Fill(pi0im);
-      if ((flag_photon1_PCAL==1 && flag_photon2_ECAL==1) || (flag_photon2_PCAL==1 && flag_photon1_ECAL==1)) ggIM_mm2_h[1][3]  -> Fill(pi0im);
-      if ((flag_photon1_ECAL==1 && flag_photon2_ft  ==1) || (flag_photon2_ECAL==1 && flag_photon1_ft  ==1)) ggIM_mm2_h[1][4]  -> Fill(pi0im);
-      if ((flag_photon1_PCAL==1 && flag_photon2_ft  ==1) || (flag_photon2_PCAL==1 && flag_photon1_ft  ==1)) ggIM_mm2_h[1][5]  -> Fill(pi0im);
+    if(MM2_total>-0.3&&MM2_total<0.3){
+      if (flag_photon1_PCAL==1 && flag_photon2_PCAL==1) ggIM_mm2_h[1][0]  -> Fill(IM_g1g2);
+      if (flag_photon1_ECAL==1 && flag_photon2_ECAL==1) ggIM_mm2_h[1][1]  -> Fill(IM_g1g2);
+      if (flag_photon1_ft  ==1 && flag_photon2_ft  ==1) ggIM_mm2_h[1][2]  -> Fill(IM_g1g2);
+      if ((flag_photon1_PCAL==1 && flag_photon2_ECAL==1) || (flag_photon2_PCAL==1 && flag_photon1_ECAL==1)) ggIM_mm2_h[1][3]  -> Fill(IM_g1g2);
+      if ((flag_photon1_ECAL==1 && flag_photon2_ft  ==1) || (flag_photon2_ECAL==1 && flag_photon1_ft  ==1)) ggIM_mm2_h[1][4]  -> Fill(IM_g1g2);
+      if ((flag_photon1_PCAL==1 && flag_photon2_ft  ==1) || (flag_photon2_PCAL==1 && flag_photon1_ft  ==1)) ggIM_mm2_h[1][5]  -> Fill(IM_g1g2);
     }
-    if(pi0mm2>-0.2&&pi0mm2<0.2){
-      if (flag_photon1_PCAL==1 && flag_photon2_PCAL==1) ggIM_mm2_h[2][0]  -> Fill(pi0im);
-      if (flag_photon1_ECAL==1 && flag_photon2_ECAL==1) ggIM_mm2_h[2][1]  -> Fill(pi0im);
-      if (flag_photon1_ft  ==1 && flag_photon2_ft  ==1) ggIM_mm2_h[2][2]  -> Fill(pi0im);
-      if ((flag_photon1_PCAL==1 && flag_photon2_ECAL==1) || (flag_photon2_PCAL==1 && flag_photon1_ECAL==1)) ggIM_mm2_h[2][3]  -> Fill(pi0im);
-      if ((flag_photon1_ECAL==1 && flag_photon2_ft  ==1) || (flag_photon2_ECAL==1 && flag_photon1_ft  ==1)) ggIM_mm2_h[2][4]  -> Fill(pi0im);
-      if ((flag_photon1_PCAL==1 && flag_photon2_ft  ==1) || (flag_photon2_PCAL==1 && flag_photon1_ft  ==1)) ggIM_mm2_h[2][5]  -> Fill(pi0im);
+    if(MM2_total>-0.2&&MM2_total<0.2){
+      if (flag_photon1_PCAL==1 && flag_photon2_PCAL==1) ggIM_mm2_h[2][0]  -> Fill(IM_g1g2);
+      if (flag_photon1_ECAL==1 && flag_photon2_ECAL==1) ggIM_mm2_h[2][1]  -> Fill(IM_g1g2);
+      if (flag_photon1_ft  ==1 && flag_photon2_ft  ==1) ggIM_mm2_h[2][2]  -> Fill(IM_g1g2);
+      if ((flag_photon1_PCAL==1 && flag_photon2_ECAL==1) || (flag_photon2_PCAL==1 && flag_photon1_ECAL==1)) ggIM_mm2_h[2][3]  -> Fill(IM_g1g2);
+      if ((flag_photon1_ECAL==1 && flag_photon2_ft  ==1) || (flag_photon2_ECAL==1 && flag_photon1_ft  ==1)) ggIM_mm2_h[2][4]  -> Fill(IM_g1g2);
+      if ((flag_photon1_PCAL==1 && flag_photon2_ft  ==1) || (flag_photon2_PCAL==1 && flag_photon1_ft  ==1)) ggIM_mm2_h[2][5]  -> Fill(IM_g1g2);
     }
 
   }//chain-loop

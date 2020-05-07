@@ -26,24 +26,24 @@ using namespace clas12;
    double tneg;
    double W;
    double xB;
-   double pi0im;
-   double pi0mm2;
-   double pi0mp;
-   double recprotmm;
-   double specneutmp;
-   double specneutmm;
+   double IM_g1g2;
+   double MM2_total;
+   double MM2_total;
+   double MM_rec_recoil;
+   double MP_rec_spectator;
+   double MM_rec_spectator;
 
    chain.SetBranchAddress("excl", &excl);
    chain.SetBranchAddress("Q2", &Q2);
    chain.SetBranchAddress("tneg", &tneg);
    chain.SetBranchAddress("W", &W);
    chain.SetBranchAddress("xB", &xB);
-   chain.SetBranchAddress("pi0im", &pi0im);
-   chain.SetBranchAddress("pi0mm2", &pi0mm2);
-   chain.SetBranchAddress("pi0mp", &pi0mp);
-   chain.SetBranchAddress("recprotmm", &recprotmm);
-   chain.SetBranchAddress("specneutmp", &specneutmp);
-   chain.SetBranchAddress("specneutmm", &specneutmm);
+   chain.SetBranchAddress("IM_g1g2", &IM_g1g2);
+   chain.SetBranchAddress("MM2_total", &MM2_total);
+   chain.SetBranchAddress("MM2_total", &MM2_total);
+   chain.SetBranchAddress("MM_rec_recoil", &MM_rec_recoil);
+   chain.SetBranchAddress("MP_rec_spectator", &MP_rec_spectator);
+   chain.SetBranchAddress("MM_rec_spectator", &MM_rec_spectator);
 
    histos();
 
@@ -51,63 +51,63 @@ using namespace clas12;
      chain.GetEntry(i);
 
      /*=====PRE-CUT HISTOS=====*/
-     pi0im_h[0]  -> Fill(pi0im);
-     pi0mm2_h[0] -> Fill(pi0mm2);
-     pi0mp_h[0]  -> Fill(pi0mp);
+     IM_g1g2_h[0]  -> Fill(IM_g1g2);
+     MM2_total_h[0] -> Fill(MM2_total);
+     MM2_total_h[0]  -> Fill(MM2_total);
      Q2_h[0]     -> Fill(Q2);
      xB_h[0]     -> Fill(xB);
      Q2xB_h[0]   -> Fill(xB, Q2);
      tneg_h[0]   -> Fill(tneg);
      W_h[0]      -> Fill(W);
 
-     pi0_immm2_h[0] -> Fill(pi0mm2, pi0im);
-     pi0_immp_h[0]  -> Fill(pi0mp, pi0im);
-     pi0_mm2mp_h[0] -> Fill(pi0mp, pi0mm2);
+     pi0_immm2_h[0] -> Fill(MM2_total, IM_g1g2);
+     pi0_immp_h[0]  -> Fill(MM2_total, IM_g1g2);
+     pi0_mm2mp_h[0] -> Fill(MM2_total, MM2_total);
 
-     recprotmm_h[0]      -> Fill(recprotmm);
-     spectneutmm_h[0]    -> Fill(specneutmm);
-     spectneutmp_h[0]    -> Fill(specneutmp);
-     spectneut_mpmm_h[0] -> Fill(specneutmm, specneutmp);
+     MM_rec_recoil_h[0]      -> Fill(MM_rec_recoil);
+     spectneutmm_h[0]    -> Fill(MM_rec_spectator);
+     spectneutmp_h[0]    -> Fill(MP_rec_spectator);
+     spectneut_mpmm_h[0] -> Fill(MM_rec_spectator, MP_rec_spectator);
 
-     /*=====POST-pi0MM2-CUT HISTOS=====*/
-     if(pi0mm2 < -0.0853 || pi0mm2 > 0.0718) continue;
-     pi0im_h[1]  -> Fill(pi0im);
-     pi0mm2_h[1] -> Fill(pi0mm2);
-     pi0mp_h[1]  -> Fill(pi0mp);
+     /*=====POST-MM2_total-CUT HISTOS=====*/
+     if(MM2_total < -0.0853 || MM2_total > 0.0718) continue;
+     IM_g1g2_h[1]  -> Fill(IM_g1g2);
+     MM2_total_h[1] -> Fill(MM2_total);
+     MM2_total_h[1]  -> Fill(MM2_total);
      Q2_h[1]     -> Fill(Q2);
      xB_h[1]     -> Fill(xB);
      Q2xB_h[1]   -> Fill(xB, Q2);
      tneg_h[1]   -> Fill(tneg);
      W_h[1]      -> Fill(W);
 
-     pi0_immm2_h[1] -> Fill(pi0mm2, pi0im);
-     pi0_immp_h[1]  -> Fill(pi0mp, pi0im);
-     pi0_mm2mp_h[1] -> Fill(pi0mp, pi0mm2);
+     pi0_immm2_h[1] -> Fill(MM2_total, IM_g1g2);
+     pi0_immp_h[1]  -> Fill(MM2_total, IM_g1g2);
+     pi0_mm2mp_h[1] -> Fill(MM2_total, MM2_total);
 
-     recprotmm_h[1]      -> Fill(recprotmm);
-     spectneutmm_h[1]    -> Fill(specneutmm);
-     spectneutmp_h[1]    -> Fill(specneutmp);
-     spectneut_mpmm_h[1] -> Fill(specneutmm, specneutmp);
+     MM_rec_recoil_h[1]      -> Fill(MM_rec_recoil);
+     spectneutmm_h[1]    -> Fill(MM_rec_spectator);
+     spectneutmp_h[1]    -> Fill(MP_rec_spectator);
+     spectneut_mpmm_h[1] -> Fill(MM_rec_spectator, MP_rec_spectator);
 
      /*=====POST-spectMP-CUT HISTOS=====*/
-     if(specneutmp > 0.3) continue;
-     pi0im_h[2]  -> Fill(pi0im);
-     pi0mm2_h[2] -> Fill(pi0mm2);
-     pi0mp_h[2]  -> Fill(pi0mp);
+     if(MP_rec_spectator > 0.3) continue;
+     IM_g1g2_h[2]  -> Fill(IM_g1g2);
+     MM2_total_h[2] -> Fill(MM2_total);
+     MM2_total_h[2]  -> Fill(MM2_total);
      Q2_h[2]     -> Fill(Q2);
      xB_h[2]     -> Fill(xB);
      Q2xB_h[2]   -> Fill(xB, Q2);
      tneg_h[2]   -> Fill(tneg);
      W_h[2]      -> Fill(W);
 
-     pi0_immm2_h[2] -> Fill(pi0mm2, pi0im);
-     pi0_immp_h[2]  -> Fill(pi0mp, pi0im);
-     pi0_mm2mp_h[2] -> Fill(pi0mp, pi0mm2);
+     pi0_immm2_h[2] -> Fill(MM2_total, IM_g1g2);
+     pi0_immp_h[2]  -> Fill(MM2_total, IM_g1g2);
+     pi0_mm2mp_h[2] -> Fill(MM2_total, MM2_total);
 
-     recprotmm_h[2]      -> Fill(recprotmm);
-     spectneutmm_h[2]    -> Fill(specneutmm);
-     spectneutmp_h[2]    -> Fill(specneutmp);
-     spectneut_mpmm_h[2] -> Fill(specneutmm, specneutmp);
+     MM_rec_recoil_h[2]      -> Fill(MM_rec_recoil);
+     spectneutmm_h[2]    -> Fill(MM_rec_spectator);
+     spectneutmp_h[2]    -> Fill(MP_rec_spectator);
+     spectneut_mpmm_h[2] -> Fill(MM_rec_spectator, MP_rec_spectator);
 
    }//chain-loop
 
@@ -147,17 +147,17 @@ using namespace clas12;
 
    //Channel masses etc.
    //---------------------------------------------------------------------------------------------------------------
-   pi0im_h[0]  = new TH1F("pi0im_0_h", "Invariant mass of paired photons - Before pi0MM^{2} cut; Inv.Mass (GeV); counts", 200, 0, 0.2);
-   pi0im_h[1]  = new TH1F("pi0im_1_h", "Invariant mass of paired photons; Inv.Mass (GeV); counts",                        200, 0, 0.2);
-   pi0im_h[2]  = new TH1F("pi0im_2_h", "Invariant mass of paired photons - Post spectMP cut; Inv.Mass (GeV); counts",     200, 0, 0.2);
+   IM_g1g2_h[0]  = new TH1F("IM_g1g2_0_h", "Invariant mass of paired photons - Before pi0MM^{2} cut; Inv.Mass (GeV); counts", 200, 0, 0.2);
+   IM_g1g2_h[1]  = new TH1F("IM_g1g2_1_h", "Invariant mass of paired photons; Inv.Mass (GeV); counts",                        200, 0, 0.2);
+   IM_g1g2_h[2]  = new TH1F("IM_g1g2_2_h", "Invariant mass of paired photons - Post spectMP cut; Inv.Mass (GeV); counts",     200, 0, 0.2);
 
-   pi0mm2_h[0] = new TH1F("pi0mm2_0_h", "Missing Mass-Squared [e p -> e' p' #gamma_{1} #gamma_{2}] - Before pi0MM^{2} cut; MissingMass-Sq (GeV^{2}); counts", 200, -.5, .5);
-   pi0mm2_h[1] = new TH1F("pi0mm2_1_h", "Missing Mass-Squared [e p -> e' p' #gamma_{1} #gamma_{2}]; MissingMass-Sq (GeV^{2}); counts",                        200, -.5, .5);
-   pi0mm2_h[2] = new TH1F("pi0mm2_2_h", "Missing Mass-Squared [e p -> e' p' #gamma_{1} #gamma_{2}] - Post spectMP cut; MissingMass-Sq (GeV^{2}); counts",     200, -.5, .5);
+   MM2_total_h[0] = new TH1F("MM2_total_0_h", "Missing Mass-Squared [e p -> e' p' #gamma_{1} #gamma_{2}] - Before pi0MM^{2} cut; MissingMass-Sq (GeV^{2}); counts", 200, -.5, .5);
+   MM2_total_h[1] = new TH1F("MM2_total_1_h", "Missing Mass-Squared [e p -> e' p' #gamma_{1} #gamma_{2}]; MissingMass-Sq (GeV^{2}); counts",                        200, -.5, .5);
+   MM2_total_h[2] = new TH1F("MM2_total_2_h", "Missing Mass-Squared [e p -> e' p' #gamma_{1} #gamma_{2}] - Post spectMP cut; MissingMass-Sq (GeV^{2}); counts",     200, -.5, .5);
 
-   pi0mp_h[0]  = new TH1F("pi0mp_0_h", "Missing Momentum [e p -> e' p' #gamma_{1} #gamma_{2}] - Before pi0MM^{2} cut; MissingMomentum (GeV); counts",         200, 0, 6);
-   pi0mp_h[1]  = new TH1F("pi0mp_1_h", "Missing Momentum [e p -> e' p' #gamma_{1} #gamma_{2}]; MissingMomentum-Sq (GeV); counts",                             200, 0, 6);
-   pi0mp_h[2]  = new TH1F("pi0mp_2_h", "Missing Momentum [e p -> e' p' #gamma_{1} #gamma_{2}] - Post spectMP cut; MissingMomentum-Sq (GeV); counts",          200, 0, 6);
+   MM2_total_h[0]  = new TH1F("MM2_total_0_h", "Missing Momentum [e p -> e' p' #gamma_{1} #gamma_{2}] - Before pi0MM^{2} cut; MissingMomentum (GeV); counts",         200, 0, 6);
+   MM2_total_h[1]  = new TH1F("MM2_total_1_h", "Missing Momentum [e p -> e' p' #gamma_{1} #gamma_{2}]; MissingMomentum-Sq (GeV); counts",                             200, 0, 6);
+   MM2_total_h[2]  = new TH1F("MM2_total_2_h", "Missing Momentum [e p -> e' p' #gamma_{1} #gamma_{2}] - Post spectMP cut; MissingMomentum-Sq (GeV); counts",          200, 0, 6);
 
    pi0_immm2_h[0] = new TH2F ("pi0_immm2_0_h", "Inv. Mass of photon-pair vs. MM^{2}[e p -> e' p' #gamma_{1} #gamma_{2}] Pre-pi0MM^{2} cut; MissingMass-Sq (GeV^{2}); Inv.Mass (GeV)", 200, -.5, .5, 200, 0, 0.2);
    pi0_immm2_h[1] = new TH2F ("pi0_immm2_1_h", "Inv. Mass of photon-pair vs. MM^{2}[e p -> e' p' #gamma_{1} #gamma_{2}]; MissingMass-Sq (GeV^{2}); Inv.Mass (GeV)",                   200, -.5, .5, 200, 0, 0.2);
@@ -173,9 +173,9 @@ using namespace clas12;
 
    //Reconstructed particles for BG clean-up
    //---------------------------------------------------------------------------------------------------------------
-   recprotmm_h[0]   = new TH1F("recprotmm_0_h", "MM[e p -> e' #gamma_{1} #gamma_{2}] - Before pi0MM^{2} cut; MM of reconstructed proton (GeV); counts",                180, 0, 3);
-   recprotmm_h[1]   = new TH1F("recprotmm_1_h", "MM[e p -> e' #gamma_{1} #gamma_{2}]; MM of reconstructed proton (GeV); counts",                                       180, 0, 3);
-   recprotmm_h[2]   = new TH1F("recprotmm_2_h", "MM[e p -> e' #gamma_{1} #gamma_{2}] - Post spectMP cut; MM of reconstructed proton (GeV); counts",                    180, 0, 3);
+   MM_rec_recoil_h[0]   = new TH1F("MM_rec_recoil_0_h", "MM[e p -> e' #gamma_{1} #gamma_{2}] - Before pi0MM^{2} cut; MM of reconstructed proton (GeV); counts",                180, 0, 3);
+   MM_rec_recoil_h[1]   = new TH1F("MM_rec_recoil_1_h", "MM[e p -> e' #gamma_{1} #gamma_{2}]; MM of reconstructed proton (GeV); counts",                                       180, 0, 3);
+   MM_rec_recoil_h[2]   = new TH1F("MM_rec_recoil_2_h", "MM[e p -> e' #gamma_{1} #gamma_{2}] - Post spectMP cut; MM of reconstructed proton (GeV); counts",                    180, 0, 3);
 
    spectneutmp_h[0] = new TH1F("spectneutmp_0_h", "MP[e d -> e' p' #gamma_{1} #gamma_{2}] - Before pi0MM^{2} cut; MP of reconstructed spect. neutron (GeV/c); counts", 200, 0, 6);
    spectneutmp_h[1] = new TH1F("spectneutmp_1_h", "MP[e d -> e' p' #gamma_{1} #gamma_{2}]; MP of reconstructed spect. neutron (GeV/c); counts",                        200, 0, 6);
