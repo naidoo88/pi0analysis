@@ -172,6 +172,12 @@ void fitcutstudyhistos(TString inputFile){ //TODO - Figure out less crude SBR, n
 		ggIM_coneangle_bg  [1][i]->SetLineColor(kOrange);
 		ggIM_coneangle_bg  [1][i]->SetLineWidth(1);
 		ggIM_coneangle_bg  [1][i]->Draw("SAME"); //new background
+
+		double mean = ggIM_coneangle_sig[1][i]->GetParameter(1);
+		double sig = ggIM_coneangle_sig[1][i]->GetParameter(2);
+
+		cout << det[i] << "	Mean: " << mean << "  Sig: " << sig << "  Lower: " << mean - 3*sig << "  Upper: " << mean + 3*sig << endl;
+
 	}
 	C->SetWindowSize(1920, 1080);
 	C->SetCanvasSize(1920, 1080);
