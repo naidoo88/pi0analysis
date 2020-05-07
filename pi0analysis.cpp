@@ -47,18 +47,18 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
   TTree *data = new TTree("data", "Processed Data.");
      data->Branch("Q2",   &Q2,   "Q2/D");
      data->Branch("tneg", &tneg, "tneg/D");
-     data->Branch("W",    &W,    "W/D");
+     data->Branch("W2",    &W2,    "W2/D");
      data->Branch("xB",   &xB ,  "xB/D");
 
      data->Branch("n_photons_in_event", &n_photons_in_event, "n_photons_in_event/I");
-     data->Branch("pi0im",  &pi0im,  "pi0im/D");
-     data->Branch("pi0mm2", &pi0mm2, "pi0mm2/D");
-     data->Branch("pi0mp",  &pi0mp,  "pi0mp/D");
+     data->Branch("IM_g1g2",  &IM_g1g2,  "IM_g1g2/D");
+     data->Branch("MM2_total", &MM2_total, "MM2_total/D");
+     data->Branch("MM2_total",  &MM2_total,  "MM2_total/D");
 
-     data->Branch("recprotmm",  &recprotmm,  "recprotmm/D");
-     data->Branch("recprotmp",  &recprotmp,  "recprotmp/D");
-     data->Branch("specneutmp", &specneutmp, "specneutmp/D");
-     data->Branch("specneutmm", &specneutmm, "specneutmm/D");
+     data->Branch("MM_rec_recoil",  &MM_rec_recoil,  "MM_rec_recoil/D");
+     data->Branch("MM_rec_recoil",  &MM_rec_recoil,  "MM_rec_recoil/D");
+     data->Branch("MP_rec_spectator", &MP_rec_spectator, "MP_rec_spectator/D");
+     data->Branch("MM_rec_spectator", &MM_rec_spectator, "MM_rec_spectator/D");
 
      data->Branch("pi0coneangle",   &pi0coneangle,   "pi0coneangle/D");
      data->Branch("phi_Nvg",        &phi_Nvg,        "phi_Nvg/D");
@@ -68,8 +68,9 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
      data->Branch("cop_Nvg_Nnew",   &cop_Nvg_Nnew,   "cop_Nvg_Nnew/D");
      data->Branch("cop_Nnew_vgnew", &cop_Nnew_vgnew, "cop_Nnew_vgnew/D");
 
-     data->Branch("flag_excl",         &flag_excl,         "flag_excl/O");
-     // data->Branch("flag_pi0mm2",       &flag_pi0mm2,       "flag_pi0mm2/O");
+     data->Branch("flag_dis_cuts",         &flag_dis_cuts,         "flag_dis_cuts/O");
+     data->Branch("flag_excl_cuts",        &flag_excl_cuts,        "flag_excl_cuts/O");
+     // data->Branch("flag_MM2_total",       &flag_MM2_total,       "flag_MM2_total/O");
      // data->Branch("flag_spectneutmp",  &flag_spectneutmp,  "flag_spectneutmp/O");
 
      data->Branch("flag_photon1_ft",   &flag_photon1_ft,   "flag_photon1_ft/O");
@@ -143,8 +144,8 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
           int n_pairs = 0;
           TLorentzVector system;  //[e p -> e' p' g1 g2]
           TLorentzVector photcombo;
-          TLorentzVector recprot;
-          TLorentzVector recspecneut;
+          TLorentzVector rec_recoil;
+          TLorentzVector rec_spectator;
           TLorentzVector expected_pi0;
 
           n_photons_in_event = photonbuff.size();
@@ -171,47 +172,47 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
               Q2   = -1*(beam - e).M2();
               xB   = Q2 / 2*(target*(beam - e));
               tneg = -(prot-target).M2();
-              W    = (e + prot + phot1 + phot2).M2();
+              W2    = (e + prot + phot1 + phot2).M2();
 
               /*======= DIS CUTS =======*/
               //Q2   = -1*(beam - e).M2();
               //if(Q2 < 1)   continue; // could be 1.5, 2... revisit at asymmetry stage
               //tneg = -(prot-target).M2();
               //if(tneg > 1) continue; //**DOUBLE CHECK THIS AGAINST THEORY PAPER**
-              //W    = (e + prot + phot1 + phot2).M2();
-              //if(W  < 4)   continue;
+              //W2    = (e + prot + phot1 + phot2).M2(); //fix name
+              //if(W2  < 4)   continue;
               /*========================*/
 
               system = (beam+target)-(e+prot+phot1+phot2); //[e p -> e' p' g1 g2]
-              pi0im  = photcombo.M();
-              pi0mm2 = system.M2();
-              pi0mp  = system.P();
+              IM_g1g2  = photcombo.M();
+              MM2_total = system.M2();
+              MP_total  = system.P();
 
-              recprot     = (beam+target)-(e+phot1+phot2);
+              rec_recoil     = (beam+target)-(e+phot1+phot2); //reconstruct recoil
               expected_pi0 = target+beam-e-prot;
               pi0coneangle = (expected_pi0.Angle(photcombo.Vect()))*DEG;
 
-              recspecneut = (beam+deut)-(e+prot+phot1+phot2);
-              recprotmm  = recprot.M();
-              recprotmp =  recprot.P();
-              specneutmp = recspecneut.P();
-              specneutmm = recspecneut.M();
+              rec_spectator = (beam+deut)-(e+prot+phot1+phot2); //reconstruct spectator
+              MM_rec_recoil  = rec_recoil.M();
+              MM_rec_recoil =  rec_recoil.P();
+              MP_rec_spectator = rec_spectator.P();
+              MM_rec_spectator = rec_spectator.M();
 
               //###################################################################################
-              // Set Flags -- DIS cuts, mass/mom' cuts.
+              // Set Flags -- DIS cuts, excl' cuts.
               //###################################################################################
-              if((Q2 > 1) && (tneg < 1) && (W  > 4)){ //Set flag for pass/fail on exclusivity cuts.
-                flag_excl = 1;
+              if((Q2 > 1) && (tneg < 1) && (W2  > 4)){ //Set flag for pass/fail on DIS cuts.
+                flag_dis_cuts = 1;
                 n_excl_events++;
               }
-              else flag_excl = 0;
+              else flag_dis_cuts = 0;
 
-              // if(pi0mm2 < -0.0853 || pi0mm2 > 0.0718){//mu = -0.006743, sig = 0.02618
-              //   flag_pi0mm2 = 0;
+              // if(MM2_total < -0.0853 || MM2_total > 0.0718){//mu = -0.006743, sig = 0.02618
+              //   flag_MM2_total = 0;
               // }
-              // else flag_pi0mm2 = 1; //cut passed
+              // else flag_MM2_total = 1; //cut passed
 
-              // if(specneutmp > 0.3){//300MeV cut on spectator missing momentum
+              // if(MP_rec_spectator > 0.3){//300MeV cut on spectator missing momentum
               //   flag_spectneutmp = 0;
               // }
               // else flag_spectneutmp = 1;

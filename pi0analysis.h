@@ -17,8 +17,9 @@ double cop_Nvg_Nnew;
 double cop_Nnew_vgnew;
 
 /*  Flags  */
-bool flag_excl;
-//bool flag_pi0mm2;
+bool flag_dis_cuts;
+bool flag_excl_cuts;
+//bool flag_MM2_total;
 //bool flag_spectneutmp;
 
 bool flag_photon1_ft;
@@ -48,13 +49,13 @@ double W;
 double xB;
 
 double pi0coneangle;
-double pi0im;
-double pi0mm2;
-double pi0mp;
+double IM_g1g2;
+double MM2_total;
+double MM2_total;
 
-double mm_eN_to_eg1g2;
-double mp_eN_to_eg1g2;
-double mp_eD_to_epg1g2;
-double mm_eD_to_epg1g2;
+double MM_rec_recoil;
+double MM_rec_recoil;
+double MP_rec_spectator;
+double MM_rec_spectator;
 
 #endif
