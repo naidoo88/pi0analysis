@@ -51,10 +51,10 @@ double tneg;
 double W2;
 double xB;
 
-double pi0coneangle;
 double IM_g1g2;
 double MM2_total;
 double MP_total;
+double pi0coneangle;
 
 double MM_rec_recoil;
 double MP_rec_recoil;
