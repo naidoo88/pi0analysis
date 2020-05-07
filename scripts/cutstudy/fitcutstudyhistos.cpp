@@ -181,5 +181,34 @@ void fitcutstudyhistos(TString inputFile){ //TODO - Figure out less crude SBR, n
 	}
 	C->SetWindowSize(1920, 1080);
 	C->SetCanvasSize(1920, 1080);
-
+	// 
+	// TCanvas* D = new TCanvas("D");
+	//
+	// D->Divide(2,1);
+	// D->cd(1);
+	// ggIM_coneangle_fits[1][0]->SetParName(0, "amp");
+	// ggIM_coneangle_fits[1][0]->SetParName(1, "mean");
+	// ggIM_coneangle_fits[1][0]->SetParName(2, "#sigma");
+	// ggIM_coneangle_fits[1][0]->SetParName(3, "constant");
+	// ggIM_coneangle_fits[1][0]->SetParName(4, "kx");
+	// ggIM_coneangle_fits[1][0]->SetParName(5, "kx^{2}");
+	//
+	// ggIM_coneangle_fits[1][0]->SetLineColor(kBlack);
+	// ggIM_coneangle_h   [1][0]->Draw();  //fitted histo
+	// ggIM_coneangle_sig [1][0]->SetLineColor(kGreen);
+	// ggIM_coneangle_sig [1][0]->Draw("SAME"); //new signal function
+	// ggIM_coneangle_bg  [1][0]->SetLineColor(kOrange);
+	// ggIM_coneangle_bg  [1][0]->SetLineWidth(1);
+	// ggIM_coneangle_bg  [1][0]->Draw("SAME"); //new background
+	// ggIM_coneangle_h   [1][0]->SetTitle("Invariant mass[#gamma_{1} #gamma_{2}] - CD");
+	//
+	// D->cd(2);
+	// ggIM_coneangle_fits[1][2]->SetLineColor(kBlack);
+	// ggIM_coneangle_h   [1][2]->Draw();  //fitted histo
+	// ggIM_coneangle_sig [1][2]->SetLineColor(kGreen);
+	// ggIM_coneangle_sig [1][2]->Draw("SAME"); //new signal function
+	// ggIM_coneangle_bg  [1][2]->SetLineColor(kOrange);
+	// ggIM_coneangle_bg  [1][2]->SetLineWidth(1);
+	// ggIM_coneangle_bg  [1][2]->Draw("SAME"); //new background
+	// ggIM_coneangle_h   [1][2]->SetTitle("Invariant mass[#gamma_{1} #gamma_{2}] - FT");
 }//macro
