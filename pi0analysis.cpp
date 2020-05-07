@@ -46,6 +46,8 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
   //##############################################################################
 
   TTree *data = new TTree("data", "Processed Data.");
+     data->Branch("helicity",   &helicity,   "helicity/I");
+
      data->Branch("Q2",   &Q2,   "Q2/D");
      data->Branch("tneg", &tneg, "tneg/D");
      data->Branch("W2",   &W2,   "W2/D");
@@ -151,6 +153,9 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
                     electronbuff[0]->par()->getPy(),
                     electronbuff[0]->par()->getPz(),
                     em);
+
+          helicity = c12.event()->getHelicity();
+          cout << "Helicity is: " << helicity << endl;
 
           TLorentzVector system;        //[e N -> e' R g1 g2]
           TLorentzVector photcombo;

@@ -46,6 +46,8 @@ int n_postcut_events;
 int n_ECAL_doublehits;
 int n_photons_in_event;
 
+int helicity;
+
 double Q2;
 double tneg;
 double W2;
