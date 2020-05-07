@@ -36,6 +36,7 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
   int n_files = 0;
   int n_pairs = 0;
   n_events          = 0;
+  n_dis_events      = 0;
   n_excl_events     = 0;
   n_postcut_events  = 0;
   n_ECAL_doublehits = 0;
@@ -47,16 +48,19 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
   TTree *data = new TTree("data", "Processed Data.");
      data->Branch("Q2",   &Q2,   "Q2/D");
      data->Branch("tneg", &tneg, "tneg/D");
-     data->Branch("W2",    &W2,    "W2/D");
+     data->Branch("W2",   &W2,   "W2/D");
      data->Branch("xB",   &xB ,  "xB/D");
 
-     data->Branch("n_photons_in_event", &n_photons_in_event, "n_photons_in_event/I");
-     data->Branch("IM_g1g2",  &IM_g1g2,  "IM_g1g2/D");
-     data->Branch("MM2_total", &MM2_total, "MM2_total/D");
-     data->Branch("MM2_total",  &MM2_total,  "MM2_total/D");
+     data->Branch("n_photons_in_event",   &n_photons_in_event,   "n_photons_in_event/I");
+     data->Branch("n_goodpi0_candidates", &n_goodpi0_candidates, "n_goodpi0_candidates/I");
 
-     data->Branch("MM_rec_recoil",  &MM_rec_recoil,  "MM_rec_recoil/D");
-     data->Branch("MM_rec_recoil",  &MM_rec_recoil,  "MM_rec_recoil/D");
+
+     data->Branch("IM_g1g2",   &IM_g1g2,   "IM_g1g2/D");
+     data->Branch("MM2_total", &MM2_total, "MM2_total/D");
+     data->Branch("MM2_total", &MM2_total, "MM2_total/D");
+
+     data->Branch("MM_rec_recoil",    &MM_rec_recoil,    "MM_rec_recoil/D");
+     data->Branch("MM_rec_recoil",    &MM_rec_recoil,    "MM_rec_recoil/D");
      data->Branch("MP_rec_spectator", &MP_rec_spectator, "MP_rec_spectator/D");
      data->Branch("MM_rec_spectator", &MM_rec_spectator, "MM_rec_spectator/D");
 
@@ -68,8 +72,8 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
      data->Branch("cop_Nvg_Nnew",   &cop_Nvg_Nnew,   "cop_Nvg_Nnew/D");
      data->Branch("cop_Nnew_vgnew", &cop_Nnew_vgnew, "cop_Nnew_vgnew/D");
 
-     data->Branch("flag_dis_cuts",         &flag_dis_cuts,         "flag_dis_cuts/O");
-     data->Branch("flag_excl_cuts",        &flag_excl_cuts,        "flag_excl_cuts/O");
+     data->Branch("flag_cuts_dis",  &flag_cuts_dis,  "flag_cuts_dis/O");
+     data->Branch("flag_cuts_excl", &flag_cuts_excl, "flag_cuts_excl/O");
      // data->Branch("flag_MM2_total",       &flag_MM2_total,       "flag_MM2_total/O");
      // data->Branch("flag_spectneutmp",  &flag_spectneutmp,  "flag_spectneutmp/O");
 
@@ -116,7 +120,6 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
         TLorentzVector phot1  (0,0,0,0);
         TLorentzVector phot2  (0,0,0,0);
         TLorentzVector q      (0,0,0,0);
-        TLorentzVector mm     (0,0,0,0);
 
         double em    = db -> GetParticle(11)  -> Mass();
         double protm = db -> GetParticle(2212)-> Mass();
@@ -141,14 +144,15 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
                     electronbuff[0]->par()->getPz(),
                     em);
 
-          int n_pairs = 0;
-          TLorentzVector system;  //[e p -> e' p' g1 g2]
+          TLorentzVector system;        //[e N -> e' R g1 g2]
           TLorentzVector photcombo;
-          TLorentzVector rec_recoil;
-          TLorentzVector rec_spectator;
+          TLorentzVector rec_recoil;    //[e p -> e' g1 g2]
+          TLorentzVector rec_spectator; //[e D -> e' R g1 g2]
           TLorentzVector expected_pi0;
 
-          n_photons_in_event = photonbuff.size();
+          int n_pairs              = 0;
+          int n_good_pi0candidates = 0;
+          n_photons_in_event       = photonbuff.size();
 
           for (int i=0; i<n_photons_in_event-1; i++){
             for (int j=i+1; j<n_photons_in_event; j++){
@@ -162,26 +166,6 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
                             photonbuff[j]->par()->getPz(),
                             0);
               photcombo = phot1 + phot2;
-
-              //Set Photon flags:
-              photonflags(photonbuff[i], photonbuff[j], n_ECAL_doublehits);
-
-              //Calc trento-phi and co-planarity angles:
-              calc_angles(beam.Vect(), e.Vect(), prot.Vect(), photcombo.Vect());
-
-              Q2   = -1*(beam - e).M2();
-              xB   = Q2 / 2*(target*(beam - e));
-              tneg = -(prot-target).M2();
-              W2    = (e + prot + phot1 + phot2).M2();
-
-              /*======= DIS CUTS =======*/
-              //Q2   = -1*(beam - e).M2();
-              //if(Q2 < 1)   continue; // could be 1.5, 2... revisit at asymmetry stage
-              //tneg = -(prot-target).M2();
-              //if(tneg > 1) continue; //**DOUBLE CHECK THIS AGAINST THEORY PAPER**
-              //W2    = (e + prot + phot1 + phot2).M2(); //fix name
-              //if(W2  < 4)   continue;
-              /*========================*/
 
               system = (beam+target)-(e+prot+phot1+phot2); //[e p -> e' p' g1 g2]
               IM_g1g2  = photcombo.M();
@@ -198,14 +182,67 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
               MP_rec_spectator = rec_spectator.P();
               MM_rec_spectator = rec_spectator.M();
 
-              //###################################################################################
-              // Set Flags -- DIS cuts, excl' cuts.
-              //###################################################################################
-              if((Q2 > 1) && (tneg < 1) && (W2  > 4)){ //Set flag for pass/fail on DIS cuts.
-                flag_dis_cuts = 1;
-                n_excl_events++;
+              //Calc trento-phi and co-planarity angles:
+              calc_angles(beam.Vect(), e.Vect(), prot.Vect(), photcombo.Vect());
+
+              //Set Photon flags:
+              photonflags(photonbuff[i], photonbuff[j], n_ECAL_doublehits);
+
+              //Set "good"-pi0 event flag
+              /*
+              // [IM_gg fitted (per detector) with MM2 +/- 0.5GeV && pi0coneangle < 20deg]
+              // -- 3 sigma cut gives the following:
+              // ---- both PCAL: Mean: 0.131183  Sig: 0.0132358 => Lower: 0.091476   Upper: 0.170891
+              // ---- both ECAL: Mean: 0.134668  Sig: 0.0110543 => Lower: 0.101505   Upper: 0.167831
+              // ---- both FCAL: Mean: 0.131060  Sig: 0.0060639 => Lower: 0.112868   Upper: 0.149252
+              // ---- PCAL/ECAL: Mean: 0.132082  Sig: 0.0127805 => Lower: 0.0937409  Upper: 0.170424
+              // ---- ECAL/FCAL: Mean: 0.127126  Sig: 0.0107954 => Lower: 0.0947396  Upper: 0.159512
+              // ---- PCAL/FCAL: Mean: 0.126721  Sig: 0.0119468 => Lower: 0.0908801  Upper: 0.162561
+              */
+
+              if ((flag_photon1_PCAL==1 && flag_photon2_PCAL==1) && (IM_g1g2 > 0.091476 && IM_g1g2 < 0.170891)) {
+                flag_goodpi0 = 1;
+                n_goodpi0_candidates++;
               }
-              else flag_dis_cuts = 0;
+              else if ((flag_photon1_ECAL==1 && flag_photon2_ECAL==1) && (IM_g1g2 > 0.101505 && IM_g1g2 < 0.167831)){
+                flag_goodpi0 = 1;
+                n_goodpi0_candidates++;
+              }
+              else if ((flag_photon1_ft==1 && flag_photon2_ft==1) && (IM_g1g2 > 0.112868 && IM_g1g2 < 0.149252)){
+                flag_goodpi0 = 1;
+                n_goodpi0_candidates++;
+              }
+              else if (((flag_photon1_PCAL==1 && flag_photon2_ECAL==1)||(flag_photon2_PCAL==1 && flag_photon1_ECAL==1)) && (IM_g1g2 > 0.0937409 && IM_g1g2 < 0.170424)){
+                flag_goodpi0 = 1;
+                n_goodpi0_candidates++;
+              }
+              else if (((flag_photon1_ECAL==1 && flag_photon2_ft==1)||(flag_photon2_ECAL==1 && flag_photon1_ft==1)) && (IM_g1g2 > 0.0947396 && IM_g1g2 < 0.159512)){
+                flag_goodpi0 = 1;
+                n_goodpi0_candidates++;
+              }
+              else if (((flag_photon1_PCAL==1 && flag_photon2_ft==1)||(flag_photon2_PCAL==1 && flag_photon1_ft==1)) && (IM_g1g2 > 0.0908801 && IM_g1g2 < 0.162561)){
+                flag_goodpi0 = 1;
+                n_goodpi0_candidates++;
+              }
+              else flag_goodpi0 = 0;
+
+
+              //###################################################################################
+              // Set Cut Flags -- DIS cuts, excl' cuts.
+              //###################################################################################
+
+              /*======= DIS CUTS =======*/
+              Q2   = -1*(beam - e).M2();
+              xB   = Q2 / 2*(target*(beam - e));
+              tneg = -(prot-target).M2(); //**DOUBLE CHECK THIS AGAINST THEORY PAPER**
+              W2    = (e + prot + phot1 + phot2).M2();
+
+              if((Q2 > 1) && (tneg < 1) && (W2  > 4)){
+                flag_cuts_dis = 1;
+                n_dis_events++;
+                //n_pairs_passed_dis++;
+              }
+              else flag_cuts_dis = 0;
 
               // if(MM2_total < -0.0853 || MM2_total > 0.0718){//mu = -0.006743, sig = 0.02618
               //   flag_MM2_total = 0;
@@ -339,5 +376,3 @@ void calc_angles(TVector3 Ebeam_vect, TVector3 Electron_vect, TVector3 Recoil_ve
    if ((vect_vgnew.Dot(Recoil_vect)) < 0) cop_Nnew_vgnew = -1*cop_Nnew_vgnew;   // sort of arbitrary, but makes sure there's a nice peak at zero
 
 }//calc_angles fxn
-
-//  LocalWords:  EIN EOUT PCAL ECAL wCAL
