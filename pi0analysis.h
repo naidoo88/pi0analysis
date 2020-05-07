@@ -17,8 +17,9 @@ double cop_Nvg_Nnew;
 double cop_Nnew_vgnew;
 
 /*  Flags  */
-bool flag_dis_cuts;
-bool flag_excl_cuts;
+bool flag_goodpi0;
+bool flag_cuts_dis;
+bool flag_cuts_excl;
 //bool flag_MM2_total;
 //bool flag_spectneutmp;
 
@@ -38,23 +39,25 @@ int  flag_photon2_wCAL;//kill when stable
 
 /*  Counters  */
 int n_events;
+int n_dis_events;
 int n_excl_events;
+int n_goodpi0_candidates;
 int n_postcut_events;
 int n_ECAL_doublehits;
 int n_photons_in_event;
 
 double Q2;
 double tneg;
-double W;
+double W2;
 double xB;
 
 double pi0coneangle;
 double IM_g1g2;
 double MM2_total;
-double MM2_total;
+double MP_total;
 
 double MM_rec_recoil;
-double MM_rec_recoil;
+double MP_rec_recoil;
 double MP_rec_spectator;
 double MM_rec_spectator;
 
