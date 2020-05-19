@@ -20,8 +20,11 @@ double cop_Nnew_vgnew;
 bool flag_goodpi0;
 bool flag_cuts_dis;
 bool flag_cuts_excl;
+bool flag_cuts_broadMM2;
+bool flag_cuts_broadcone;
+bool flag_cuts_spectMP; 
 //bool flag_MM2_total;
-//bool flag_spectneutmp;
+
 
 bool flag_photon1_ft;
 bool flag_photon1_PCAL;

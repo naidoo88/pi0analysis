@@ -78,9 +78,10 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
      data->Branch("flag_goodpi0",   &flag_goodpi0,   "flag_goodpi0/O");
      data->Branch("flag_cuts_dis",  &flag_cuts_dis,  "flag_cuts_dis/O");
      data->Branch("flag_cuts_excl", &flag_cuts_excl, "flag_cuts_excl/O");
-
-     // data->Branch("flag_MM2_total",       &flag_MM2_total,       "flag_MM2_total/O");
-     // data->Branch("flag_spectneutmp",  &flag_spectneutmp,  "flag_spectneutmp/O");
+     data->Branch("flag_cuts_broadMM2",  &flag_cuts_broadMM2,  "flag_cuts_broadMM2/O");
+     data->Branch("flag_cuts_broadcone", &flag_cuts_broadcone, "flag_cuts_broadcone/O");
+     data->Branch("flag_cuts_spectMP",  &flag_cuts_spectMP,  "flag_cuts_spectMP/O");
+     // data->Branch("flag_MM2_total",    &flag_MM2_total,     "flag_MM2_total/O");
 
      data->Branch("flag_photon1_ft",   &flag_photon1_ft,   "flag_photon1_ft/O");
      data->Branch("flag_photon1_PCAL", &flag_photon1_PCAL, "flag_photon1_PCAL/O");
@@ -139,7 +140,7 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
         while(c12.next()) {   //loop over events
           n_events++;
 
-          if (n_events%100==0)
+          if (n_events%1000==0)
           {
             cout << "\r" << "Processing event: " << std::setw(10) <<  n_events << std::flush;
           }
@@ -261,15 +262,26 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
               }
               else flag_cuts_dis = 0;
 
+              /*======= (WIP) EXCL. CUTS =======*/ 
+              //TODO
+              if (MM2_total > -0.5 && MM2_total < 0.5){
+                flag_cuts_broadMM2 = 1;
+              }
+              else flag_cuts_broadMM2 = 0;
+
+              if (pi0coneangle<20){
+                flag_cuts_broadcone = 1;
+              }
+              else flag_cuts_broadcone = 0;
               // if(MM2_total < -0.0853 || MM2_total > 0.0718){//mu = -0.006743, sig = 0.02618
               //   flag_MM2_total = 0;
               // }
               // else flag_MM2_total = 1; //cut passed
 
-              // if(MP_rec_spectator > 0.3){//300MeV cut on spectator missing momentum
-              //   flag_spectneutmp = 0;
-              // }
-              // else flag_spectneutmp = 1;
+              if(MP_rec_spectator < 0.7){//300MeV cut on spectator missing momentum
+                flag_cuts_spectMP = 1;
+              }
+              else flag_cuts_spectMP = 0;
               //###################################################################################
 
               n_pairs++;
