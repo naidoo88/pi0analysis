@@ -1,4 +1,4 @@
-rm pi0analysis_*
-rm plothistos_*
-rm cuts_*
+rm *_cpp*
+#rm plothistos_*
+#rm cuts_*
 rm scripts/*_cpp*
