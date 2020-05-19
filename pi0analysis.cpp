@@ -140,10 +140,10 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
         while(c12.next()) {   //loop over events
           n_events++;
 
-          if (n_events%1000==0)
-          {
-            cout << "\r" << "Processing event: " << std::setw(10) <<  n_events << std::flush;
-          }
+          // if (n_events%1000==0)
+          // {
+          //   cout << "\r" << "Processing event: " << std::setw(10) <<  n_events << std::flush;
+          // }
           
 
           auto electronbuff = c12.getByID(11);
