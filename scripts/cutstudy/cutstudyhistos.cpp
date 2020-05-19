@@ -242,14 +242,14 @@ void cuthistos(){
   TString namebuff;
   TString titlebuff;
   TString base         = "ggIM_";
-  vector<TString> det  = {"bothPCAL_", "bothECAL_", "bothFCAL_", "PCALECAL_", "ECALFCAL_", "PCALFCAL_"};
-  vector<TString> cut  = {"mm2PM0.4_h", "mm2PM0.3_h","mm2PM0.2_h"};
+  std::vector<TString> det  = {"bothPCAL_", "bothECAL_", "bothFCAL_", "PCALECAL_", "ECALFCAL_", "PCALFCAL_"};
+  std::vector<TString> cut  = {"mm2PM0.4_h", "mm2PM0.3_h","mm2PM0.2_h"};
   TString titlebase    = "Invariant mass[#gamma_{1} #gamma_{2}]";
-  vector<TString> titledet = {" - both PCAL - ", " - both ECAL - ", " - both FCAL - ", " - PCAL/ECAL - ", " - ECAL/FCAL - ", " - PCAL/FCAL - "};
-  vector<TString> titlecut = {"MM^{2}#pm0.4Gev^{2}/c^{4};", "MM^{2}#pm0.3Gev^{2}/c^{4};","MM^{2}#pm0.2Gev^{2}/c^{4};"}; //';' termination for TH1F constr. syntax
+  std::vector<TString> titledet = {" - both PCAL - ", " - both ECAL - ", " - both FCAL - ", " - PCAL/ECAL - ", " - ECAL/FCAL - ", " - PCAL/FCAL - "};
+  std::vector<TString> titlecut = {"MM^{2}#pm0.4Gev^{2}/c^{4};", "MM^{2}#pm0.3Gev^{2}/c^{4};","MM^{2}#pm0.2Gev^{2}/c^{4};"}; //';' termination for TH1F constr. syntax
   TString xlable = "Inv.Mass (GeV/c^{2});";                                                                             //';' termination for TH1F constr. syntax
   TString ylable = "counts";
-  vector <int> nbins = {150, 150, 100, 200, 75, 75};
+  std::vector <int> nbins = {150, 150, 100, 200, 75, 75};
   double xmin  = 0;
   double xmax  = 0.2;
 
