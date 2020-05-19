@@ -23,8 +23,8 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 
   bool DEBUG = 0;
   cout << "Start" << endl;
-  TFile *Out_File = new TFile(outfilename, "recreate");
-  ifstream list_of_files;
+  TFile *Out_File = new TFile(outfilename, "recreate"); //yes officer this one right here
+  std::ifstream list_of_files;
   char file_name[200];
   char last_file[200];
 
@@ -138,7 +138,12 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 
         while(c12.next()) {   //loop over events
           n_events++;
-          cout << "\r" << "Processing event: " << std::setw(10) <<  n_events << std::flush;
+
+          if (n_events%100==0)
+          {
+            cout << "\r" << "Processing event: " << std::setw(10) <<  n_events << std::flush;
+          }
+          
 
           auto electronbuff = c12.getByID(11);
           auto photonbuff   = c12.getByID(22);
@@ -154,8 +159,7 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
                     electronbuff[0]->par()->getPz(),
                     em);
 
-          helicity = c12.event()->getHelicity();
-          cout << "Helicity is: " << helicity << endl;
+          helicity = c12.helonline()->getHelicity();
 
           TLorentzVector system;        //[e N -> e' R g1 g2]
           TLorentzVector photcombo;
