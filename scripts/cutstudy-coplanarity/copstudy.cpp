@@ -24,6 +24,7 @@
 #include <TBenchmark.h>
 #include <TString.h>
 #include <TF1.h>
+#include <TStyle.h>
 
 #include "clas12reader.h"
 

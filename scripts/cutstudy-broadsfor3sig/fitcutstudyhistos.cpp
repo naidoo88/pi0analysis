@@ -80,10 +80,10 @@ void fitcutstudyhistos(TString inputFile){ //TODO - Figure out less crude SBR, n
 	ggIM_coneangle_h[4][5] = (TH1F*) infile->Get("ggIM_PCALFCAL_coneangleL5_h");
 
 	TString namebuff;
-  TString base         = "ggIM_";
-  vector<TString> det  = {"bothPCAL_", "bothECAL_", "bothFCAL_", "PCALECAL_", "ECALFCAL_", "PCALFCAL_"};
-	vector<TString> conecut = {"coneangleL30_h", "coneangleL20_h", "coneangleL10_h", "coneangleL8_h", "coneangleL5_h"};
-  vector<TString> mm2cut  = {"mm2PM0.4_h", "mm2PM0.3_h","mm2PM0.2_h"};
+  	TString base         = "ggIM_";
+  	std::vector<TString> det  = {"bothPCAL_", "bothECAL_", "bothFCAL_", "PCALECAL_", "ECALFCAL_", "PCALFCAL_"};
+	std::vector<TString> conecut = {"coneangleL30_h", "coneangleL20_h", "coneangleL10_h", "coneangleL8_h", "coneangleL5_h"};
+  	std::vector<TString> mm2cut  = {"mm2PM0.4_h", "mm2PM0.3_h","mm2PM0.2_h"};
 
   for (int i = 0; i < det.size(); i++){
     for (int j = 0; j < mm2cut.size(); j++) {
