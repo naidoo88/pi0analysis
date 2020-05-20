@@ -23,14 +23,18 @@
 #include <TCanvas.h>
 #include <TBenchmark.h>
 #include <TString.h>
+#include <TF1.h>
 
 #include "clas12reader.h"
 
-//void plotasym(TString datafile)//, TString outfile);
 
 using namespace clas12;
 
 void copstudy(TString datafile, TString outfile){
+
+    gStyle->SetOptFit(01111);
+	gStyle->SetOptStat(11);
+
 	TChain chain("data");
 	chain.AddFile(datafile);
 
@@ -65,15 +69,31 @@ void copstudy(TString datafile, TString outfile){
 
         if(flag_goodpi0        != 1) continue;  //corresponds to 3sig cut on pi0-mass
         if(flag_cuts_dis       != 1) continue;
-        //if(flag_cuts_broadMM2  != 1) continue;
-        if(!(MM2_total > -0.05155 && MM2_total < 0.03455)) continue;
         if(flag_cuts_broadcone != 1) continue;   
         if(flag_cuts_spectMP   != 1) continue;
+        if(!(MM2_total > -0.05155 && MM2_total < 0.03455)) continue; //can be changed to flag_cuts_3sigMM2 soon
 
         cop_Rvg_vgN_h -> Fill(cop_Nvg_vgnew); 
         cop_Rvg_RN_h  -> Fill(cop_Nvg_Nnew); 
         cop_RN_vgN_h  -> Fill(cop_Nnew_vgnew); 
     }
+
+    TF1* cop_Rvg_vgN_fit = new TF1("cop_Rvg_vgN_fit", "gaus(0)+[3]", -25, 25);
+    cop_Rvg_vgN_fit->SetRange(-25, 25);
+    cop_Rvg_vgN_fit->SetParameter(1, 0);
+    cop_Rvg_vgN_fit->SetParameter(2, 5);
+    TF1* cop_Rvg_RN_fit  = new TF1("cop_Rvg_RN_fit",  "gaus(0)+pol2(3)", - 8,  8);
+    cop_Rvg_RN_fit->SetRange(-8, 8);
+    cop_Rvg_RN_fit->SetParameter(1, 0);
+    cop_Rvg_RN_fit->SetParameter(2, 5);
+    TF1* cop_RN_vgN_fit  = new TF1("cop_RN_vgN_fit",  "gaus(0)+[3]", -25, 25);
+    cop_RN_vgN_fit->SetRange(-25, 25);
+    cop_RN_vgN_fit->SetParameter(1, 0);
+    cop_RN_vgN_fit->SetParameter(2, 5);
+
+    cop_Rvg_vgN_h -> Fit(cop_Rvg_vgN_fit, "RM");
+    cop_Rvg_RN_h  -> Fit(cop_Rvg_RN_fit, "RM");
+    cop_RN_vgN_h  -> Fit(cop_RN_vgN_fit, "RM");
 
     TFile *Out_File = new TFile(outfile, "recreate"); 
     cop_Rvg_vgN_h -> Write();
