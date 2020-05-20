@@ -79,7 +79,7 @@ void copstudy(TString datafile, TString outfile){
         cop_RN_vgN_h  -> Fill(cop_Nnew_vgnew); 
     }
 
-    TF1* cop_Rvg_vgN_fit = new TF1("cop_Rvg_vgN_fit", "gaus(0)+[3]", -25, 25);
+    TF1* cop_Rvg_vgN_fit = new TF1("cop_Rvg_vgN_fit", "gaus(0)+pol2(3)", -25, 25);
     cop_Rvg_vgN_fit->SetRange(-25, 25);
     cop_Rvg_vgN_fit->SetParameter(1, 0);
     cop_Rvg_vgN_fit->SetParameter(2, 5);
@@ -87,7 +87,7 @@ void copstudy(TString datafile, TString outfile){
     cop_Rvg_RN_fit->SetRange(-8, 8);
     cop_Rvg_RN_fit->SetParameter(1, 0);
     cop_Rvg_RN_fit->SetParameter(2, 5);
-    TF1* cop_RN_vgN_fit  = new TF1("cop_RN_vgN_fit",  "gaus(0)+[3]", -25, 25);
+    TF1* cop_RN_vgN_fit  = new TF1("cop_RN_vgN_fit",  "gaus(0)+pol2(3)", -25, 25);
     cop_RN_vgN_fit->SetRange(-25, 25);
     cop_RN_vgN_fit->SetParameter(1, 0);
     cop_RN_vgN_fit->SetParameter(2, 5);
