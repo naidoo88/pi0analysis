@@ -82,6 +82,8 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
      data->Branch("flag_cuts_broadMM2",  &flag_cuts_broadMM2,  "flag_cuts_broadMM2/O");
      data->Branch("flag_cuts_broadcone", &flag_cuts_broadcone, "flag_cuts_broadcone/O");
      data->Branch("flag_cuts_spectMP",   &flag_cuts_spectMP,   "flag_cuts_spectMP/O");
+     data->Branch("flag_cuts_cop",       &flag_cuts_cop,       "flag_cuts_cop/O");
+
      // data->Branch("flag_MM2_total",    &flag_MM2_total,     "flag_MM2_total/O");
 
      data->Branch("flag_photon1_ft",   &flag_photon1_ft,   "flag_photon1_ft/O");
@@ -284,6 +286,11 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
                 flag_cuts_3sigMM2 = 1;
               }
               else flag_cuts_3sigMM2 = 0;
+
+              if(std::abs(cop_Nvg_vgnew) < 5){
+                flag_cuts_cop = 1;
+              }
+              else flag_cuts_cop = 0;
               //###################################################################################
 
               n_pairs++;

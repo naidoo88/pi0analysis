@@ -24,6 +24,7 @@ bool flag_cuts_broadMM2;
 bool flag_cuts_broadcone;
 bool flag_cuts_spectMP; 
 bool flag_cuts_3sigMM2;
+bool flag_cuts_cop;
 //bool flag_MM2_total;
 
 
