@@ -104,8 +104,13 @@ void plotasym(TString datafile, TString outfile){
     
     //Fill asymmetries
    	R_vg_helasym_h = (TH1F*) R_vg_helplus_h->GetAsymmetry(R_vg_helmin_h);
+    R_vg_helasym_h->SetName("Asym_R_vg_h");
+
 	R_N_helasym_h  = (TH1F*) R_N_helplus_h ->GetAsymmetry(R_N_helmin_h);
+    R_N_helasym_h->SetName("Asym_R_N_h");
+
 	N_vg_helasym_h = (TH1F*) N_vg_helplus_h->GetAsymmetry(N_vg_helmin_h);
+    N_vg_helasym_h->SetName("Asym_N_vg_h");
 
     //Write out histograms
     TFile *Out_File = new TFile(outfile, "recreate"); 
