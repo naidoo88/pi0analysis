@@ -78,9 +78,10 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
      data->Branch("flag_goodpi0",   &flag_goodpi0,   "flag_goodpi0/O");
      data->Branch("flag_cuts_dis",  &flag_cuts_dis,  "flag_cuts_dis/O");
      data->Branch("flag_cuts_excl", &flag_cuts_excl, "flag_cuts_excl/O");
+     data->Branch("flag_cuts_3sigMM2",   &flag_cuts_3sigMM2,   "flag_cuts_3sigMM2/O");
      data->Branch("flag_cuts_broadMM2",  &flag_cuts_broadMM2,  "flag_cuts_broadMM2/O");
      data->Branch("flag_cuts_broadcone", &flag_cuts_broadcone, "flag_cuts_broadcone/O");
-     data->Branch("flag_cuts_spectMP",  &flag_cuts_spectMP,  "flag_cuts_spectMP/O");
+     data->Branch("flag_cuts_spectMP",   &flag_cuts_spectMP,   "flag_cuts_spectMP/O");
      // data->Branch("flag_MM2_total",    &flag_MM2_total,     "flag_MM2_total/O");
 
      data->Branch("flag_photon1_ft",   &flag_photon1_ft,   "flag_photon1_ft/O");
@@ -273,15 +274,16 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
                 flag_cuts_broadcone = 1;
               }
               else flag_cuts_broadcone = 0;
-              // if(MM2_total < -0.0853 || MM2_total > 0.0718){//mu = -0.006743, sig = 0.02618
-              //   flag_MM2_total = 0;
-              // }
-              // else flag_MM2_total = 1; //cut passed
 
               if(MP_rec_spectator < 0.7){//300MeV cut on spectator missing momentum
                 flag_cuts_spectMP = 1;
               }
               else flag_cuts_spectMP = 0;
+
+              if(MM2_total > -0.05155 && MM2_total < 0.03455){//3sigma cut where: mu = -0.0085, sig = 0.01435 
+                flag_cuts_3sigMM2 = 1;
+              }
+              else flag_cuts_3sigMM2 = 0;
               //###################################################################################
 
               n_pairs++;
