@@ -44,6 +44,7 @@ void plotasym(TString datafile, TString outfile){
     bool   flag_cuts_broadMM2;
     bool   flag_cuts_broadcone;
     bool   flag_cuts_spectMP;
+    double MM2_total;
 
 	int n_zerohel = 0;
 
@@ -73,6 +74,8 @@ void plotasym(TString datafile, TString outfile){
     chain.SetBranchAddress("flag_cuts_broadMM2",  &flag_cuts_broadMM2);
     chain.SetBranchAddress("flag_cuts_broadcone", &flag_cuts_broadcone);
     chain.SetBranchAddress("flag_cuts_spectMP",   &flag_cuts_spectMP);  
+    chain.SetBranchAddress("MM2_total",           &MM2_total);
+
 
 	for(Int_t i=0;i<chain.GetEntries();i++){
         chain.GetEntry(i);
@@ -82,7 +85,8 @@ void plotasym(TString datafile, TString outfile){
         if(flag_cuts_broadMM2  != 1) continue; //} 
         if(flag_cuts_broadcone != 1) continue; //} correspond to very loose excl cuts  
         if(flag_cuts_spectMP   != 1) continue; //}
-
+        if(!(MM2_total > -0.05155 && MM2_total < 0.03455)) continue; //can be changed to flag_cuts_3sigMM2 soon
+    
         R_N_phi_h  ->Fill(phi_Nnew);
         R_vg_phi_h ->Fill(phi_Nvg);
         N_vg_phi_h ->Fill(phi_vgnew);
