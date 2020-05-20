@@ -124,7 +124,7 @@ void plotasym(TString datafile, TString outfile){
     N_vg_helasym_h->SetName("Asym_N_vg_h");
 
     //Fit the asymmetries
-    TString fit_fxn = "[0] + [1]*sin(x)";
+    TString fit_fxn = "[0] + [1]*sin(TMath::DegToRad()*(x))";
     TF1 *asymm_fits[3];
     asymm_fits[0] = new TF1("Asym_R_vg_fit", fit_fxn, 0, 360);
     asymm_fits[1] = new TF1("Asym_R_N_fit",  fit_fxn, 0, 360);
