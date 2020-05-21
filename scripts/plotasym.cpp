@@ -62,7 +62,7 @@ void plotasym(TString datafile, TString outfile){
 	TH1F *R_vg_phi_h = new TH1F("R_vg_phi_h", "Trento #phi# - Recoil/VirtualPhot; phi; counts",  30, 0, 360);
     TH1F *N_vg_phi_h = new TH1F("N_vg_phi_h", "Trento #phi# - NewPart/VirtualPhot; phi; counts", 30, 0, 360);
 
-    int helbins = 30;
+    int helbins = 9;
 	TH1F *R_N_helplus_h  = new TH1F("R_N_helplus_h",  "helplus; phi; counts", helbins, 0, 360);
 	TH1F *R_N_helmin_h   = new TH1F("R_N_helmin_h ",  "helmin;  phi; counts", helbins, 0, 360);
 	TH1F *R_N_helasym_h  ;
@@ -135,9 +135,15 @@ void plotasym(TString datafile, TString outfile){
     asymm_fits[1] = new TF1("Asym_R_N_fit",  fit_fxn, 0, 360);
     asymm_fits[2] = new TF1("Asym_N_vg_fit", fit_fxn, 0, 360);
 
-    R_N_helasym_h  -> Fit(asymm_fits[0], "RMW");
-    R_vg_helasym_h -> Fit(asymm_fits[1], "RMW");
-    N_vg_helasym_h -> Fit(asymm_fits[2], "RMW");
+    for (int i = 0; i < 3; i++)
+    {
+        asymm_fits[i]->SetParNames("const", "A_{LU}^{sin#phi}");
+    }
+    
+
+    R_N_helasym_h  -> Fit(asymm_fits[0], "RM");
+    R_vg_helasym_h -> Fit(asymm_fits[1], "RM");
+    N_vg_helasym_h -> Fit(asymm_fits[2], "RM");
 
     //Write out histograms
     TFile *Out_File = new TFile(outfile, "recreate"); 
