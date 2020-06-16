@@ -86,11 +86,13 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 	// data->Branch("flag_MM2_total",    &flag_MM2_total,     "flag_MM2_total/O");
 
 	data->Branch("flag_photon1_FT",   &flag_photon1_FT,   "flag_photon1_FT/O");
+	data->Branch("flag_photon1_FD",   &flag_photon1_FD,   "flag_photon1_FD/O");
 	data->Branch("flag_photon1_PCAL", &flag_photon1_PCAL, "flag_photon1_PCAL/O");
 	data->Branch("flag_photon1_ECAL", &flag_photon1_ECAL, "flag_photon1_ECAL/O");
 	data->Branch("flag_photon1_EIN",  &flag_photon1_EIN,  "flag_photon1_EIN/O");
 	data->Branch("flag_photon1_EOUT", &flag_photon1_EOUT, "flag_photon1_EOUT/O");
 	data->Branch("flag_photon2_FT",   &flag_photon2_FT,   "flag_photon2_FT/O");
+	data->Branch("flag_photon2_FD",   &flag_photon2_FD,   "flag_photon2_FD/O");
 	data->Branch("flag_photon2_PCAL", &flag_photon2_PCAL, "flag_photon2_PCAL/O");
 	data->Branch("flag_photon2_ECAL", &flag_photon2_ECAL, "flag_photon2_ECAL/O");
 	data->Branch("flag_photon2_EIN",  &flag_photon2_EIN,  "flag_photon2_EIN/O");
@@ -102,7 +104,7 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 		cout << "Successfully opened list:  " << in_list << endl;
 
 		while (!list_of_files.eof()){
-			if (!list_of_files.good())			{
+			if (!list_of_files.good()){
 				cout << "Error: Issue with list." << endl;
 				break;
 			}
