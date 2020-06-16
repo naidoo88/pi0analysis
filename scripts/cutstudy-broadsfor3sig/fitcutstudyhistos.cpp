@@ -161,12 +161,24 @@ void fitcutstudyhistos(TString inputFile){ //TODO - Figure out less crude SBR, n
 
 
 	TCanvas* C = new TCanvas("C");
-	C->Divide(2,3);
+	C->Divide(3,2);
 
 	for (int i=0; i<6; i++){
 		C->cd(i+1);
 		ggIM_coneangle_fits[1][i]->SetLineColor(kBlack);
+		
+		int poldeg = ggIM_coneangle_fits[1][i]->GetNpar() - 4; //polynomial degree is N parameters of fit - 3(gaus) -1(const.)
+		cout << poldeg << endl << endl;
+		if(poldeg+1 == 3){
+			cout<< "YAH?" << endl;
+			ggIM_coneangle_fits[1][i]->SetParNames("Amp.", "Mean", "#sigma", "BG_{1}", "BG_{2}", "BG_{3}");
+		}
+		else if(poldeg+1 == 4){
+			cout << "YAAAAAAH!" << endl;
+			ggIM_coneangle_fits[1][i]->SetParNames("Amp.", "Mean", "#sigma", "BG_{1}", "BG_{2}", "BG_{3}", "BG_{4}");
+		}
 		ggIM_coneangle_h   [1][i]->Draw();  //fitted histo
+
 		ggIM_coneangle_sig [1][i]->SetLineColor(kGreen);
 		ggIM_coneangle_sig [1][i]->Draw("SAME"); //new signal function
 		ggIM_coneangle_bg  [1][i]->SetLineColor(kOrange);
@@ -179,8 +191,8 @@ void fitcutstudyhistos(TString inputFile){ //TODO - Figure out less crude SBR, n
 		cout << det[i] << "	Mean: " << mean << "  Sig: " << sig << "  Lower: " << mean - 3*sig << "  Upper: " << mean + 3*sig << endl;
 
 	}
-	C->SetWindowSize(1920, 1080);
-	C->SetCanvasSize(1920, 1080);
+	//C->SetWindowSize(1920, 1080);
+	//C->SetCanvasSize(1920, 1080);
 	// 
 	// TCanvas* D = new TCanvas("D");
 	//
