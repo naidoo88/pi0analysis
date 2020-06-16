@@ -20,6 +20,7 @@ double cop_Nnew_vgnew;
 bool flag_goodpi0;
 bool flag_cuts_dis;
 bool flag_cuts_excl;
+bool flag_cuts_W2;
 bool flag_cuts_broadMM2;
 bool flag_cuts_broadcone;
 bool flag_cuts_spectMP; 

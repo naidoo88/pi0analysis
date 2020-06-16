@@ -162,11 +162,13 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
                     		  electronbuff[0]->par()->getPy(),
                     		  electronbuff[0]->par()->getPz(),
                               em);
+		
+		  q = beam - e_scattered;
 
           helicity = c12.helonline()->getHelicity();
 
           TLorentzVector system;        //[e N -> e' R g1 g2]
-          TLorentzVector photcombo;
+          TLorentzVector photon_pair;
           TLorentzVector rec_recoil;    //[e p -> e' g1 g2]
           TLorentzVector rec_spectator; //[e D -> e' R g1 g2]
           TLorentzVector expected_pi0;
@@ -186,25 +188,25 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
                             photonbuff[j]->par()->getPy(),
                             photonbuff[j]->par()->getPz(),
                             0);
-              photcombo = phot1 + phot2;
+              photon_pair = phot1 + phot2;
 
-              system = (beam+target)-(e_scattered+recoil+phot1+phot2); //[e p -> e' p' g1 g2]
-              IM_g1g2  = photcombo.M();
+              system = (beam+target)-(e_scattered+recoil+photon_pair); //[e p -> e' p' g1 g2]
+              IM_g1g2  = photon_pair.M();
               MM2_total = system.M2();
               MP_total  = system.P();
 
-              rec_recoil     = (beam+target)-(e_scattered+phot1+phot2); //reconstruct recoil
+              rec_recoil     = (beam+target)-(e_scattered+photon_pair); //reconstruct recoil
               expected_pi0 = target+beam-e_scattered-recoil;
-              pi0coneangle = (expected_pi0.Angle(photcombo.Vect()))*DEG;
+              pi0coneangle = (expected_pi0.Angle(photon_pair.Vect()))*DEG;
 
-              rec_spectator = (beam+deut)-(e_scattered+recoil+phot1+phot2); //reconstruct spectator
+              rec_spectator = (beam+deut)-(e_scattered+recoil+photon_pair); //reconstruct spectator
               MM_rec_recoil  = rec_recoil.M();
               MM_rec_recoil =  rec_recoil.P();
               MP_rec_spectator = rec_spectator.P();
               MM_rec_spectator = rec_spectator.M();
 
               //Calc trento-phi and co-planarity angles:
-              calc_angles(beam.Vect(), e_scattered.Vect(), recoil.Vect(), photcombo.Vect());
+              calc_angles(beam.Vect(), e_scattered.Vect(), recoil.Vect(), photon_pair.Vect());
 
               //Set Photon flags:
               photonflags(photonbuff[i], photonbuff[j], n_ECAL_doublehits);
@@ -253,16 +255,22 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
               //###################################################################################
 
               /*======= DIS CUTS =======*/
-              Q2   = -1*(beam - e_scattered).M2();
-              xB   = Q2 / 2*(target*(beam - e_scattered));
-              tneg = -(recoil-target).M2(); //**DOUBLE CHECK THIS AGAINST THEORY PAPER**
-              W2    = (recoil + phot1 + phot2).M2();
+              Q2   = -1*q.M2();
+              xB   = Q2 / 2*(target*q);
+              tneg = -1*(recoil-target).M2(); //**DOUBLE CHECK THIS AGAINST THEORY PAPER**
 
-              if((Q2 > 1) && (tneg < 1) && (W2  > 4)){
+              W2   = (recoil+photon_pair).M2();
+
+              if((Q2 > 1) && (tneg < 1){
                 flag_cuts_dis = 1;
                 n_dis_events++;
               }
               else flag_cuts_dis = 0;
+
+			  if(W2 > 4){
+				flag_cuts_W2 = 1;
+			  }
+			  else flag_cuts_W2 = 0;
 
               /*======= (WIP) EXCL. CUTS =======*/ 
               //TODO
