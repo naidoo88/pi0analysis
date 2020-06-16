@@ -256,12 +256,11 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
               Q2   = -1*(beam - e).M2();
               xB   = Q2 / 2*(target*(beam - e));
               tneg = -(prot-target).M2(); //**DOUBLE CHECK THIS AGAINST THEORY PAPER**
-              W2    = (e + prot + phot1 + phot2).M2();
+              W2    = (prot + phot1 + phot2).M2();
 
               if((Q2 > 1) && (tneg < 1) && (W2  > 4)){
                 flag_cuts_dis = 1;
                 n_dis_events++;
-                //n_pairs_passed_dis++;
               }
               else flag_cuts_dis = 0;
 
