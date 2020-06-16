@@ -125,13 +125,13 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
         c12.addZeroOfRestPid();           //no other particles
 
         auto db=TDatabasePDG::Instance();
-        TLorentzVector beam   (0,0,10.6,10.6);
-        TLorentzVector target (0,0,0,db->GetParticle(2212)->Mass());
-        TLorentzVector e      (0,0,0,0);
-        TLorentzVector prot   (0,0,0,0);
-        TLorentzVector phot1  (0,0,0,0);
-        TLorentzVector phot2  (0,0,0,0);
-        TLorentzVector q      (0,0,0,0);
+        TLorentzVector beam        (0,0,10.6,10.6);
+        TLorentzVector target      (0,0,0,db->GetParticle(2212)->Mass());
+        TLorentzVector e_scattered (0,0,0,0);
+        TLorentzVector recoil      (0,0,0,0);
+        TLorentzVector phot1       (0,0,0,0);
+        TLorentzVector phot2       (0,0,0,0);
+        TLorentzVector q           (0,0,0,0);
 
         double em    = db -> GetParticle(11)  -> Mass();
         double protm = db -> GetParticle(2212)-> Mass();
@@ -153,15 +153,15 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
           auto photonbuff   = c12.getByID(22);
           auto protonbuff   = c12.getByID(2212);
 
-          prot.SetXYZM(protonbuff[0]->par()->getPx(),
-                       protonbuff[0]->par()->getPy(),
-                       protonbuff[0]->par()->getPz(),
-                       protm);
+          recoil.SetXYZM(protonbuff[0]->par()->getPx(),
+                         protonbuff[0]->par()->getPy(),
+                         protonbuff[0]->par()->getPz(),
+                         protm);
 
-          e.SetXYZM(electronbuff[0]->par()->getPx(),
-                    electronbuff[0]->par()->getPy(),
-                    electronbuff[0]->par()->getPz(),
-                    em);
+          e_scattered.SetXYZM(electronbuff[0]->par()->getPx(),
+                    		  electronbuff[0]->par()->getPy(),
+                    		  electronbuff[0]->par()->getPz(),
+                              em);
 
           helicity = c12.helonline()->getHelicity();
 
@@ -188,23 +188,23 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
                             0);
               photcombo = phot1 + phot2;
 
-              system = (beam+target)-(e+prot+phot1+phot2); //[e p -> e' p' g1 g2]
+              system = (beam+target)-(e_scattered+recoil+phot1+phot2); //[e p -> e' p' g1 g2]
               IM_g1g2  = photcombo.M();
               MM2_total = system.M2();
               MP_total  = system.P();
 
-              rec_recoil     = (beam+target)-(e+phot1+phot2); //reconstruct recoil
-              expected_pi0 = target+beam-e-prot;
+              rec_recoil     = (beam+target)-(e_scattered+phot1+phot2); //reconstruct recoil
+              expected_pi0 = target+beam-e_scattered-recoil;
               pi0coneangle = (expected_pi0.Angle(photcombo.Vect()))*DEG;
 
-              rec_spectator = (beam+deut)-(e+prot+phot1+phot2); //reconstruct spectator
+              rec_spectator = (beam+deut)-(e_scattered+recoil+phot1+phot2); //reconstruct spectator
               MM_rec_recoil  = rec_recoil.M();
               MM_rec_recoil =  rec_recoil.P();
               MP_rec_spectator = rec_spectator.P();
               MM_rec_spectator = rec_spectator.M();
 
               //Calc trento-phi and co-planarity angles:
-              calc_angles(beam.Vect(), e.Vect(), prot.Vect(), photcombo.Vect());
+              calc_angles(beam.Vect(), e_scattered.Vect(), recoil.Vect(), photcombo.Vect());
 
               //Set Photon flags:
               photonflags(photonbuff[i], photonbuff[j], n_ECAL_doublehits);
@@ -253,10 +253,10 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
               //###################################################################################
 
               /*======= DIS CUTS =======*/
-              Q2   = -1*(beam - e).M2();
-              xB   = Q2 / 2*(target*(beam - e));
-              tneg = -(prot-target).M2(); //**DOUBLE CHECK THIS AGAINST THEORY PAPER**
-              W2    = (prot + phot1 + phot2).M2();
+              Q2   = -1*(beam - e_scattered).M2();
+              xB   = Q2 / 2*(target*(beam - e_scattered));
+              tneg = -(recoil-target).M2(); //**DOUBLE CHECK THIS AGAINST THEORY PAPER**
+              W2    = (recoil + phot1 + phot2).M2();
 
               if((Q2 > 1) && (tneg < 1) && (W2  > 4)){
                 flag_cuts_dis = 1;
