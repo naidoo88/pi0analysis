@@ -85,18 +85,16 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 
 	// data->Branch("flag_MM2_total",    &flag_MM2_total,     "flag_MM2_total/O");
 
-	data->Branch("flag_photon1_ft",   &flag_photon1_ft,   "flag_photon1_ft/O");
+	data->Branch("flag_photon1_FT",   &flag_photon1_FT,   "flag_photon1_FT/O");
 	data->Branch("flag_photon1_PCAL", &flag_photon1_PCAL, "flag_photon1_PCAL/O");
 	data->Branch("flag_photon1_ECAL", &flag_photon1_ECAL, "flag_photon1_ECAL/O");
 	data->Branch("flag_photon1_EIN",  &flag_photon1_EIN,  "flag_photon1_EIN/O");
 	data->Branch("flag_photon1_EOUT", &flag_photon1_EOUT, "flag_photon1_EOUT/O");
-	data->Branch("flag_photon1_wCAL", &flag_photon1_wCAL, "flag_photon1_wCAL/I");
-	data->Branch("flag_photon2_ft",   &flag_photon2_ft,   "flag_photon2_ft/O");
+	data->Branch("flag_photon2_FT",   &flag_photon2_FT,   "flag_photon2_FT/O");
 	data->Branch("flag_photon2_PCAL", &flag_photon2_PCAL, "flag_photon2_PCAL/O");
 	data->Branch("flag_photon2_ECAL", &flag_photon2_ECAL, "flag_photon2_ECAL/O");
 	data->Branch("flag_photon2_EIN",  &flag_photon2_EIN,  "flag_photon2_EIN/O");
 	data->Branch("flag_photon2_EOUT", &flag_photon2_EOUT, "flag_photon2_EOUT/O");
-	data->Branch("flag_photon2_wCAL", &flag_photon2_wCAL, "flag_photon2_wCAL/I");
 
 	//##############################################################################
 
@@ -167,6 +165,8 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 					TLorentzVector system;        //[e N -> e' R g1 g2]
 					TLorentzVector photon_pair;
 					TLorentzVector expected_pi0;
+
+
 					TLorentzVector rec_recoil;	  //[e p -> e' g1 g2]
 					TLorentzVector rec_spectator; //[e D -> e' R g1 g2]
 
@@ -193,16 +193,20 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 							system    = (beam + target) - (e_scattered + recoil + photon_pair); //[e p -> e' p' g1 g2]
 							MM2_total = system.M2();
 							MP_total  = system.P();
+							ME_total  = system.E();
 
-							rec_recoil   = (beam + target) - (e_scattered + photon_pair); //reconstruct recoil
 							expected_pi0 = target + beam - e_scattered - recoil;
 							pi0coneangle = (expected_pi0.Angle(photon_pair.Vect())) * DEG;
 
-							rec_spectator    = (beam + deut) - (e_scattered + recoil + photon_pair); //reconstruct spectator
-							MM_rec_recoil    = rec_recoil.M();
-							MM_rec_recoil    = rec_recoil.P();
-							MP_rec_spectator = rec_spectator.P();
-							MM_rec_spectator = rec_spectator.M();
+							rec_recoil        = (beam + target) - (e_scattered + photon_pair); //reconstruct recoil [e p -> e' g1 g2 X]
+							MP_rec_recoil     = rec_recoil.P();
+							MM_rec_recoil     = rec_recoil.M();
+							MM2_rec_recoil    = rec_recoil.M2();
+ 
+							rec_spectator     = (beam + deut) - (e_scattered + recoil + photon_pair); //reconstruct spectator [e D -> e' p' g1 g2 X]
+							MP_rec_spectator  = rec_spectator.P();
+							MM_rec_spectator  = rec_spectator.M();
+							MM2_rec_spectator = rec_spectator.M2();
 
 							//Calc trento-phi and co-planarity angles:
 							calc_angles(beam.Vect(), e_scattered.Vect(), recoil.Vect(), photon_pair.Vect());
@@ -230,7 +234,7 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 								flag_goodpi0 = 1;
 								n_goodpi0_candidates++;
 							}
-							else if ((flag_photon1_ft == 1 && flag_photon2_ft == 1) && (IM_g1g2 > 0.112868 && IM_g1g2 < 0.149252)){
+							else if ((flag_photon1_FT == 1 && flag_photon2_FT == 1) && (IM_g1g2 > 0.112868 && IM_g1g2 < 0.149252)){
 								flag_goodpi0 = 1;
 								n_goodpi0_candidates++;
 							}
@@ -238,11 +242,11 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 								flag_goodpi0 = 1;
 								n_goodpi0_candidates++;
 							}
-							else if (((flag_photon1_ECAL == 1 && flag_photon2_ft == 1) || (flag_photon2_ECAL == 1 && flag_photon1_ft == 1)) && (IM_g1g2 > 0.0947396 && IM_g1g2 < 0.159512)){
+							else if (((flag_photon1_ECAL == 1 && flag_photon2_FT == 1) || (flag_photon2_ECAL == 1 && flag_photon1_FT == 1)) && (IM_g1g2 > 0.0947396 && IM_g1g2 < 0.159512)){
 								flag_goodpi0 = 1;
 								n_goodpi0_candidates++;
 							}
-							else if (((flag_photon1_PCAL == 1 && flag_photon2_ft == 1) || (flag_photon2_PCAL == 1 && flag_photon1_ft == 1)) && (IM_g1g2 > 0.0908801 && IM_g1g2 < 0.162561)){
+							else if (((flag_photon1_PCAL == 1 && flag_photon2_FT == 1) || (flag_photon2_PCAL == 1 && flag_photon1_FT == 1)) && (IM_g1g2 > 0.0908801 && IM_g1g2 < 0.162561)){
 								flag_goodpi0 = 1;
 								n_goodpi0_candidates++;
 							}
@@ -340,9 +344,9 @@ void photonflags(clas12::region_part_ptr p1, clas12::region_part_ptr p2, int &co
 
 	//first photon:
 	if (p1->ft(FTCAL)->getDetector() == 10)
-		flag_photon1_ft = 1;
+		flag_photon1_FT = 1;
 	else
-		flag_photon1_ft = 0;
+		flag_photon1_FT = 0;
 
 	if (p1->cal(PCAL)->getDetector() == 7)
 		flag_photon1_PCAL = 1;
@@ -364,9 +368,9 @@ void photonflags(clas12::region_part_ptr p1, clas12::region_part_ptr p2, int &co
 
 	//second photon:
 	if (p2->ft(FTCAL)->getDetector() == 10)
-		flag_photon2_ft = 1;
+		flag_photon2_FT = 1;
 	else
-		flag_photon2_ft = 0;
+		flag_photon2_FT = 0;
 
 	if (p2->cal(PCAL)->getDetector() == 7)
 		flag_photon2_PCAL = 1;
@@ -390,6 +394,16 @@ void photonflags(clas12::region_part_ptr p1, clas12::region_part_ptr p2, int &co
 		count_ECAL_doublehits++;
 	if (flag_photon2_EIN == 1 && flag_photon2_EOUT == 1)
 		count_ECAL_doublehits++;
+
+	if ((flag_photon1_PCAL == 1) || (flag_photon1_ECAL == 1 ))
+		flag_photon1_FD = 1;
+	else 
+		flag_photon1_FD = 0;
+
+	if ((flag_photon2_PCAL == 1) || (flag_photon2_ECAL == 1 ))
+		flag_photon2_FD = 1;
+	else 
+		flag_photon2_FD = 0;
 
 } //photonflags fxn
 

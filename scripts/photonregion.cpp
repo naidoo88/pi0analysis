@@ -13,8 +13,8 @@ void photonreg(){
   TString EI2 = "flag_photon2_EIN==1";
   TString EO1 = "flag_photon1_EOUT==1";
   TString EO2 = "flag_photon2_EOUT==1";
-  TString FC1 = "flag_photon1_ft==1";
-  TString FC2 = "flag_photon2_ft==1";
+  TString FC1 = "flag_photon1_FT==1";
+  TString FC2 = "flag_photon2_FT==1";
   TString nED = "!((flag_photon1_EIN==1&&flag_photon1_EOUT==1)||(flag_photon2_EIN==1&&flag_photon2_EOUT==1))";
 
   // TCanvas *B1 = new TCanvas("B1", "B: Paired photons by region (COMBINED)");
@@ -383,15 +383,15 @@ void photonreg(){
   // D1->cd(4);
   // data->Draw("IM_g1g2>>d4(100,0,0.2)","MP_rec_spectator<0.3&&flag_photon1_wCAL==1&&(flag_photon2_wCAL==2||flag_photon2_wCAL==3)","");
   // D1->cd(5);
-  // data->Draw("IM_g1g2>>d5(50,0,0.2)","MP_rec_spectator<0.3&&flag_photon1_wCAL==1&&flag_photon2_ft==1","");
+  // data->Draw("IM_g1g2>>d5(50,0,0.2)","MP_rec_spectator<0.3&&flag_photon1_wCAL==1&&flag_photon2_FT==1","");
   // D1->cd(6);
-  // data->Draw("IM_g1g2>>d6(50,0,0.2)","MP_rec_spectator<0.3&&(flag_photon1_wCAL==2||flag_photon1_wCAL==3)&&flag_photon2_ft==1","");
+  // data->Draw("IM_g1g2>>d6(50,0,0.2)","MP_rec_spectator<0.3&&(flag_photon1_wCAL==2||flag_photon1_wCAL==3)&&flag_photon2_FT==1","");
   // D1->cd(7);
   // data->Draw("IM_g1g2>>d7(150,0,0.2)","MP_rec_spectator<0.3&&flag_photon2_wCAL==1&&(flag_photon1_wCAL==2||flag_photon1_wCAL==3)","");
   // D1->cd(8);
-  // data->Draw("IM_g1g2>>d8(50,0,0.2)","MP_rec_spectator<0.3&&flag_photon2_wCAL==1&&flag_photon1_ft==1","");
+  // data->Draw("IM_g1g2>>d8(50,0,0.2)","MP_rec_spectator<0.3&&flag_photon2_wCAL==1&&flag_photon1_FT==1","");
   // D1->cd(9);
-  // data->Draw("IM_g1g2>>d9(50,0,0.2)","MP_rec_spectator<0.3&&(flag_photon2_wCAL==2||flag_photon2_wCAL==3)&&flag_photon1_ft==1","");
+  // data->Draw("IM_g1g2>>d9(50,0,0.2)","MP_rec_spectator<0.3&&(flag_photon2_wCAL==2||flag_photon2_wCAL==3)&&flag_photon1_FT==1","");
 
 
   // TCanvas *E1 = new TCanvas("E1", "E: Paired photons by region (COMBINED)");
@@ -401,13 +401,13 @@ void photonreg(){
   // E1->cd(2);
   // data->Draw("IM_g1g2>>e2(150,0,0.2)","MP_rec_spectator<0.3&&(flag_photon1_wCAL==2||flag_photon1_wCAL==3)&&(flag_photon2_wCAL==2||flag_photon2_wCAL==3)","");
   // E1->cd(3);
-  // data->Draw("IM_g1g2>>e3(50,0,0.2)","MP_rec_spectator<0.3&&flag_photon1_ft==1&&flag_photon2_ft==1","");
+  // data->Draw("IM_g1g2>>e3(50,0,0.2)","MP_rec_spectator<0.3&&flag_photon1_FT==1&&flag_photon2_FT==1","");
   // E1->cd(4);
   // data->Draw("IM_g1g2>>e4(500,0,0.2)","MP_rec_spectator<0.3&&(flag_photon1_wCAL==1&&(flag_photon2_wCAL==2||flag_photon2_wCAL==3))||(flag_photon2_wCAL==1&&(flag_photon1_wCAL==2||flag_photon1_wCAL==3))","");
   // E1->cd(5);
-  // data->Draw("IM_g1g2>>e5(250,0,0.2)","MP_rec_spectator<0.3&&(flag_photon1_wCAL==1&&flag_photon2_ft==1)||(flag_photon2_wCAL==1&&flag_photon1_ft==1)","");
+  // data->Draw("IM_g1g2>>e5(250,0,0.2)","MP_rec_spectator<0.3&&(flag_photon1_wCAL==1&&flag_photon2_FT==1)||(flag_photon2_wCAL==1&&flag_photon1_FT==1)","");
   // E1->cd(6);
-  // data->Draw("IM_g1g2>>e6(200,0,0.2)","MP_rec_spectator<0.3&&((flag_photon1_wCAL==2||flag_photon1_wCAL==3)&&flag_photon2_ft==1)||((flag_photon2_wCAL==2||flag_photon2_wCAL==3)&&flag_photon1_ft==1)","");
+  // data->Draw("IM_g1g2>>e6(200,0,0.2)","MP_rec_spectator<0.3&&((flag_photon1_wCAL==2||flag_photon1_wCAL==3)&&flag_photon2_FT==1)||((flag_photon2_wCAL==2||flag_photon2_wCAL==3)&&flag_photon1_FT==1)","");
 
 
   // TCanvas *F1 = new TCanvas("F1", "F: Paired photons by region with simpler flag (COMBINED)");
@@ -417,13 +417,13 @@ void photonreg(){
   // F1->cd(2);
   // data->Draw("IM_g1g2>>f2(150,0,0.2)","MP_rec_spectator<0.3&&flag_photon1_ECAL==1&&flag_photon2_ECAL==1","");
   // F1->cd(3);
-  // data->Draw("IM_g1g2>>f3(50,0,0.2)","MP_rec_spectator<0.3&&flag_photon1_ft==1&&flag_photon2_ft==1","");
+  // data->Draw("IM_g1g2>>f3(50,0,0.2)","MP_rec_spectator<0.3&&flag_photon1_FT==1&&flag_photon2_FT==1","");
   // F1->cd(4);
   // data->Draw("IM_g1g2>>f4(500,0,0.2)","MP_rec_spectator<0.3&&(flag_photon1_wCAL==1&&flag_photon2_ECAL==1)||(flag_photon2_wCAL==1&&flag_photon1_ECAL==1)","");
   // F1->cd(5);
-  // data->Draw("IM_g1g2>>f5(250,0,0.2)","MP_rec_spectator<0.3&&(flag_photon1_wCAL==1&&flag_photon2_ft==1)||(flag_photon2_wCAL==1&&flag_photon1_ft==1)","");
+  // data->Draw("IM_g1g2>>f5(250,0,0.2)","MP_rec_spectator<0.3&&(flag_photon1_wCAL==1&&flag_photon2_FT==1)||(flag_photon2_wCAL==1&&flag_photon1_FT==1)","");
   // F1->cd(6);
-  // data->Draw("IM_g1g2>>f6(200,0,0.2)","MP_rec_spectator<0.3&&(flag_photon1_ECAL==1&&flag_photon2_ft==1)||(flag_photon2_ECAL==1&&flag_photon1_ft==1)","");
+  // data->Draw("IM_g1g2>>f6(200,0,0.2)","MP_rec_spectator<0.3&&(flag_photon1_ECAL==1&&flag_photon2_FT==1)||(flag_photon2_ECAL==1&&flag_photon1_FT==1)","");
   
   //WHATS GOING ON BETWEEN E1 and D1 here? Suddenly ALL the stats.  Maybe set up new flag so make things clearer...
 }

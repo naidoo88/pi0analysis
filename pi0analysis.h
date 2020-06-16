@@ -29,19 +29,20 @@ bool flag_cuts_cop;
 //bool flag_MM2_total;
 
 
-bool flag_photon1_ft;
+bool flag_photon1_FT;
 bool flag_photon1_PCAL;
 bool flag_photon1_ECAL;
 bool flag_photon1_EIN;
 bool flag_photon1_EOUT;
-int  flag_photon1_wCAL;//kill when stable
+bool flag_photon1_FD;
 
-bool flag_photon2_ft;
+bool flag_photon2_FT;
 bool flag_photon2_PCAL;
 bool flag_photon2_ECAL;
 bool flag_photon2_EIN;
 bool flag_photon2_EOUT;
-int  flag_photon2_wCAL;//kill when stable
+bool flag_photon2_FD;
+
 
 /*  Counters  */
 int n_events;
@@ -62,11 +63,15 @@ double xB;
 double IM_g1g2;
 double MM2_total;
 double MP_total;
+double ME_total;
 double pi0coneangle;
 
 double MM_rec_recoil;
 double MP_rec_recoil;
+double MM2_rec_recoil;
+
 double MP_rec_spectator;
 double MM_rec_spectator;
+double MM2_rec_spectator;
 
 #endif

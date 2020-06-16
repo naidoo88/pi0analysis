@@ -25,8 +25,8 @@ void cuts(){
   TString EI2 = "flag_photon2_EIN==1";
   TString EO1 = "flag_photon1_EOUT==1";
   TString EO2 = "flag_photon2_EOUT==1";
-  TString FC1 = "flag_photon1_ft==1";
-  TString FC2 = "flag_photon2_ft==1";
+  TString FC1 = "flag_photon1_FT==1";
+  TString FC2 = "flag_photon2_FT==1";
   TString nED = "!((flag_photon1_EIN==1&&flag_photon1_EOUT==1)||(flag_photon2_EIN==1&&flag_photon2_EOUT==1))";
 
   //reg-split cone angle <30,20,10,8,5
