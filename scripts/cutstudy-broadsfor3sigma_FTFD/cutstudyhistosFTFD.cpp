@@ -95,7 +95,7 @@ void cutstudyhistosFTFD(TString datafile, TString outfile)
     {
         for (int j = 0; j < 4; j++)
         {
-            cout << "i: " << i << "  j: " << j << endl; 
+            //cout << "i: " << i << "  j: " << j << endl; 
             ggIM_conecuts_c->cd(n+1); 
             ggIM_coneangle_h[j][i]->Draw();
             n++;
@@ -113,7 +113,7 @@ void cutstudyhistosFTFD(TString datafile, TString outfile)
         ggIM_h[i]->Write();
                 for (int j = 0; j < 4; j++)
         {
-            cout << "i: " << i << "  j: " << j << endl;  
+            //cout << "i: " << i << "  j: " << j << endl;  
             ggIM_coneangle_h[j][i]->Write();
         }
     }
