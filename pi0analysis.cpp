@@ -169,8 +169,8 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 					TLorentzVector expected_pi0;
 
 
-					TLorentzVector rec_recoil;	  //[e p -> e' g1 g2]
-					TLorentzVector rec_spectator; //[e D -> e' R g1 g2]
+					TLorentzVector rec_recoil;	  //[e p -> e' g1 g2 X]
+					TLorentzVector rec_spectator; //[e D -> e' R g1 g2 X]
 
 					int n_pairs = 0;
 					int n_good_pi0candidates = 0;
