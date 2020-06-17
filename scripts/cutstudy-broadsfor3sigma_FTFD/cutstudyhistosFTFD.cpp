@@ -140,20 +140,20 @@ void cuthistos()
 
     //Cone angle cuts - g1g2-inv.mass split by region.
     //---------------------------------------------------------------------------------------------------------------
-    ggIM_coneangle_h[0][0] = new TH1F("ggIM_bothFD_coneangleL30_h", "Invariant mass[#gamma_{1} #gamma_{2}] - both FD - ConeAngle<30^{o}; Inv.Mass (GeV/c^{2}); counts", 200, 0, 0.2);
-    ggIM_coneangle_h[0][1] = new TH1F("ggIM_bothFT_coneangleL30_h", "Invariant mass[#gamma_{1} #gamma_{2}] - both FT - ConeAngle<30^{o}; Inv.Mass (GeV/c^{2}); counts", 200, 0, 0.2);
-    ggIM_coneangle_h[0][2] = new TH1F("ggIM_FDFT_coneangleL30_h", "Invariant mass[#gamma_{1} #gamma_{2}] - FD/FT - ConeAngle<30^{o}; Inv.Mass (GeV/c^{2}); counts",     200, 0, 0.2);
+    ggIM_coneangle_h[0][0] = new TH1F("ggIM_bothFD_coneangleL30_h", "Invariant mass[#gamma_{1} #gamma_{2}] - both FD - ConeAngle<30^{o}; Inv.Mass (GeV/c^{2}); counts", 180, 0, 0.2);
+    ggIM_coneangle_h[0][1] = new TH1F("ggIM_bothFT_coneangleL30_h", "Invariant mass[#gamma_{1} #gamma_{2}] - both FT - ConeAngle<30^{o}; Inv.Mass (GeV/c^{2}); counts", 130, 0, 0.2);
+    ggIM_coneangle_h[0][2] = new TH1F("ggIM_FDFT_coneangleL30_h", "Invariant mass[#gamma_{1} #gamma_{2}] - FD/FT - ConeAngle<30^{o}; Inv.Mass (GeV/c^{2}); counts",     130, 0, 0.2);
 
-    ggIM_coneangle_h[1][0] = new TH1F("ggIM_bothFD_coneangleL20_h", "Invariant mass[#gamma_{1} #gamma_{2}] - both FD - ConeAngle<20^{o}; Inv.Mass (GeV/c^{2}); counts", 200, 0, 0.2);
-    ggIM_coneangle_h[1][1] = new TH1F("ggIM_bothFT_coneangleL20_h", "Invariant mass[#gamma_{1} #gamma_{2}] - both FT - ConeAngle<20^{o}; Inv.Mass (GeV/c^{2}); counts", 200, 0, 0.2);
-    ggIM_coneangle_h[1][2] = new TH1F("ggIM_FDFT_coneangleL20_h", "Invariant mass[#gamma_{1} #gamma_{2}] - FD/FT - ConeAngle<20^{o}; Inv.Mass (GeV/c^{2}); counts",     200, 0, 0.2);
+    ggIM_coneangle_h[1][0] = new TH1F("ggIM_bothFD_coneangleL20_h", "Invariant mass[#gamma_{1} #gamma_{2}] - both FD - ConeAngle<20^{o}; Inv.Mass (GeV/c^{2}); counts", 180, 0, 0.2);
+    ggIM_coneangle_h[1][1] = new TH1F("ggIM_bothFT_coneangleL20_h", "Invariant mass[#gamma_{1} #gamma_{2}] - both FT - ConeAngle<20^{o}; Inv.Mass (GeV/c^{2}); counts", 130, 0, 0.2);
+    ggIM_coneangle_h[1][2] = new TH1F("ggIM_FDFT_coneangleL20_h", "Invariant mass[#gamma_{1} #gamma_{2}] - FD/FT - ConeAngle<20^{o}; Inv.Mass (GeV/c^{2}); counts",     130, 0, 0.2);
 
-    ggIM_coneangle_h[2][0] = new TH1F("ggIM_bothFD_coneangleL10_h", "Invariant mass[#gamma_{1} #gamma_{2}] - both FD - ConeAngle<10^{o}; Inv.Mass (GeV/c^{2}); counts", 200, 0, 0.2);
-    ggIM_coneangle_h[2][1] = new TH1F("ggIM_bothFT_coneangleL10_h", "Invariant mass[#gamma_{1} #gamma_{2}] - both FT - ConeAngle<10^{o}; Inv.Mass (GeV/c^{2}); counts", 200, 0, 0.2);
-    ggIM_coneangle_h[2][2] = new TH1F("ggIM_FDFT_coneangleL10_h", "Invariant mass[#gamma_{1} #gamma_{2}] - FD/FT - ConeAngle<10^{o}; Inv.Mass (GeV/c^{2}); counts",     200, 0, 0.2);
+    ggIM_coneangle_h[2][0] = new TH1F("ggIM_bothFD_coneangleL10_h", "Invariant mass[#gamma_{1} #gamma_{2}] - both FD - ConeAngle<10^{o}; Inv.Mass (GeV/c^{2}); counts", 180, 0, 0.2);
+    ggIM_coneangle_h[2][1] = new TH1F("ggIM_bothFT_coneangleL10_h", "Invariant mass[#gamma_{1} #gamma_{2}] - both FT - ConeAngle<10^{o}; Inv.Mass (GeV/c^{2}); counts", 130, 0, 0.2);
+    ggIM_coneangle_h[2][2] = new TH1F("ggIM_FDFT_coneangleL10_h", "Invariant mass[#gamma_{1} #gamma_{2}] - FD/FT - ConeAngle<10^{o}; Inv.Mass (GeV/c^{2}); counts",     130, 0, 0.2);
 
-    ggIM_coneangle_h[3][0] = new TH1F("ggIM_bothFD_coneangleL8_h",  "Invariant mass[#gamma_{1} #gamma_{2}] - both FD - ConeAngle<8^{o};  Inv.Mass (GeV/c^{2}); counts", 200, 0, 0.2);
-    ggIM_coneangle_h[3][1] = new TH1F("ggIM_bothFT_coneangleL8_h",  "Invariant mass[#gamma_{1} #gamma_{2}] - both FT - ConeAngle<8^{o};  Inv.Mass (GeV/c^{2}); counts", 200, 0, 0.2);
-    ggIM_coneangle_h[3][2] = new TH1F("ggIM_FDFT_coneangleL8_h",  "Invariant mass[#gamma_{1} #gamma_{2}] - FD/FT - ConeAngle<8^{o};  Inv.Mass (GeV/c^{2}); counts",     200, 0, 0.2);
+    ggIM_coneangle_h[3][0] = new TH1F("ggIM_bothFD_coneangleL8_h",  "Invariant mass[#gamma_{1} #gamma_{2}] - both FD - ConeAngle<8^{o};  Inv.Mass (GeV/c^{2}); counts", 180, 0, 0.2);
+    ggIM_coneangle_h[3][1] = new TH1F("ggIM_bothFT_coneangleL8_h",  "Invariant mass[#gamma_{1} #gamma_{2}] - both FT - ConeAngle<8^{o};  Inv.Mass (GeV/c^{2}); counts", 130, 0, 0.2);
+    ggIM_coneangle_h[3][2] = new TH1F("ggIM_FDFT_coneangleL8_h",  "Invariant mass[#gamma_{1} #gamma_{2}] - FD/FT - ConeAngle<8^{o};  Inv.Mass (GeV/c^{2}); counts",     130, 0, 0.2);
 
 } //histos fxn
