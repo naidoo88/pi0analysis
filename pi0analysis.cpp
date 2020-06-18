@@ -15,6 +15,7 @@
 #include "pi0analysis.h"
 
 using namespace clas12;
+using std::cout;
 
 void pi0analysis(const Char_t in_list[], const TString outfilename){
 
@@ -23,7 +24,7 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 
 	bool DEBUG = 0;
 	cout << "Start" << endl;
-	TFile *Out_File = new TFile(outfilename, "recreate"); //yes officer this one right here
+	TFile *Out_File = new TFile(outfilename, "recreate"); 
 	std::ifstream list_of_files;
 	char file_name[200];
 	char last_file[200];
@@ -33,12 +34,10 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 	list_of_files.open(in_list);
 	cout << "list of files opened" << endl;
 
-	int n_files       = 0;
-	int n_pairs       = 0;
+	n_files           = 0;
 	n_events          = 0;
 	n_dis_events      = 0;
 	n_excl_events     = 0;
-	n_postcut_events  = 0;
 	n_ECAL_doublehits = 0;
 
 	//##############################################################################
@@ -53,18 +52,19 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 	data->Branch("W2",   &W2,   "W2/D");
 	data->Branch("xB",   &xB,   "xB/D");
 
-	data->Branch("n_photons_in_event",   &n_photons_in_event,   "n_photons_in_event/I");
-	data->Branch("n_goodpi0_candidates", &n_goodpi0_candidates, "n_goodpi0_candidates/I");
-
 	data->Branch("IM_g1g2",      &IM_g1g2,      "IM_g1g2/D");
 	data->Branch("MM2_total",    &MM2_total,    "MM2_total/D");
-	data->Branch("MM2_total",    &MM2_total,    "MM2_total/D");
+	data->Branch("MP_total",     &MP_total,     "MP_total/D");
+	data->Branch("ME_total",     &ME_total,     "ME_total/D");
 	data->Branch("pi0coneangle", &pi0coneangle, "pi0coneangle/D");
 
-	data->Branch("MM_rec_recoil",    &MM_rec_recoil,    "MM_rec_recoil/D");
-	data->Branch("MM_rec_recoil",    &MM_rec_recoil,    "MM_rec_recoil/D");
-	data->Branch("MP_rec_spectator", &MP_rec_spectator, "MP_rec_spectator/D");
-	data->Branch("MM_rec_spectator", &MM_rec_spectator, "MM_rec_spectator/D");
+	data->Branch("MM_rec_recoil",     &MM_rec_recoil,     "MM_rec_recoil/D");
+	data->Branch("MM2_rec_recoil",    &MM2_rec_recoil,    "MM2_rec_recoil/D");
+	data->Branch("MP_rec_recoil",     &MP_rec_recoil,     "MP_rec_recoil/D");
+
+	data->Branch("MM_rec_spectator",  &MM_rec_spectator,  "MM_rec_spectator/D");
+	data->Branch("MM2_rec_spectator", &MM2_rec_spectator, "MM2_rec_spectator/D");
+	data->Branch("MP_rec_spectator",  &MP_rec_spectator,  "MP_rec_spectator/D");
 
 	data->Branch("phi_Nvg",        &phi_Nvg,        "phi_Nvg/D");
 	data->Branch("phi_Nnew",       &phi_Nnew,       "phi_Nnew/D");
@@ -73,34 +73,45 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 	data->Branch("cop_Nvg_Nnew",   &cop_Nvg_Nnew,   "cop_Nvg_Nnew/D");
 	data->Branch("cop_Nnew_vgnew", &cop_Nnew_vgnew, "cop_Nnew_vgnew/D");
 
-	data->Branch("flag_cuts_bestpi0",    &flag_cuts_bestpi0,    "flag_cuts_bestpi0/O");
-	data->Branch("flag_cuts_goodpi0",    &flag_cuts_goodpi0,    "flag_cuts_goodpi0/O");
 	data->Branch("flag_cuts_3sigIM",     &flag_cuts_3sigIM,     "flag_cuts_3sigIM/O");
 	data->Branch("flag_cuts_3sigIMfull", &flag_cuts_3sigIMfull, "flag_cuts_3sigIMfull/O");
+	data->Branch("flag_cuts_bestpi0",    &flag_cuts_bestpi0,    "flag_cuts_bestpi0/O");
+	data->Branch("flag_cuts_goodpi0",    &flag_cuts_goodpi0,    "flag_cuts_goodpi0/O");
 	data->Branch("flag_cuts_dis",        &flag_cuts_dis,        "flag_cuts_dis/O");
 	data->Branch("flag_cuts_excl",       &flag_cuts_excl,       "flag_cuts_excl/O");
 	data->Branch("flag_cuts_W2",         &flag_cuts_W2,         "flag_cuts_W2/O");
-	data->Branch("flag_cuts_3sigMM2",    &flag_cuts_3sigMM2,    "flag_cuts_3sigMM2/O");
 	data->Branch("flag_cuts_broadMM2",   &flag_cuts_broadMM2,   "flag_cuts_broadMM2/O");
 	data->Branch("flag_cuts_broadcone",  &flag_cuts_broadcone,  "flag_cuts_broadcone/O");
 	data->Branch("flag_cuts_spectMP",    &flag_cuts_spectMP,    "flag_cuts_spectMP/O");
+	data->Branch("flag_cuts_3sigMM2",    &flag_cuts_3sigMM2,    "flag_cuts_3sigMM2/O");
 	data->Branch("flag_cuts_cop",        &flag_cuts_cop,        "flag_cuts_cop/O");
 
-	// data->Branch("flag_MM2_total",    &flag_MM2_total,     "flag_MM2_total/O");
-
-	data->Branch("flag_photon1_FT",   &flag_photon1_FT,   "flag_photon1_FT/O");
 	data->Branch("flag_photon1_FD",   &flag_photon1_FD,   "flag_photon1_FD/O");
+	data->Branch("flag_photon1_FT",   &flag_photon1_FT,   "flag_photon1_FT/O");
 	data->Branch("flag_photon1_PCAL", &flag_photon1_PCAL, "flag_photon1_PCAL/O");
 	data->Branch("flag_photon1_ECAL", &flag_photon1_ECAL, "flag_photon1_ECAL/O");
 	data->Branch("flag_photon1_EIN",  &flag_photon1_EIN,  "flag_photon1_EIN/O");
 	data->Branch("flag_photon1_EOUT", &flag_photon1_EOUT, "flag_photon1_EOUT/O");
-	data->Branch("flag_photon2_FT",   &flag_photon2_FT,   "flag_photon2_FT/O");
+	
 	data->Branch("flag_photon2_FD",   &flag_photon2_FD,   "flag_photon2_FD/O");
+	data->Branch("flag_photon2_FT",   &flag_photon2_FT,   "flag_photon2_FT/O");
 	data->Branch("flag_photon2_PCAL", &flag_photon2_PCAL, "flag_photon2_PCAL/O");
 	data->Branch("flag_photon2_ECAL", &flag_photon2_ECAL, "flag_photon2_ECAL/O");
 	data->Branch("flag_photon2_EIN",  &flag_photon2_EIN,  "flag_photon2_EIN/O");
 	data->Branch("flag_photon2_EOUT", &flag_photon2_EOUT, "flag_photon2_EOUT/O");
 
+    data->Branch("n_photons_inevent",     &n_photons_inevent,     "n_photons_inevent/O");
+    data->Branch("n_photonpairs_inevent", &n_photonpairs_inevent, "n_photonpairs_inevent/O");
+    data->Branch("n_pi0_post3sig",        &n_pi0_post3sig,        "n_pi0_post3sig/O");
+    data->Branch("n_pi0_goodcandidates",  &n_pi0_goodcandidates,  "n_pi0_goodcandidates/O");
+    
+	data->Branch("n_FD_onlyhits",         &n_FD_onlyhits,         "n_FD_onlyhits/O");
+    data->Branch("n_FT_onlyhits",         &n_FT_onlyhits,         "n_FT_onlyhits/O");
+    data->Branch("n_FD_doublehits",       &n_FD_doublehits,       "n_FD_doublehits/O");
+    data->Branch("n_ECAL_doublehits",     &n_ECAL_doublehits,     "n_ECAL_doublehits/O");
+	
+	data->Branch("n_dis_events",          &n_dis_events,          "n_dis_events/O");
+	data->Branch("n_excl_events",         &n_excl_events,         "n_excl_events/O");
 	//##############################################################################
 
 	if (list_of_files.is_open()){
@@ -143,7 +154,6 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 				TLorentzVector deut(0, 0, 0, 1.876);
 
 				while (c12.next()){ //loop over events
-					n_events++;
 					// if (n_events%1000==0)
 					// {
 					//   cout << "\r" << "Processing event: " << std::setw(10) <<  n_events << std::flush;
@@ -175,12 +185,13 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 					TLorentzVector rec_recoil;	  //[e p -> e' g1 g2 X]
 					TLorentzVector rec_spectator; //[e D -> e' R g1 g2 X]
 
-					int n_pairs = 0;
-					int n_good_pi0candidates = 0;
-					n_photons_in_event = photonbuff.size();
+					n_photonpairs_inevent = 0;
+					n_pi0_post3sig = 0;
+					n_pi0_goodcandidates = 0;
+					n_photons_inevent = photonbuff.size();
 
-					for (int i = 0; i < n_photons_in_event - 1; i++){
-						for (int j = i + 1; j < n_photons_in_event; j++){
+					for (int i = 0; i < n_photons_inevent - 1; i++){
+						for (int j = i + 1; j < n_photons_inevent; j++){
 							if (DEBUG)	cout << "pair [" << i << "][" << j << "]" << endl;
 
 							phot1.SetXYZM(photonbuff[i]->par()->getPx(),
@@ -231,12 +242,15 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 							*/
 							if ((flag_photon1_FD == 1 && flag_photon2_FD == 1) && (IM_g1g2 > 0.08882 && IM_g1g2 < 0.17318)){
 								flag_cuts_3sigIM = 1;
+								n_pi0_post3sig++;
 							}
 							else if ((flag_photon1_FT == 1 && flag_photon2_FT == 1) && (IM_g1g2 > 0.11184 && IM_g1g2 < 0.15036)){
-								flag_cuts_3sigIMfull = 1;
+								flag_cuts_3sigIM = 1;
+								n_pi0_post3sig++;
 							}
 							else if (((flag_photon1_FD == 1 && flag_photon2_FT == 1) || (flag_photon2_FD == 1 && flag_photon1_FT == 1)) && (IM_g1g2 > 0.08161 && IM_g1g2 < 0.17059)){
 								flag_cuts_3sigIM = 1;
+								n_pi0_post3sig++;
 							}
 							else
 								flag_cuts_3sigIM = 0;							
@@ -327,17 +341,18 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 								flag_cuts_cop = 0;
 							//###################################################################################
 
-							n_pairs++;
-
 							data->Fill();
+
+							n_photonpairs_inevent++;
 						} //photons j-loop
-					}	  //photons i-loop
+					}//photons i-loop
 					if (DEBUG)
-						cout << "LOOPED THROUGH " << n_pairs << " PAIRS.\n"
+						cout << "LOOPED THROUGH " << n_photonpairs_inevent << " PAIRS.\n"
 							 << endl;
 
 				//SUBSTITUTE THESE LINES TO PROCESS N-EVENTS
 				//if (n_events == 10) break;        }//event loop
+				n_events++;
 				}//event loop
 			}//duplicate check
 			sprintf(last_file, "%s", file_name); // save name of the current file into "last_file"
