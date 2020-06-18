@@ -38,7 +38,6 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 	n_events          = 0;
 	n_dis_events      = 0;
 	n_excl_events     = 0;
-	n_ECAL_doublehits = 0;
 
 	//##############################################################################
 	// Set up Tree/Branches
@@ -101,7 +100,7 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 	data->Branch("flag_photon2_EOUT", &flag_photon2_EOUT, "flag_photon2_EOUT/O");
 
     data->Branch("n_photons_inevent",     &n_photons_inevent,     "n_photons_inevent/O");
-    data->Branch("n_photonpairs_inevent", &n_photonpairs_inevent, "n_photonpairs_inevent/O");
+    //data->Branch("n_photonpairs_inevent", &n_photonpairs_inevent, "n_photonpairs_inevent/O");  <-- needs to be written out as a histogram if needed
     data->Branch("n_pi0_post3sig",        &n_pi0_post3sig,        "n_pi0_post3sig/O");
     data->Branch("n_pi0_goodcandidates",  &n_pi0_goodcandidates,  "n_pi0_goodcandidates/O");
     
@@ -138,20 +137,22 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 				c12.addZeroOfRestPid();	  //no other particles
 
 				auto db = TDatabasePDG::Instance();
-				TLorentzVector beam(0, 0, 10.6, 10.6);
+				TLorentzVector beam  (0, 0, 10.6, 10.6);
 				TLorentzVector target(0, 0, 0, db->GetParticle(2212)->Mass());
-				TLorentzVector e_scattered(0, 0, 0, 0);
-				TLorentzVector recoil(0, 0, 0, 0);
-				TLorentzVector phot1(0, 0, 0, 0);
-				TLorentzVector phot2(0, 0, 0, 0);
-				TLorentzVector q(0, 0, 0, 0);
 
-				double em = db->GetParticle(11)->Mass();
+				TLorentzVector q          (0, 0, 0, 0);
+				TLorentzVector deut       (0, 0, 0, 1.876);
+
+				TLorentzVector e_scattered(0, 0, 0, 0);
+				TLorentzVector recoil     (0, 0, 0, 0);
+				TLorentzVector phot1      (0, 0, 0, 0);
+				TLorentzVector phot2      (0, 0, 0, 0);
+
+				double em    = db->GetParticle(11)->Mass();
 				double protm = db->GetParticle(2212)->Mass();
-				double pi0m = db->GetParticle(111)->Mass();
+				double pi0m  = db->GetParticle(111)->Mass();
 				double neutm = db->GetParticle(2112)->Mass();
 				//double deutm = db -> GetParticle(1000010020) -> Mass();
-				TLorentzVector deut(0, 0, 0, 1.876);
 
 				while (c12.next()){ //loop over events
 					// if (n_events%1000==0)
@@ -181,14 +182,13 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 					TLorentzVector photon_pair;
 					TLorentzVector expected_pi0;
 
-
 					TLorentzVector rec_recoil;	  //[e p -> e' g1 g2 X]
 					TLorentzVector rec_spectator; //[e D -> e' R g1 g2 X]
 
 					n_photonpairs_inevent = 0;
-					n_pi0_post3sig = 0;
-					n_pi0_goodcandidates = 0;
-					n_photons_inevent = photonbuff.size();
+					n_pi0_post3sig        = 0;
+					n_pi0_goodcandidates  = 0;
+					n_photons_inevent     = photonbuff.size();
 
 					for (int i = 0; i < n_photons_inevent - 1; i++){
 						for (int j = i + 1; j < n_photons_inevent; j++){
@@ -228,7 +228,20 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 							calc_angles(beam.Vect(), e_scattered.Vect(), recoil.Vect(), photon_pair.Vect());
 
 							//Set Photon flags:
-							photonflags(photonbuff[i], photonbuff[j], n_ECAL_doublehits);
+							photonflags(photonbuff[i], photonbuff[j]);
+
+							//TODO -- these are always 1 because they're written within this pairing loop
+							if (flag_photon1_EIN == 1 && flag_photon1_EOUT == 1)
+								n_ECAL_doublehits++;
+							if (flag_photon2_EIN == 1 && flag_photon2_EOUT == 1)
+								n_ECAL_doublehits++;
+
+							if (flag_photon1_FD == 1 && flag_photon2_FD == 1)
+								n_FD_onlyhits++;
+							if (flag_photon1_FT == 1 && flag_photon2_FT == 1)
+								n_FT_onlyhits++;
+							if ((flag_photon1_FD == 1 && flag_photon2_FT == 1) || (flag_photon2_FD == 1 && flag_photon1_FT == 1))
+								n_FD_doublehits++;							
 
 							//###################################################################################
 							// Set 3sigma IM_gg cut flags.  ("full" PCAL/ECAL/FT split or FD/FT split)
@@ -342,21 +355,18 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 							//###################################################################################
 
 							data->Fill();
-
 							n_photonpairs_inevent++;
 						} //photons j-loop
 					}//photons i-loop
 					if (DEBUG)
-						cout << "LOOPED THROUGH " << n_photonpairs_inevent << " PAIRS.\n"
-							 << endl;
-
+						cout << "LOOPED THROUGH " << n_photonpairs_inevent << " PAIRS.\n" << endl;
 				//SUBSTITUTE THESE LINES TO PROCESS N-EVENTS
 				//if (n_events == 10) break;        }//event loop
 				n_events++;
 				}//event loop
+			n_files++;
 			}//duplicate check
 			sprintf(last_file, "%s", file_name); // save name of the current file into "last_file"
-			n_files++;
 		}//file list loop
 	}//list open-check
 
@@ -371,7 +381,7 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 	time.Print();
 } //pi0analysis fxn
 
-void photonflags(clas12::region_part_ptr p1, clas12::region_part_ptr p2, int &count_ECAL_doublehits)
+void photonflags(clas12::region_part_ptr p1, clas12::region_part_ptr p2)
 {
 	//first photon:
 	if (p1->ft(FTCAL)->getDetector() == 10)
@@ -420,12 +430,6 @@ void photonflags(clas12::region_part_ptr p1, clas12::region_part_ptr p2, int &co
 		flag_photon2_ECAL = 1;
 	else
 		flag_photon2_ECAL = 0;
-
-	if (flag_photon1_EIN == 1 && flag_photon1_EOUT == 1)
-		count_ECAL_doublehits++;
-	if (flag_photon2_EIN == 1 && flag_photon2_EOUT == 1)
-		count_ECAL_doublehits++;
-
 
 	if ((flag_photon1_PCAL == 1) || (flag_photon1_ECAL == 1 ))
 		flag_photon1_FD = 1;

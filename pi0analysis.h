@@ -5,7 +5,7 @@
 double DEG;
 
 /*  Functions  */
-void photonflags(clas12::region_part_ptr p1, clas12::region_part_ptr p2, int &count_ECAL_doublehits);
+void photonflags(clas12::region_part_ptr p1, clas12::region_part_ptr p2);
 void calc_angles(TVector3 Ebeam_vect, TVector3 Electron_vect, TVector3 Recoil_vect, TVector3 Newpart_vect);
 
 /*  Variables  */
