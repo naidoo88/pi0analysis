@@ -73,15 +73,18 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 	data->Branch("cop_Nvg_Nnew",   &cop_Nvg_Nnew,   "cop_Nvg_Nnew/D");
 	data->Branch("cop_Nnew_vgnew", &cop_Nnew_vgnew, "cop_Nnew_vgnew/D");
 
-	data->Branch("flag_goodpi0",        &flag_goodpi0,        "flag_goodpi0/O");
-	data->Branch("flag_cuts_dis",       &flag_cuts_dis,       "flag_cuts_dis/O");
-	data->Branch("flag_cuts_excl",      &flag_cuts_excl,      "flag_cuts_excl/O");
-	data->Branch("flag_cuts_W2",        &flag_cuts_W2,        "flag_cuts_W2/0");
-	data->Branch("flag_cuts_3sigMM2",   &flag_cuts_3sigMM2,   "flag_cuts_3sigMM2/O");
-	data->Branch("flag_cuts_broadMM2",  &flag_cuts_broadMM2,  "flag_cuts_broadMM2/O");
-	data->Branch("flag_cuts_broadcone", &flag_cuts_broadcone, "flag_cuts_broadcone/O");
-	data->Branch("flag_cuts_spectMP",   &flag_cuts_spectMP,   "flag_cuts_spectMP/O");
-	data->Branch("flag_cuts_cop",       &flag_cuts_cop,       "flag_cuts_cop/O");
+	data->Branch("flag_cuts_bestpi0"     &flag_cuts_bestpi0,    "flag_cuts_bestpi0/O");
+	data->Branch("flag_cuts_goodpi0",    &flag_cuts_goodpi0,    "flag_cuts_goodpi0/O");
+	data->Branch("flag_cuts_3sigIM",     &flag_cuts_3sigIM,     "flag_cuts_3sigIM/O");
+	data->Branch("flag_cuts_3sigIMfull", &flag_cuts_3sigIMfull, "flag_cuts_3sigIMfull/O");
+	data->Branch("flag_cuts_dis",        &flag_cuts_dis,        "flag_cuts_dis/O");
+	data->Branch("flag_cuts_excl",       &flag_cuts_excl,       "flag_cuts_excl/O");
+	data->Branch("flag_cuts_W2",         &flag_cuts_W2,         "flag_cuts_W2/0");
+	data->Branch("flag_cuts_3sigMM2",    &flag_cuts_3sigMM2,    "flag_cuts_3sigMM2/O");
+	data->Branch("flag_cuts_broadMM2",   &flag_cuts_broadMM2,   "flag_cuts_broadMM2/O");
+	data->Branch("flag_cuts_broadcone",  &flag_cuts_broadcone,  "flag_cuts_broadcone/O");
+	data->Branch("flag_cuts_spectMP",    &flag_cuts_spectMP,    "flag_cuts_spectMP/O");
+	data->Branch("flag_cuts_cop",        &flag_cuts_cop,        "flag_cuts_cop/O");
 
 	// data->Branch("flag_MM2_total",    &flag_MM2_total,     "flag_MM2_total/O");
 
@@ -229,31 +232,31 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
               				*/
 
 							if ((flag_photon1_PCAL == 1 && flag_photon2_PCAL == 1) && (IM_g1g2 > 0.091476 && IM_g1g2 < 0.170891)){
-								flag_goodpi0 = 1;
+								flag_cuts_3sigIMfull = 1;
 								n_goodpi0_candidates++;
 							}
 							else if ((flag_photon1_ECAL == 1 && flag_photon2_ECAL == 1) && (IM_g1g2 > 0.101505 && IM_g1g2 < 0.167831)){
-								flag_goodpi0 = 1;
+								flag_cuts_3sigIMfull = 1;
 								n_goodpi0_candidates++;
 							}
 							else if ((flag_photon1_FT == 1 && flag_photon2_FT == 1) && (IM_g1g2 > 0.112868 && IM_g1g2 < 0.149252)){
-								flag_goodpi0 = 1;
+								flag_cuts_3sigIMfull = 1;
 								n_goodpi0_candidates++;
 							}
 							else if (((flag_photon1_PCAL == 1 && flag_photon2_ECAL == 1) || (flag_photon2_PCAL == 1 && flag_photon1_ECAL == 1)) && (IM_g1g2 > 0.0937409 && IM_g1g2 < 0.170424)){
-								flag_goodpi0 = 1;
+								flag_cuts_3sigIMfull = 1;
 								n_goodpi0_candidates++;
 							}
 							else if (((flag_photon1_ECAL == 1 && flag_photon2_FT == 1) || (flag_photon2_ECAL == 1 && flag_photon1_FT == 1)) && (IM_g1g2 > 0.0947396 && IM_g1g2 < 0.159512)){
-								flag_goodpi0 = 1;
+								flag_cuts_3sigIMfull = 1;
 								n_goodpi0_candidates++;
 							}
 							else if (((flag_photon1_PCAL == 1 && flag_photon2_FT == 1) || (flag_photon2_PCAL == 1 && flag_photon1_FT == 1)) && (IM_g1g2 > 0.0908801 && IM_g1g2 < 0.162561)){
-								flag_goodpi0 = 1;
+								flag_cuts_3sigIMfull = 1;
 								n_goodpi0_candidates++;
 							}
 							else
-								flag_goodpi0 = 0;
+								flag_cuts_3sigIMfull = 0;
 
 							//###################################################################################
 							// Set Cut Flags -- DIS cuts, excl' cuts.

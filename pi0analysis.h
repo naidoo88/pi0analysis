@@ -17,7 +17,10 @@ double cop_Nvg_Nnew;
 double cop_Nnew_vgnew;
 
 /*  Flags  */
-bool flag_goodpi0;
+bool flag_cuts_3sigIMfull;
+bool flag_cuts_bestpi0;
+bool flag_cuts_goodpi0;
+bool flag_cuts_3sigIM; 
 bool flag_cuts_dis;
 bool flag_cuts_excl;
 bool flag_cuts_W2;

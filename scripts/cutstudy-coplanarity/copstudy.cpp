@@ -39,7 +39,7 @@ void copstudy(TString datafile, TString outfile){
 	TChain chain("data");
 	chain.AddFile(datafile);
 
-    bool flag_goodpi0;
+    bool flag_cuts_3sigIMfull;
     bool flag_cuts_dis;
     bool flag_cuts_broadMM2;
     bool flag_cuts_broadcone;
@@ -50,7 +50,7 @@ void copstudy(TString datafile, TString outfile){
     double cop_Nnew_vgnew;  
     double MM2_total;
 
-    chain.SetBranchAddress("flag_goodpi0",        &flag_goodpi0);
+    chain.SetBranchAddress("flag_cuts_3sigIMfull",        &flag_cuts_3sigIMfull);
     chain.SetBranchAddress("flag_cuts_dis",       &flag_cuts_dis);
     chain.SetBranchAddress("flag_cuts_broadMM2",  &flag_cuts_broadMM2);
     chain.SetBranchAddress("flag_cuts_broadcone", &flag_cuts_broadcone);
@@ -68,7 +68,7 @@ void copstudy(TString datafile, TString outfile){
 	for(Int_t i=0;i<chain.GetEntries();i++){
         chain.GetEntry(i);
 
-        if(flag_goodpi0        != 1) continue;  //corresponds to 3sig cut on pi0-mass
+        if(flag_cuts_3sigIMfull        != 1) continue;  //corresponds to 3sig cut on pi0-mass
         if(flag_cuts_dis       != 1) continue;
         if(flag_cuts_broadcone != 1) continue;   
         if(flag_cuts_spectMP   != 1) continue;

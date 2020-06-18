@@ -27,7 +27,7 @@ void plotIMMM2(TString infile){
 
 	double IM_g1g2;
 	double MM2_total;
-	bool   flag_goodpi0;
+	bool   flag_cuts_3sigIMfull;
     bool   flag_cuts_dis;
     bool   flag_cuts_broadMM2;
     bool   flag_cuts_broadcone;
@@ -38,7 +38,7 @@ void plotIMMM2(TString infile){
 	chain.SetBranchAddress("IM_g1g2",       &IM_g1g2);
 	chain.SetBranchAddress("MM2_total",     &MM2_total);
 
-    chain.SetBranchAddress("flag_goodpi0",        &flag_goodpi0);
+    chain.SetBranchAddress("flag_cuts_3sigIMfull",        &flag_cuts_3sigIMfull);
     chain.SetBranchAddress("flag_cuts_broadcone", &flag_cuts_broadcone);
     chain.SetBranchAddress("flag_cuts_dis",     &flag_cuts_dis);
     chain.SetBranchAddress("flag_cuts_spectMP", &flag_cuts_spectMP);  
@@ -64,7 +64,7 @@ void plotIMMM2(TString infile){
         ggIM_h   ->Fill(IM_g1g2);
         totMM2_h ->Fill(MM2_total);
 
-        if(flag_goodpi0        != 1) continue;  //corresponds to 3sig cut on pi0-mass
+        if(flag_cuts_3sigIMfull        != 1) continue;  //corresponds to 3sig cut on pi0-mass
         ggIM_goodcut_h   ->Fill(IM_g1g2);
         totMM2_goodcut_h ->Fill(MM2_total);       
 

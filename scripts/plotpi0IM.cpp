@@ -28,12 +28,12 @@ void plotpi0IM(TString infile){
 	double IM_g1g2;
 	double MM2_total;
 	double pi0coneangle;
-	bool   flag_goodpi0;
+	bool   flag_cuts_3sigIMfull;
 
 	chain.SetBranchAddress("IM_g1g2",       &IM_g1g2);
 	chain.SetBranchAddress("MM2_total",     &MM2_total);
 	chain.SetBranchAddress("pi0coneangle",  &pi0coneangle);
-	chain.SetBranchAddress("flag_goodpi0",  &flag_goodpi0);
+	chain.SetBranchAddress("flag_cuts_3sigIMfull",  &flag_cuts_3sigIMfull);
 
 	TH1F* ggIM_raw_h      = new TH1F("ggIM_raw_h",  "Invariant mass[#gamma_{1} #gamma_{2}] - Raw; Inv.Mass (GeV/c^{2}); counts", 200, 0, 0.2);
 	TH1F* ggIM_good_h     = new TH1F("ggIM_good_h", "Invariant mass[#gamma_{1} #gamma_{2}] - Raw; Inv.Mass (GeV/c^{2}); counts", 200, 0, 0.2);
@@ -57,13 +57,13 @@ void plotpi0IM(TString infile){
 		chain.GetEntry(i);
 
 		ggIM_raw_h->Fill(IM_g1g2);
-		if (flag_goodpi0==1)                                                            ggIM_good_h->   Fill(IM_g1g2);
-		if((MM2_total > -0.5 && MM2_total < 0.5)&&(pi0coneangle<20)&&(flag_goodpi0==1)) ggIM_goodcut_h->Fill(IM_g1g2);
+		if (flag_cuts_3sigIMfull==1)                                                            ggIM_good_h->   Fill(IM_g1g2);
+		if((MM2_total > -0.5 && MM2_total < 0.5)&&(pi0coneangle<20)&&(flag_cuts_3sigIMfull==1)) ggIM_goodcut_h->Fill(IM_g1g2);
 		if((MM2_total > -0.5 && MM2_total < 0.5)&&(pi0coneangle<20))                    ggIM_rawcut_h-> Fill(IM_g1g2);
 
 		totMM2_raw_h->Fill(MM2_total);
-		if (flag_goodpi0==1)                                                            totMM2_good_h->   Fill(MM2_total);
-		if((MM2_total > -0.5 && MM2_total < 0.5)&&(pi0coneangle<20)&&(flag_goodpi0==1)) totMM2_goodcut_h->Fill(MM2_total);
+		if (flag_cuts_3sigIMfull==1)                                                            totMM2_good_h->   Fill(MM2_total);
+		if((MM2_total > -0.5 && MM2_total < 0.5)&&(pi0coneangle<20)&&(flag_cuts_3sigIMfull==1)) totMM2_goodcut_h->Fill(MM2_total);
 		if((MM2_total > -0.5 && MM2_total < 0.5)&&(pi0coneangle<20))                    totMM2_rawcut_h-> Fill(MM2_total);
 	}
 
