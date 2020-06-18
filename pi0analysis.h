@@ -31,7 +31,6 @@ bool flag_cuts_3sigMM2;
 bool flag_cuts_cop;
 //bool flag_MM2_total;
 
-
 bool flag_photon1_FT;
 bool flag_photon1_PCAL;
 bool flag_photon1_ECAL;

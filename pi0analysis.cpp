@@ -73,13 +73,13 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 	data->Branch("cop_Nvg_Nnew",   &cop_Nvg_Nnew,   "cop_Nvg_Nnew/D");
 	data->Branch("cop_Nnew_vgnew", &cop_Nnew_vgnew, "cop_Nnew_vgnew/D");
 
-	data->Branch("flag_cuts_bestpi0"     &flag_cuts_bestpi0,    "flag_cuts_bestpi0/O");
+	data->Branch("flag_cuts_bestpi0",    &flag_cuts_bestpi0,    "flag_cuts_bestpi0/O");
 	data->Branch("flag_cuts_goodpi0",    &flag_cuts_goodpi0,    "flag_cuts_goodpi0/O");
 	data->Branch("flag_cuts_3sigIM",     &flag_cuts_3sigIM,     "flag_cuts_3sigIM/O");
 	data->Branch("flag_cuts_3sigIMfull", &flag_cuts_3sigIMfull, "flag_cuts_3sigIMfull/O");
 	data->Branch("flag_cuts_dis",        &flag_cuts_dis,        "flag_cuts_dis/O");
 	data->Branch("flag_cuts_excl",       &flag_cuts_excl,       "flag_cuts_excl/O");
-	data->Branch("flag_cuts_W2",         &flag_cuts_W2,         "flag_cuts_W2/0");
+	data->Branch("flag_cuts_W2",         &flag_cuts_W2,         "flag_cuts_W2/O");
 	data->Branch("flag_cuts_3sigMM2",    &flag_cuts_3sigMM2,    "flag_cuts_3sigMM2/O");
 	data->Branch("flag_cuts_broadMM2",   &flag_cuts_broadMM2,   "flag_cuts_broadMM2/O");
 	data->Branch("flag_cuts_broadcone",  &flag_cuts_broadcone,  "flag_cuts_broadcone/O");
@@ -219,10 +219,29 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 							//Set Photon flags:
 							photonflags(photonbuff[i], photonbuff[j], n_ECAL_doublehits);
 
-							//Set "good"-pi0 event flag
-							/*
-              				// [IM_gg fitted (per detector) with MM2 +/- 0.5GeV && pi0coneangle < 20deg]
-              				// -- 3 sigma cut gives the following:
+							//###################################################################################
+							// Set 3sigma IM_gg cut flags.  ("full" PCAL/ECAL/FT split or FD/FT split)
+							// [IM_gg fitted with cuts: MM2 +/- 0.5GeV && pi0coneangle < 20deg (somewhat arb.)]
+							//###################################################################################
+              				
+							/* FD/FT split (linear BG) 3 sigma cut gives the following:
+              				// ---- both FD: Mean: 0.13100  Sig: 0.01406 =>  Lower: 0.08882   Upper: 0.17318
+              				// ---- both FT: Mean: 0.13110  Sig: 0.00642 =>  Lower: 0.11184   Upper: 0.15036
+              				// ---- 1FD/1FT: Mean: 0.12610  Sig: 0.01483 =>  Lower: 0.08161   Upper: 0.17059
+							*/
+							if ((flag_photon1_FD == 1 && flag_photon2_FD == 1) && (IM_g1g2 > 0.08882 && IM_g1g2 < 0.17318)){
+								flag_cuts_3sigIM = 1;
+							}
+							else if ((flag_photon1_FT == 1 && flag_photon2_FT == 1) && (IM_g1g2 > 0.11184 && IM_g1g2 < 0.15036)){
+								flag_cuts_3sigIMfull = 1;
+							}
+							else if (((flag_photon1_FD == 1 && flag_photon2_FT == 1) || (flag_photon2_FD == 1 && flag_photon1_FT == 1)) && (IM_g1g2 > 0.08161 && IM_g1g2 < 0.17059)){
+								flag_cuts_3sigIM = 1;
+							}
+							else
+								flag_cuts_3sigIM = 0;							
+						
+							/* "full" split 3 sigma cut gives the following:
               				// ---- both PCAL: Mean: 0.131183  Sig: 0.0132358 => Lower: 0.091476   Upper: 0.170891
               				// ---- both ECAL: Mean: 0.134668  Sig: 0.0110543 => Lower: 0.101505   Upper: 0.167831
               				// ---- both FCAL: Mean: 0.131060  Sig: 0.0060639 => Lower: 0.112868   Upper: 0.149252
@@ -230,30 +249,23 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
               				// ---- ECAL/FCAL: Mean: 0.127126  Sig: 0.0107954 => Lower: 0.0947396  Upper: 0.159512
               				// ---- PCAL/FCAL: Mean: 0.126721  Sig: 0.0119468 => Lower: 0.0908801  Upper: 0.162561
               				*/
-
 							if ((flag_photon1_PCAL == 1 && flag_photon2_PCAL == 1) && (IM_g1g2 > 0.091476 && IM_g1g2 < 0.170891)){
 								flag_cuts_3sigIMfull = 1;
-								n_goodpi0_candidates++;
 							}
 							else if ((flag_photon1_ECAL == 1 && flag_photon2_ECAL == 1) && (IM_g1g2 > 0.101505 && IM_g1g2 < 0.167831)){
 								flag_cuts_3sigIMfull = 1;
-								n_goodpi0_candidates++;
 							}
 							else if ((flag_photon1_FT == 1 && flag_photon2_FT == 1) && (IM_g1g2 > 0.112868 && IM_g1g2 < 0.149252)){
 								flag_cuts_3sigIMfull = 1;
-								n_goodpi0_candidates++;
 							}
 							else if (((flag_photon1_PCAL == 1 && flag_photon2_ECAL == 1) || (flag_photon2_PCAL == 1 && flag_photon1_ECAL == 1)) && (IM_g1g2 > 0.0937409 && IM_g1g2 < 0.170424)){
 								flag_cuts_3sigIMfull = 1;
-								n_goodpi0_candidates++;
 							}
 							else if (((flag_photon1_ECAL == 1 && flag_photon2_FT == 1) || (flag_photon2_ECAL == 1 && flag_photon1_FT == 1)) && (IM_g1g2 > 0.0947396 && IM_g1g2 < 0.159512)){
 								flag_cuts_3sigIMfull = 1;
-								n_goodpi0_candidates++;
 							}
 							else if (((flag_photon1_PCAL == 1 && flag_photon2_FT == 1) || (flag_photon2_PCAL == 1 && flag_photon1_FT == 1)) && (IM_g1g2 > 0.0908801 && IM_g1g2 < 0.162561)){
 								flag_cuts_3sigIMfull = 1;
-								n_goodpi0_candidates++;
 							}
 							else
 								flag_cuts_3sigIMfull = 0;
@@ -267,14 +279,14 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 							xB   = Q2 / 2 * (target * q);
 							tneg = -1 * (recoil - target).M2(); //**DOUBLE CHECK THIS AGAINST THEORY PAPER**
 
-							W2 = (recoil + photon_pair).M2();
-
 							if ((Q2 > 1) && (tneg < 1)){
 								flag_cuts_dis = 1;
 								n_dis_events++;
 							}
 							else
 								flag_cuts_dis = 0;
+
+							W2 = (recoil + photon_pair).M2();
 
 							if (W2 > 4){
 								flag_cuts_W2 = 1;
@@ -346,7 +358,6 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 
 void photonflags(clas12::region_part_ptr p1, clas12::region_part_ptr p2, int &count_ECAL_doublehits)
 {
-
 	//first photon:
 	if (p1->ft(FTCAL)->getDetector() == 10)
 		flag_photon1_FT = 1;
@@ -400,6 +411,7 @@ void photonflags(clas12::region_part_ptr p1, clas12::region_part_ptr p2, int &co
 	if (flag_photon2_EIN == 1 && flag_photon2_EOUT == 1)
 		count_ECAL_doublehits++;
 
+
 	if ((flag_photon1_PCAL == 1) || (flag_photon1_ECAL == 1 ))
 		flag_photon1_FD = 1;
 	else 
@@ -415,7 +427,6 @@ void photonflags(clas12::region_part_ptr p1, clas12::region_part_ptr p2, int &co
 void calc_angles(TVector3 Ebeam_vect, TVector3 Electron_vect, TVector3 Recoil_vect, TVector3 Newpart_vect)
 {
 
-	//TVector3 Ebeam_vect;          // vector of incoming beam electron
 	TVector3 Virtual_photon; // virtual photon vector
 	TVector3 vect_ee;		 // vector in the leptonic plane
 	TVector3 vect_Nnew;		 // three vectors in the hadronic plane
