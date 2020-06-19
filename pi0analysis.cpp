@@ -34,6 +34,22 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 	list_of_files.open(in_list);
 	cout << "list of files opened" << endl;
 
+	/*  Counters  */
+	int n_files;
+	int n_events;
+	int n_photons_inevent;
+	int n_photonpairs_inevent;
+	int n_pi0_post3sig;
+	int n_pi0_goodcandidates;
+
+	int n_FD_onlyhits;
+	int n_FT_onlyhits;
+	int n_FD_doublehits;
+	int n_ECAL_doublehits;
+
+	int n_dis_events;
+	int n_excl_events;
+
 	n_files           = 0;
 	n_events          = 0;
 	n_dis_events      = 0;
@@ -113,6 +129,8 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 	data->Branch("n_excl_events",         &n_excl_events,         "n_excl_events/O");
 	//##############################################################################
 
+	counterhistos();
+
 	if (list_of_files.is_open()){
 		cout << "Successfully opened list:  " << in_list << endl;
 
@@ -188,7 +206,13 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 					n_photonpairs_inevent = 0;
 					n_pi0_post3sig        = 0;
 					n_pi0_goodcandidates  = 0;
+					n_pi0_post3sig        = 0;
+					n_FD_onlyhits         = 0;
+					n_FT_onlyhits         = 0;
+					n_FD_doublehits       = 0;
+
 					n_photons_inevent     = photonbuff.size();
+					n_photons_inevent_h  -> Fill(n_photons_inevent);
 
 					for (int i = 0; i < n_photons_inevent - 1; i++){
 						for (int j = i + 1; j < n_photons_inevent; j++){
@@ -358,6 +382,11 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 							n_photonpairs_inevent++;
 						} //photons j-loop
 					}//photons i-loop
+					n_photonpairs_inevent_h -> Fill(n_photonpairs_inevent);
+					n_pi0_post3sig_h        -> Fill(n_pi0_post3sig);
+					n_FD_onlyhits_h         -> Fill(n_FD_onlyhits);
+					n_FT_onlyhits_h         -> Fill(n_FT_onlyhits);
+					n_FD_doublehits_h       -> Fill(n_FD_doublehits);
 					if (DEBUG)
 						cout << "LOOPED THROUGH " << n_photonpairs_inevent << " PAIRS.\n" << endl;
 				//SUBSTITUTE THESE LINES TO PROCESS N-EVENTS
@@ -501,3 +530,14 @@ void calc_angles(TVector3 Ebeam_vect, TVector3 Electron_vect, TVector3 Recoil_ve
 		cop_Nnew_vgnew = -1 * cop_Nnew_vgnew; // sort of arbitrary, but makes sure there's a nice peak at zero
 
 } //calc_angles fxn
+
+void counterhistos()
+{
+	n_photons_inevent_h     =  new TH1F("n_photons_inevent_h", "Number of photons in one event; N; counts",                  15,0,15);
+	n_photonpairs_inevent_h =  new TH1F("n_photonpairs_inevent_h", "Number of photon-pairs in one event; N; counts",         100,0,100);
+	n_pi0_post3sig_h        =  new TH1F("n_pi0_post3sig_h", "Number of #pi_{0} candidates post-3#sigma mass-cut; N; counts", 15,0,15);
+
+	n_FD_onlyhits_h         =  new TH1F("n_FD_onlyhits_h", "FD-only photon-pairs; N; counts",                    100,0,100);
+	n_FT_onlyhits_h         =  new TH1F("n_FT_onlyhits_h", "FT-only photon-pairs; N; counts",                    20,0,20);
+	n_FD_doublehits_h       =  new TH1F("n_FD_doublehits_h", "Photon-pairs with one #gamma in FD/FT; N; counts", 20,0,20);
+}//counterhistos fxn

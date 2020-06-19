@@ -7,6 +7,7 @@ double DEG;
 /*  Functions  */
 void photonflags(clas12::region_part_ptr p1, clas12::region_part_ptr p2);
 void calc_angles(TVector3 Ebeam_vect, TVector3 Electron_vect, TVector3 Recoil_vect, TVector3 Newpart_vect);
+void counterhistos();
 
 /*  Variables  */
 int helicity;
@@ -64,21 +65,11 @@ bool flag_photon2_ECAL;
 bool flag_photon2_EIN;
 bool flag_photon2_EOUT;
 
-
-/*  Counters  */
-int n_files;
-int n_events;
-int n_photons_inevent;
-int n_photonpairs_inevent;
-int n_pi0_post3sig;
-int n_pi0_goodcandidates;
-
-int n_FD_onlyhits;
-int n_FT_onlyhits;
-int n_FD_doublehits;
-int n_ECAL_doublehits;
-
-int n_dis_events;
-int n_excl_events;
+TH1F *n_photons_inevent_h;
+TH1F *n_photonpairs_inevent_h;
+TH1F *n_pi0_post3sig_h;
+TH1F *n_FD_onlyhits_h;
+TH1F *n_FT_onlyhits_h;
+TH1F *n_FD_doublehits_h;
 
 #endif
