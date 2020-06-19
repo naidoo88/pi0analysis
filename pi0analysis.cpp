@@ -214,6 +214,8 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 					n_photons_inevent     = photonbuff.size();
 					n_photons_inevent_h  -> Fill(n_photons_inevent);
 
+					double Eg_threshold = 0.6;  //Reduce BG by flagging photons with energy lower than
+
 					for (int i = 0; i < n_photons_inevent - 1; i++){
 						for (int j = i + 1; j < n_photons_inevent; j++){
 							if (DEBUG)	cout << "pair [" << i << "][" << j << "]" << endl;
@@ -227,6 +229,16 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 										  photonbuff[j]->par()->getPz(),
 										  0);
 							
+							if (phot1.E() < Eg_threshold)
+								flag_cuts_photonE = 1;
+							if (phot2.E() < Eg_threshold)
+								flag_cuts_photonE = 1;	
+							else
+								flag_cuts_photonE = 0;	
+
+							photonE_h -> Fill(phot1.E());
+							photonE_h -> Fill(phot2.E());
+
 							photon_pair = phot1 + phot2;
 							IM_g1g2   = photon_pair.M();
 
@@ -540,4 +552,6 @@ void counterhistos()
 	n_FD_onlyhits_h         =  new TH1F("n_FD_onlyhits_h", "FD-only photon-pairs; N; counts",                    100,0,100);
 	n_FT_onlyhits_h         =  new TH1F("n_FT_onlyhits_h", "FT-only photon-pairs; N; counts",                    20,0,20);
 	n_FD_doublehits_h       =  new TH1F("n_FD_doublehits_h", "Photon-pairs with one #gamma in FD/FT; N; counts", 20,0,20);
+
+	photonE_h               =  new TH1F("photonE_h", "Photon Energy; E_{#gamma} (GeV); counts", 300, 0, 10);
 }//counterhistos fxn

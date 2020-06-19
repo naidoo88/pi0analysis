@@ -51,6 +51,7 @@ bool flag_cuts_broadcone;
 bool flag_cuts_spectMP; 
 bool flag_cuts_3sigMM2;
 bool flag_cuts_cop;
+bool flag_cuts_photonE;
 
 bool flag_photon1_FD;
 bool flag_photon1_FT;
@@ -71,5 +72,5 @@ TH1F *n_pi0_post3sig_h;
 TH1F *n_FD_onlyhits_h;
 TH1F *n_FT_onlyhits_h;
 TH1F *n_FD_doublehits_h;
-
+TH1F *photonE_h;
 #endif
