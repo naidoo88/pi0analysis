@@ -155,7 +155,7 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 				c12.addZeroOfRestPid();	  //no other particles
 
 				auto db = TDatabasePDG::Instance();
-				TLorentzVector beam  (0, 0, 10.6, 10.6);
+				TLorentzVector beam  (0, 0, 10.6, 10.6);  //TODO - access directly from DST
 				TLorentzVector target(0, 0, 0, db->GetParticle(2212)->Mass());
 
 				TLorentzVector q          (0, 0, 0, 0);
@@ -339,7 +339,7 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 
 							/*======= DIS CUTS =======*/
 							Q2   = -1 * q.M2();
-							xB   = Q2 / 2 * (target * q);
+							xB   = Q2 / (2 * (target.Dot(q)));
 							tneg = -1 * (recoil - target).M2(); //**DOUBLE CHECK THIS AGAINST THEORY PAPER**
 
 							if ((Q2 > 1) && (tneg < 1)){
