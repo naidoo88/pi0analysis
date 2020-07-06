@@ -15,12 +15,6 @@
 #include <TPaveStats.h>
 #include <TString.h>
 
-#include "clas12reader.h"
-
-using namespace clas12;
-
-//void plotPi0IM(TString infile);
-
 void plotpi0IM(TString infile){
 	TChain chain("data");
 	chain.AddFile(infile);
