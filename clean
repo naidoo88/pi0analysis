@@ -1,4 +1,4 @@
 rm *_cpp*
-#rm plothistos_*
-#rm cuts_*
+rm *_C*
 rm scripts/*_cpp*
+rm scripts/*_C*
