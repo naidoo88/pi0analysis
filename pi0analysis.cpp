@@ -88,6 +88,8 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 	data->Branch("cop_Nvg_Nnew",   &cop_Nvg_Nnew,   "cop_Nvg_Nnew/D");
 	data->Branch("cop_Nnew_vgnew", &cop_Nnew_vgnew, "cop_Nnew_vgnew/D");
 
+	data->Branch("flag_2photon_event",   &flag_2photon_event,   "flag_2photon_event/O");
+
 	data->Branch("flag_cuts_3sigIM",     &flag_cuts_3sigIM,     "flag_cuts_3sigIM/O");
 	data->Branch("flag_cuts_3sigIMfull", &flag_cuts_3sigIMfull, "flag_cuts_3sigIMfull/O");
 	data->Branch("flag_cuts_bestpi0",    &flag_cuts_bestpi0,    "flag_cuts_bestpi0/O");
@@ -214,7 +216,17 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 					n_photons_inevent     = photonbuff.size();
 					n_photons_inevent_h  -> Fill(n_photons_inevent);
 
-					double Eg_threshold = 0.6;  //Reduce BG by flagging photons with energy lower than
+					double Eg_threshold = 1;  //Reduce BG by flagging photons with energy lower than
+
+					if (photonbuff.size() > 2)
+					{
+						flag_2photon_event = 1;
+					}
+					else
+					{
+						flag_2photon_event = 0;
+					}
+					
 
 					for (int i = 0; i < n_photons_inevent - 1; i++){
 						for (int j = i + 1; j < n_photons_inevent; j++){
@@ -229,9 +241,9 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 										  photonbuff[j]->par()->getPz(),
 										  0);
 							
-							if (phot1.E() < Eg_threshold)
+							if (phot1.E() > Eg_threshold)
 								flag_cuts_photonE = 1;
-							if (phot2.E() < Eg_threshold)
+							if (phot2.E() <= Eg_threshold)
 								flag_cuts_photonE = 1;	
 							else
 								flag_cuts_photonE = 0;	
