@@ -61,12 +61,16 @@ bool flag_photon1_PCAL;
 bool flag_photon1_ECAL;
 bool flag_photon1_EIN;
 bool flag_photon1_EOUT;
+bool flag_photon1_onlyPCAL;
+bool flag_photon1_onlyECAL;
 bool flag_photon2_FD;
 bool flag_photon2_FT;
 bool flag_photon2_PCAL;
 bool flag_photon2_ECAL;
 bool flag_photon2_EIN;
 bool flag_photon2_EOUT;
+bool flag_photon2_onlyPCAL;
+bool flag_photon2_onlyECAL;
 
 TH1F *n_photons_inevent_h;
 TH1F *n_photonpairs_inevent_h;
