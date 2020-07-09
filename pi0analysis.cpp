@@ -102,6 +102,7 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 	data->Branch("flag_cuts_spectMP",    &flag_cuts_spectMP,    "flag_cuts_spectMP/O");
 	data->Branch("flag_cuts_3sigMM2",    &flag_cuts_3sigMM2,    "flag_cuts_3sigMM2/O");
 	data->Branch("flag_cuts_cop",        &flag_cuts_cop,        "flag_cuts_cop/O");
+	data->Branch("flag_cuts_photonE",    &flag_cuts_photonE,    "flag_cuts_photonE/O");
 
 	data->Branch("flag_photon1_FD",   &flag_photon1_FD,   "flag_photon1_FD/O");
 	data->Branch("flag_photon1_FT",   &flag_photon1_FT,   "flag_photon1_FT/O");
