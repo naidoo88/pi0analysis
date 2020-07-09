@@ -118,6 +118,11 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 	data->Branch("flag_photon2_EIN",  &flag_photon2_EIN,  "flag_photon2_EIN/O");
 	data->Branch("flag_photon2_EOUT", &flag_photon2_EOUT, "flag_photon2_EOUT/O");
 
+	data->Branch("flag_photon1_onlyPCAL", &flag_photon1_onlyPCAL, "flag_photon1_onlyPCAL/O");
+	data->Branch("flag_photon1_onlyECAL", &flag_photon1_onlyECAL, "flag_photon1_onlyECAL/O");
+	data->Branch("flag_photon2_onlyPCAL", &flag_photon2_onlyPCAL, "flag_photon2_onlyPCAL/O");
+	data->Branch("flag_photon2_onlyECAL", &flag_photon2_onlyECAL, "flag_photon2_onlyECAL/O");
+
     data->Branch("n_photons_inevent",     &n_photons_inevent,     "n_photons_inevent/O");
     //data->Branch("n_photonpairs_inevent", &n_photonpairs_inevent, "n_photonpairs_inevent/O");  <-- needs to be written out as a histogram if needed
     data->Branch("n_pi0_post3sig",        &n_pi0_post3sig,        "n_pi0_post3sig/O");
@@ -130,6 +135,7 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 	
 	data->Branch("n_dis_events",          &n_dis_events,          "n_dis_events/O");
 	data->Branch("n_excl_events",         &n_excl_events,         "n_excl_events/O");
+	
 	//##############################################################################
 
 	counterhistos();
@@ -217,7 +223,7 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 					n_photons_inevent     = photonbuff.size();
 					n_photons_inevent_h  -> Fill(n_photons_inevent);
 
-					double Eg_threshold = 1;  //Reduce BG by flagging photons with energy lower than
+					double Eg_threshold = 1;  //Reduce BG by flagging photons with energy higher than
 
 					if (photonbuff.size() > 2)
 					{
@@ -242,10 +248,10 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 										  photonbuff[j]->par()->getPz(),
 										  0);
 							
-							if (phot1.E() > Eg_threshold)
+							if (phot1.E() > Eg_threshold && phot2.E() > Eg_threshold)
 								flag_cuts_photonE = 1;
-							if (phot2.E() <= Eg_threshold)
-								flag_cuts_photonE = 1;	
+							// if (phot2.E() > Eg_threshold)
+							// 	flag_cuts_photonE = 1;	
 							else
 								flag_cuts_photonE = 0;	
 
@@ -461,6 +467,17 @@ void photonflags(clas12::region_part_ptr p1, clas12::region_part_ptr p2)
 	else
 		flag_photon1_ECAL = 0;
 
+	if (flag_photon1_PCAL == 1 && flag_photon1_ECAL == 0)
+		flag_photon1_onlyPCAL = 1;
+	else
+		flag_photon1_onlyPCAL = 0;
+
+	if (flag_photon1_PCAL == 0 && flag_photon1_ECAL == 1)
+		flag_photon1_onlyECAL = 1;
+	else
+		flag_photon1_onlyECAL = 0;	
+	
+
 	//second photon:
 	if (p2->ft(FTCAL)->getDetector() == 10)
 		flag_photon2_FT = 1;
@@ -494,6 +511,16 @@ void photonflags(clas12::region_part_ptr p1, clas12::region_part_ptr p2)
 		flag_photon2_FD = 1;
 	else 
 		flag_photon2_FD = 0;
+
+	if (flag_photon2_PCAL == 1 && flag_photon2_ECAL == 0)
+		flag_photon2_onlyPCAL = 1;
+	else
+		flag_photon2_onlyPCAL = 0;
+
+	if (flag_photon2_PCAL == 0 && flag_photon2_ECAL == 1)
+		flag_photon2_onlyECAL = 1;
+	else
+		flag_photon2_onlyECAL = 0;		
 
 } //photonflags fxn
 
