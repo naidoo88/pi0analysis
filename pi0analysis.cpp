@@ -203,7 +203,8 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 
 					q = beam - e_scattered;
 
-					helicity = c12.helonline()->getHelicity();
+					//helicity = c12.helonline()->getHelicity();
+					helicity = c12.event()->getHelicity();
 
 					TLorentzVector system;        //[e N -> e' R g1 g2]
 					TLorentzVector photon_pair;
