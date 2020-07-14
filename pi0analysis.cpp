@@ -153,12 +153,13 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 
 			if (strcmp(last_file, file_name) != 0){ // makes sure the last file doesn't get counted twice.
 
-				cout << "File to be read in is: " << file_name << endl;
+				cout << endl << endl << "File to be read in is: " << file_name << endl;
 
 				std::string file_str(file_name); //string for clas12reader
 				clas12reader c12(file_str);		 //read hipo file
 
-				c12.addExactPid(2212, 1); //one proton
+				c12.addExactPid(2112, 1); //one neutron
+				//c12.addExactPid(2212, 1); //one proton
 				c12.addExactPid(11, 1);	  //one electron
 				c12.addAtLeastPid(22, 2); //at least 2 photons
 				c12.addZeroOfRestPid();	  //no other particles
@@ -189,12 +190,15 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 
 					auto electronbuff = c12.getByID(11);
 					auto photonbuff = c12.getByID(22);
-					auto protonbuff = c12.getByID(2212);
+					//auto recoilbuff = c12.getByID(2212);
+					auto recoilbuff = c12.getByID(2112);
+					if (recoilbuff.empty() == true) continue;  //ignores BAND neutrons which currently cause segfault.
+					
+					recoil.SetXYZM(recoilbuff[0]->par()->getPx(),
+								   recoilbuff[0]->par()->getPy(),
+								   recoilbuff[0]->par()->getPz(),
+								   neutm);
 
-					recoil.SetXYZM(protonbuff[0]->par()->getPx(),
-								   protonbuff[0]->par()->getPy(),
-								   protonbuff[0]->par()->getPz(),
-								   protm);
 
 					e_scattered.SetXYZM(electronbuff[0]->par()->getPx(),
 										electronbuff[0]->par()->getPy(),
@@ -409,7 +413,7 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 							else
 								flag_cuts_cop = 0;
 							//###################################################################################
-
+							
 							data->Fill();
 							n_photonpairs_inevent++;
 						} //photons j-loop
