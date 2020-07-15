@@ -166,7 +166,7 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 
 				auto db = TDatabasePDG::Instance();
 				TLorentzVector beam  (0, 0, 10.6, 10.6);  //TODO - access directly from DST
-				TLorentzVector target(0, 0, 0, db->GetParticle(2212)->Mass());
+				TLorentzVector target(0, 0, 0, db->GetParticle(2112)->Mass());
 
 				TLorentzVector q          (0, 0, 0, 0);
 				TLorentzVector deut       (0, 0, 0, 1.876);
