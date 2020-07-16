@@ -57,7 +57,7 @@ void cutstudyhistosFTFD(TString datafile, TString outfile)
         if ((flag_photon1_FD == 1 && flag_photon2_FT == 1) || (flag_photon2_FD == 1 && flag_photon1_FT == 1)) ggIM_h[2]->Fill(IM_g1g2);
 
         // /*=====Cone angle histos=====*/
-        if ((MM2_total>-0.5 && MM2_total<0.5) && (flag_cuts_dis == 1)){ //Apply very broad MM2 cut to kill some background.
+        //if ((MM2_total>-0.5 && MM2_total<0.5) && (flag_cuts_dis == 1)){ //Apply very broad MM2 cut to kill some background.
             if (pi0coneangle < 30)
             {
                 if (flag_photon1_FD == 1 && flag_photon2_FD == 1) ggIM_coneangle_h[0][0]  -> Fill(IM_g1g2);
@@ -82,7 +82,7 @@ void cutstudyhistosFTFD(TString datafile, TString outfile)
                 if (flag_photon1_FT == 1 && flag_photon2_FT == 1) ggIM_coneangle_h[3][1]  -> Fill(IM_g1g2);
                 if ((flag_photon1_FD == 1 && flag_photon2_FT == 1) || (flag_photon2_FD == 1 && flag_photon1_FT == 1)) ggIM_coneangle_h[3][2]  -> Fill(IM_g1g2);    
             }
-        }//broad MM2 cut (+/- 0.5)
+        //}//broad MM2 cut (+/- 0.5)
     } //chain-loop
 
     /*=====Plot some canvases=====*/
