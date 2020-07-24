@@ -22,6 +22,8 @@ double MM2_total;
 double MP_total;
 double ME_total;
 double pi0coneangle;
+double eg1coneangle;
+double eg2coneangle;
 
 double MM_rec_recoil;
 double MM2_rec_recoil;
@@ -54,6 +56,7 @@ bool flag_cuts_spectMP;
 bool flag_cuts_3sigMM2;
 bool flag_cuts_cop;
 bool flag_cuts_photonE;
+bool flag_cuts_egcone;
 
 bool flag_photon1_FD;
 bool flag_photon1_FT;

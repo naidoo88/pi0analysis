@@ -72,6 +72,8 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 	data->Branch("MP_total",     &MP_total,     "MP_total/D");
 	data->Branch("ME_total",     &ME_total,     "ME_total/D");
 	data->Branch("pi0coneangle", &pi0coneangle, "pi0coneangle/D");
+	data->Branch("eg1coneangle", &eg1coneangle, "eg1coneangle/D");
+	data->Branch("eg2coneangle", &eg2coneangle, "eg2coneangle/D");
 
 	data->Branch("MM_rec_recoil",     &MM_rec_recoil,     "MM_rec_recoil/D");
 	data->Branch("MM2_rec_recoil",    &MM2_rec_recoil,    "MM2_rec_recoil/D");
@@ -103,6 +105,7 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 	data->Branch("flag_cuts_3sigMM2",    &flag_cuts_3sigMM2,    "flag_cuts_3sigMM2/O");
 	data->Branch("flag_cuts_cop",        &flag_cuts_cop,        "flag_cuts_cop/O");
 	data->Branch("flag_cuts_photonE",    &flag_cuts_photonE,    "flag_cuts_photonE/O");
+	data->Branch("flag_cuts_egcone",     &flag_cuts_egcone,     "flag_cuts_egcone/O");
 
 	data->Branch("flag_photon1_FD",   &flag_photon1_FD,   "flag_photon1_FD/O");
 	data->Branch("flag_photon1_FT",   &flag_photon1_FT,   "flag_photon1_FT/O");
@@ -192,7 +195,7 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 					auto photonbuff = c12.getByID(22);
 					//auto recoilbuff = c12.getByID(2212);
 					auto recoilbuff = c12.getByID(2112);
-					if (recoilbuff.empty() == true) continue;  //ignores BAND neutrons which currently cause segfault.
+					//if (recoilbuff.empty() == true) continue;  //ignores BAND neutrons which currently cause segfault.
 					
 					recoil.SetXYZM(recoilbuff[0]->par()->getPx(),
 								   recoilbuff[0]->par()->getPy(),
@@ -228,7 +231,7 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 					n_photons_inevent     = photonbuff.size();
 					n_photons_inevent_h  -> Fill(n_photons_inevent);
 
-					double Eg_threshold = 1;  //Reduce BG by flagging photons with energy higher than
+					double Eg_threshold = 1.5;  //Reduce BG by flagging photons with energy higher than
 
 					if (photonbuff.size() > 2)
 					{
@@ -253,7 +256,7 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 										  photonbuff[j]->par()->getPz(),
 										  0);
 							
-							if (phot1.E() > Eg_threshold && phot2.E() > Eg_threshold)
+							if (phot1.E() > Eg_threshold || phot2.E() > Eg_threshold)
 								flag_cuts_photonE = 1;
 							// if (phot2.E() > Eg_threshold)
 							// 	flag_cuts_photonE = 1;	
@@ -262,6 +265,15 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 
 							photonE_h -> Fill(phot1.E());
 							photonE_h -> Fill(phot2.E());
+
+							eg1coneangle = (e_scattered.Angle(phot1.Vect())) * DEG;
+							eg2coneangle = (e_scattered.Angle(phot2.Vect())) * DEG;
+
+							if ((eg1coneangle > 5) || (eg2coneangle > 5))
+								flag_cuts_egcone = 1;
+							else
+								flag_cuts_egcone = 0;
+
 
 							photon_pair = phot1 + phot2;
 							IM_g1g2   = photon_pair.M();
