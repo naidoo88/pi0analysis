@@ -24,6 +24,9 @@ double ME_total;
 double pi0coneangle;
 double eg1coneangle;
 double eg2coneangle;
+double g1E;
+double g2E; 
+
 
 double MM_rec_recoil;
 double MM2_rec_recoil;

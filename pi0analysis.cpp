@@ -74,6 +74,8 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 	data->Branch("pi0coneangle", &pi0coneangle, "pi0coneangle/D");
 	data->Branch("eg1coneangle", &eg1coneangle, "eg1coneangle/D");
 	data->Branch("eg2coneangle", &eg2coneangle, "eg2coneangle/D");
+	data->Branch("g1E",          &g1E,           "g1E/D");
+	data->Branch("g2E",          &g2E,           "g2E/D");
 
 	data->Branch("MM_rec_recoil",     &MM_rec_recoil,     "MM_rec_recoil/D");
 	data->Branch("MM2_rec_recoil",    &MM2_rec_recoil,    "MM2_rec_recoil/D");
@@ -255,6 +257,9 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 										  photonbuff[j]->par()->getPy(),
 										  photonbuff[j]->par()->getPz(),
 										  0);
+
+							g1E = phot1.E();
+							g2E = phot2.E();
 							
 							if (phot1.E() > Eg_threshold || phot2.E() > Eg_threshold)
 								flag_cuts_photonE = 1;
