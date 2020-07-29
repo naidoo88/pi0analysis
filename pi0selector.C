@@ -23,6 +23,7 @@
 #include <TH2.h>
 #include "TCanvas.h"
 #include <TSystem.h>
+#include "clas12reader.h"
 
 using std::cout; 
 using std::endl;
@@ -131,6 +132,23 @@ namespace clas12root{
 
       data->Branch("n_dis_events",          &n_dis_events,          "n_dis_events/O");
       data->Branch("n_excl_events",         &n_excl_events,         "n_excl_events/O");
+
+      data->Branch("e_px",     &e_px,     "e_px/D");
+      data->Branch("e_py",     &e_py,     "e_py/D");
+      data->Branch("e_pz",     &e_pz,     "e_pz/D");
+      data->Branch("e_E",      &e_E,      "e_E/D");
+      data->Branch("rec_px",   &rec_px,   "rec_px/D");
+      data->Branch("rec_py",   &rec_py,   "rec_py/D");
+      data->Branch("rec_pz",   &rec_pz,   "rec_pz/D");
+      data->Branch("rec_E",    &rec_E,    "rec_E/D");
+      data->Branch("phot1_px", &phot1_px, "phot1_px/D");
+      data->Branch("phot1_py", &phot1_py, "phot1_py/D");
+      data->Branch("phot1_pz", &phot1_pz, "phot1_pz/D");
+      data->Branch("phot1_E",  &phot1_E,  "phot1_E/D");
+      data->Branch("phot2_px", &phot2_px, "phot2_px/D");
+      data->Branch("phot2_py", &phot2_py, "phot2_py/D");
+      data->Branch("phot2_pz", &phot2_pz, "phot2_pz/D");
+      data->Branch("phot2_E",  &phot2_E,  "phot2_E/D");
     
     GetOutputList()->Add(data);
 
@@ -146,8 +164,8 @@ namespace clas12root{
   void pi0selector::AddFilter(){
     cout << "In AddFilter" << endl << endl;
 
-    //_c12->addExactPid(2112, 1); //one neutron
-    _c12->addExactPid(2212, 1); //one proton
+    _c12->addExactPid(2112, 1); //one neutron
+    //_c12->addExactPid(2212, 1); //one proton
     _c12->addExactPid(11, 1);	  //one electron
     _c12->addAtLeastPid(22, 2); //at least 2 photons
     _c12->addZeroOfRestPid();	  //no other particles
@@ -160,8 +178,8 @@ namespace clas12root{
       cout << "In ProcessEvent" << endl << endl;
 
     	auto electronbuff = _c12->getByID(11);
-			auto recoilbuff = _c12->getByID(2212);
-			//auto recoilbuff   = _c12->getByID(2112);
+			//auto recoilbuff = _c12->getByID(2212);
+			auto recoilbuff   = _c12->getByID(2112);
 			auto photonbuff   = _c12->getByID(22);
       
       //if (recoilbuff.empty() == false) return kTRUE; //work around for BAND neutrons which cause segfault.
@@ -175,6 +193,16 @@ namespace clas12root{
         electronbuff[0]->par()->getPy(),
         electronbuff[0]->par()->getPz(),
         e_scattered.M());
+
+      rec_px = recoil.Px();
+      rec_py = recoil.Py();
+      rec_pz = recoil.Pz();
+      rec_E  = recoil.E();
+
+      e_px = e_scattered.Px();
+      e_py = e_scattered.Py();
+      e_pz = e_scattered.Pz();
+      e_E  = e_scattered.E();
 
       q = beam - e_scattered;
 
@@ -212,6 +240,16 @@ namespace clas12root{
 			    photonbuff[j]->par()->getPy(),
 			    photonbuff[j]->par()->getPz(),
 			    0);
+
+        phot1_px = phot1.Px();
+        phot1_py = phot1.Py();
+        phot1_pz = phot1.Pz();
+        phot1_E  = phot1.E();
+
+        phot2_px = phot2.Px();
+        phot2_py = phot2.Py();
+        phot2_pz = phot2.Pz();
+        phot2_E  = phot2.E();
 
         photonE_h -> Fill(phot1.E());
         photonE_h -> Fill(phot2.E());
@@ -414,7 +452,7 @@ namespace clas12root{
     // Out_File->Write();
     // cout << "Or is it perhaps?" << endl << endl;
 
-    Out_File = new TFile("pi0prooftest.root", "recreate");
+    Out_File = new TFile(Out_File_Name, "recreate");
 	  TListIter *iter = (TListIter*)GetOutputList()->MakeIterator();
 	  for (TObject *obj = (*iter)(); obj != 0; obj = iter->Next()) {
 		  obj->Write();
@@ -509,84 +547,89 @@ namespace clas12root{
 
   void pi0selector::photonflags(clas12::region_part_ptr p1, clas12::region_part_ptr p2)
   {
+    using namespace clas12;
     //first photon:
-    // if (p1->ft(FTCAL)->getDetector() == 10)
-    //   flag_photon1_FT = 1;
-    // else
-    //   flag_photon1_FT = 0;
+    if (p1->ft(FTCAL)->getDetector() == 10)
+      flag_photon1_FT = 1;
+    else
+      flag_photon1_FT = 0;
 
-    // if (p1->cal(PCAL)->getDetector() == 7)
-    //   flag_photon1_PCAL = 1;
-    // else
-    //   flag_photon1_PCAL = 0;
+    if (p1->cal(PCAL)->getDetector() == 7)
+      flag_photon1_PCAL = 1;
+    else
+      flag_photon1_PCAL = 0;
 
-    // if (p1->cal(ECIN)->getDetector() == 7)
-    //   flag_photon1_EIN = 1;
-    // else
-    //   flag_photon1_EIN = 0;
-    // if (p1->cal(ECOUT)->getDetector() == 7)
-    //   flag_photon1_EOUT = 1;
-    // else
-    //   flag_photon1_EOUT = 0;
-    // if (flag_photon1_EIN == 1 || flag_photon1_EOUT == 1)
-    //   flag_photon1_ECAL = 1;
-    // else
-    //   flag_photon1_ECAL = 0;
+    if (p1->cal(ECIN)->getDetector() == 7)
+      flag_photon1_EIN = 1;
+    else
+      flag_photon1_EIN = 0;
+    if (p1->cal(ECOUT)->getDetector() == 7)
+      flag_photon1_EOUT = 1;
+    else
+      flag_photon1_EOUT = 0;
+    if (flag_photon1_EIN == 1 || flag_photon1_EOUT == 1)
+      flag_photon1_ECAL = 1;
+    else
+      flag_photon1_ECAL = 0;
 
-    // if (flag_photon1_PCAL == 1 && flag_photon1_ECAL == 0)
-    //   flag_photon1_onlyPCAL = 1;
-    // else
-    //   flag_photon1_onlyPCAL = 0;
+    if (flag_photon1_PCAL == 1 && flag_photon1_ECAL == 0)
+      flag_photon1_onlyPCAL = 1;
+    else
+      flag_photon1_onlyPCAL = 0;
 
-    // if (flag_photon1_PCAL == 0 && flag_photon1_ECAL == 1)
-    //   flag_photon1_onlyECAL = 1;
-    // else
-    //   flag_photon1_onlyECAL = 0;	
+    if (flag_photon1_PCAL == 0 && flag_photon1_ECAL == 1)
+      flag_photon1_onlyECAL = 1;
+    else
+      flag_photon1_onlyECAL = 0;	
 
 
     //second photon:
-    // if (p2->ft(FTCAL)->getDetector() == 10)
-    //   flag_photon2_FT = 1;
-    // else
-    //   flag_photon2_FT = 0;
+    if (p2->ft(FTCAL)->getDetector() == 10)
+      flag_photon2_FT = 1;
+    else
+      flag_photon2_FT = 0;
 
-    // if (p2->cal(PCAL)->getDetector() == 7)
-    //   flag_photon2_PCAL = 1;
-    // else
-    //   flag_photon2_PCAL = 0;
+    if (p2->cal(PCAL)->getDetector() == 7)
+      flag_photon2_PCAL = 1;
+    else
+      flag_photon2_PCAL = 0;
 
-    // if (p2->cal(ECIN)->getDetector() == 7)
-    //   flag_photon2_EIN = 1;
-    // else
-    //   flag_photon2_EIN = 0;
-    // if (p2->cal(ECOUT)->getDetector() == 7)
-    //   flag_photon2_EOUT = 1;
-    // else
-    //   flag_photon2_EOUT = 0;
-    // if (flag_photon2_EIN == 1 || flag_photon2_EOUT == 1)
-    //   flag_photon2_ECAL = 1;
-    // else
-    //   flag_photon2_ECAL = 0;
+    if (p2->cal(ECIN)->getDetector() == 7)
+      flag_photon2_EIN = 1;
+    else
+      flag_photon2_EIN = 0;
+    if (p2->cal(ECOUT)->getDetector() == 7)
+      flag_photon2_EOUT = 1;
+    else
+      flag_photon2_EOUT = 0;
+    if (flag_photon2_EIN == 1 || flag_photon2_EOUT == 1)
+      flag_photon2_ECAL = 1;
+    else
+      flag_photon2_ECAL = 0;
 
-    // if ((flag_photon1_PCAL == 1) || (flag_photon1_ECAL == 1 ))
-    //   flag_photon1_FD = 1;
-    // else 
-    //   flag_photon1_FD = 0;
+    if ((flag_photon1_PCAL == 1) || (flag_photon1_ECAL == 1 ))
+      flag_photon1_FD = 1;
+    else 
+      flag_photon1_FD = 0;
 
-    // if ((flag_photon2_PCAL == 1) || (flag_photon2_ECAL == 1 ))
-    //   flag_photon2_FD = 1;
-    // else 
-    //   flag_photon2_FD = 0;
+    if ((flag_photon2_PCAL == 1) || (flag_photon2_ECAL == 1 ))
+      flag_photon2_FD = 1;
+    else 
+      flag_photon2_FD = 0;
 
-    // if (flag_photon2_PCAL == 1 && flag_photon2_ECAL == 0)
-    //   flag_photon2_onlyPCAL = 1;
-    // else
-    //   flag_photon2_onlyPCAL = 0;
+    if (flag_photon2_PCAL == 1 && flag_photon2_ECAL == 0)
+      flag_photon2_onlyPCAL = 1;
+    else
+      flag_photon2_onlyPCAL = 0;
 
-    // if (flag_photon2_PCAL == 0 && flag_photon2_ECAL == 1)
-    //   flag_photon2_onlyECAL = 1;
-    // else
-    //   flag_photon2_onlyECAL = 0;		
+    if (flag_photon2_PCAL == 0 && flag_photon2_ECAL == 1)
+      flag_photon2_onlyECAL = 1;
+    else
+      flag_photon2_onlyECAL = 0;		
   } //photonflags fxn
 
+
+  void pi0selector::SetOutFileName(TString Out_Name){
+    Out_File_Name = Out_Name;
+  }
 } 

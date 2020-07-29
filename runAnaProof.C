@@ -5,16 +5,40 @@
 //   this can be created with any name using makeHipoSelector executable
 //Note you must also change myFirstSelector in the macro below to your
 //selector name
-{
+#include <stdlib.h>
+#include "HipoChain.h"
+#include "pi0selector.h"
+
+void runAnaProof(const Char_t input_list[], const Char_t outfilename[]){
+
   clas12root::HipoChain chain;
-  chain.Add("/w/work3/home/pauln/data/pass1v0/ndvcs_006156.hipo");
-  clas12root::pi0selector sel(&chain);
 
-  //////////////////////////////////////
-  //To creat rcdb data RCDB_HOME must be set prior to installation
-  //chain.WriteRcdbData("rcdb.root"); //Must use this first time to create local copy
-  //Then when we have local copy can just use the following
-  //chain.SetRcdbFile("rcdb.root");
+  std::ifstream list_of_files;
+  char file_name[200];
+  char last_file[200];
 
-  gProof->Process(&sel,chain.GetNRecords());
+  list_of_files.open(input_list);
+  if (list_of_files.is_open()){
+    cout << "Successfully opened list." << endl;
+
+    while (!list_of_files.eof()){
+      if (!list_of_files.good()){
+        cout << endl << "ERROR: Issue with list." << endl << endl;
+        break;
+      }
+
+      list_of_files >> file_name;
+
+      if (strcmp(last_file, file_name) != 0){ //make sure no double read on last
+        TString file_str(file_name);
+        chain.Add(file_str);
+      }
+    }
+  }
+
+  clas12root::pi0selector selector(&chain);
+
+  selector.SetOutFileName(outfilename);
+
+  gProof->Process(&selector,chain.GetNRecords());
 }

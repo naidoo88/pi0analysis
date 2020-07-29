@@ -29,9 +29,12 @@ namespace clas12root{
       void calc_angles(TVector3 Ebeam_vect, TVector3 Electron_vect, TVector3 Recoil_vect, TVector3 Newpart_vect);
       void photonflags(clas12::region_part_ptr p1, clas12::region_part_ptr p2);
 
+      void SetOutFileName(TString Out_Name);
+
  
   private:
 
+      TString Out_File_Name;
       TFile *Out_File;
       TTree *data;
 
@@ -69,9 +72,9 @@ namespace clas12root{
 
       /*  LorentzVectors  */
       TLorentzVector beam{0, 0, 10.6, 10.6};  //TODO - access directly from DST
-      TLorentzVector target{0, 0, 0, 0.93827200};
+      TLorentzVector target{0, 0, 0, 0.939565420};
       TLorentzVector e_scattered{0, 0, 0, 0.00051099891};
-      TLorentzVector recoil{0, 0, 0, 0.93827200};
+      TLorentzVector recoil{0, 0, 0, 0.939565420};
       TLorentzVector phot1{0, 0, 0, 0};
       TLorentzVector phot2{0, 0, 0, 0};
 
@@ -145,6 +148,24 @@ namespace clas12root{
       TH1F *n_FD_doublehits_h;
       TH1F *photonE_h;
 
+      /* Particle 4vects */
+      double e_px;
+      double e_py;
+      double e_pz;
+      double e_E;
+      double rec_px;
+      double rec_py;
+      double rec_pz;
+      double rec_E;
+      double phot1_px;
+      double phot1_py;
+      double phot1_pz;
+      double phot1_E;
+      double phot2_px;
+      double phot2_py;
+      double phot2_pz;
+      double phot2_E;
+      
       ClassDefOverride(clas12root::pi0selector,0);
 
     };
