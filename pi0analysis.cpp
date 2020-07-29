@@ -260,7 +260,7 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 
 					double Eg_threshold = 1.5;  //Reduce BG by flagging photons with energy higher than
 
-					if (photonbuff.size() > 2)
+					if (photonbuff.size() == 2)
 					{
 						flag_2photon_event = 1;
 					}
