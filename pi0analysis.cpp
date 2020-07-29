@@ -74,8 +74,6 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 	data->Branch("pi0coneangle", &pi0coneangle, "pi0coneangle/D");
 	data->Branch("eg1coneangle", &eg1coneangle, "eg1coneangle/D");
 	data->Branch("eg2coneangle", &eg2coneangle, "eg2coneangle/D");
-	data->Branch("g1E",          &g1E,           "g1E/D");
-	data->Branch("g2E",          &g2E,           "g2E/D");
 
 	data->Branch("MM_rec_recoil",     &MM_rec_recoil,     "MM_rec_recoil/D");
 	data->Branch("MM2_rec_recoil",    &MM2_rec_recoil,    "MM2_rec_recoil/D");
@@ -140,6 +138,23 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 	
 	data->Branch("n_dis_events",          &n_dis_events,          "n_dis_events/O");
 	data->Branch("n_excl_events",         &n_excl_events,         "n_excl_events/O");
+
+	data->Branch("e_px",     &e_px,     "e_px/D");
+	data->Branch("e_py",     &e_py,     "e_py/D");
+	data->Branch("e_pz",     &e_pz,     "e_pz/D");
+	data->Branch("e_E",      &e_E,      "e_E/D");
+	data->Branch("rec_px",   &rec_px,   "rec_px/D");
+	data->Branch("rec_py",   &rec_py,   "rec_py/D");
+	data->Branch("rec_pz",   &rec_pz,   "rec_pz/D");
+	data->Branch("rec_E",    &rec_E,    "rec_E/D");
+	data->Branch("phot1_px", &phot1_px, "phot1_px/D");
+	data->Branch("phot1_py", &phot1_py, "phot1_py/D");
+	data->Branch("phot1_pz", &phot1_pz, "phot1_pz/D");
+	data->Branch("phot1_E",  &phot1_E,  "phot1_E/D");
+	data->Branch("phot2_px", &phot2_px, "phot2_px/D");
+	data->Branch("phot2_py", &phot2_py, "phot2_py/D");
+	data->Branch("phot2_pz", &phot2_pz, "phot2_pz/D");
+	data->Branch("phot2_E",  &phot2_E,  "phot2_E/D");
 	
 	//##############################################################################
 
@@ -210,6 +225,16 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 										electronbuff[0]->par()->getPz(),
 										em);
 
+					rec_px = recoil.Px();
+					rec_py = recoil.Py();
+					rec_pz = recoil.Pz();
+					rec_E  = recoil.E();
+
+					e_px = e_scattered.Px();
+					e_py = e_scattered.Py();
+					e_pz = e_scattered.Pz();
+					e_E  = e_scattered.E();
+
 					q = beam - e_scattered;
 
 					//helicity = c12.helonline()->getHelicity();
@@ -266,7 +291,17 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 							// if (phot2.E() > Eg_threshold)
 							// 	flag_cuts_photonE = 1;	
 							else
-								flag_cuts_photonE = 0;	
+								flag_cuts_photonE = 0;
+
+							phot1_px = phot1.Px();
+							phot1_py = phot1.Py();
+							phot1_pz = phot1.Pz();
+							phot1_E  = phot1.E();
+
+							phot2_px = phot2.Px();
+							phot2_py = phot2.Py();
+							phot2_pz = phot2.Pz();
+							phot2_E  = phot2.E();	
 
 							photonE_h -> Fill(phot1.E());
 							photonE_h -> Fill(phot2.E());

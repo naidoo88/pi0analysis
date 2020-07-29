@@ -78,6 +78,25 @@ bool flag_photon2_EOUT;
 bool flag_photon2_onlyPCAL;
 bool flag_photon2_onlyECAL;
 
+/* Particle 4vects */
+double e_px;
+double e_py;
+double e_pz;
+double e_E;
+double rec_px;
+double rec_py;
+double rec_pz;
+double rec_E;
+double phot1_px;
+double phot1_py;
+double phot1_pz;
+double phot1_E;
+double phot2_px;
+double phot2_py;
+double phot2_pz;
+double phot2_E;
+
+/* Counter Histos */
 TH1F *n_photons_inevent_h;
 TH1F *n_photonpairs_inevent_h;
 TH1F *n_pi0_post3sig_h;
