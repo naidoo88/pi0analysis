@@ -445,13 +445,6 @@ namespace clas12root{
     // the results graphically or save the results to file.
     cout << "In Terminate" << endl << endl;
 
-
-    TCanvas* can = new TCanvas();
-    IM_g1g2_h->Draw();
-    // cout << "is this where we die?" << endl << endl;
-    // Out_File->Write();
-    // cout << "Or is it perhaps?" << endl << endl;
-
     Out_File = new TFile(Out_File_Name, "recreate");
 	  TListIter *iter = (TListIter*)GetOutputList()->MakeIterator();
 	  for (TObject *obj = (*iter)(); obj != 0; obj = iter->Next()) {
@@ -459,6 +452,8 @@ namespace clas12root{
 	  }
 
     Out_File->Close();
+    cout << "In Terminate: " << Out_File->GetName() << " closed and we're done." << endl << endl;
+
   }
 
   // void SetLorentzVector(TLorentzVector &p4,clas12::region_part_ptr rp){

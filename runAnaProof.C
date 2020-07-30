@@ -6,8 +6,12 @@
 //Note you must also change myFirstSelector in the macro below to your
 //selector name
 #include <stdlib.h>
+#include "TProof.h"
 #include "HipoChain.h"
 #include "pi0selector.h"
+
+using std::cout;
+using std::endl;
 
 void runAnaProof(const Char_t input_list[], const Char_t outfilename[]){
 

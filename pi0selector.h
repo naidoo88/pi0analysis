@@ -138,8 +138,10 @@ namespace clas12root{
       int n_dis_events;
       int n_excl_events;
 
-      /*  Counter Histos  */
+      /* Dip-Check Histos */
       TH1F *IM_g1g2_h;
+      
+      /*  Counter Histos  */
       TH1F *n_photons_inevent_h;
       TH1F *n_photonpairs_inevent_h;
       TH1F *n_pi0_post3sig_h;
