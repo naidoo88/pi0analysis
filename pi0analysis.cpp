@@ -126,15 +126,15 @@ void pi0analysis(const Char_t in_list[], const TString outfilename){
 	data->Branch("flag_photon2_onlyPCAL", &flag_photon2_onlyPCAL, "flag_photon2_onlyPCAL/O");
 	data->Branch("flag_photon2_onlyECAL", &flag_photon2_onlyECAL, "flag_photon2_onlyECAL/O");
 
-    data->Branch("n_photons_inevent",     &n_photons_inevent,     "n_photons_inevent/O");
-    //data->Branch("n_photonpairs_inevent", &n_photonpairs_inevent, "n_photonpairs_inevent/O");  <-- needs to be written out as a histogram if needed
-    data->Branch("n_pi0_post3sig",        &n_pi0_post3sig,        "n_pi0_post3sig/O");
-    data->Branch("n_pi0_goodcandidates",  &n_pi0_goodcandidates,  "n_pi0_goodcandidates/O");
+  data->Branch("n_photons_inevent",     &n_photons_inevent,     "n_photons_inevent/O");
+  //data->Branch("n_photonpairs_inevent", &n_photonpairs_inevent, "n_photonpairs_inevent/O");  <-- needs to be written out as a histogram if needed
+  data->Branch("n_pi0_post3sig",        &n_pi0_post3sig,        "n_pi0_post3sig/O");
+  data->Branch("n_pi0_goodcandidates",  &n_pi0_goodcandidates,  "n_pi0_goodcandidates/O");
     
 	data->Branch("n_FD_onlyhits",         &n_FD_onlyhits,         "n_FD_onlyhits/O");
-    data->Branch("n_FT_onlyhits",         &n_FT_onlyhits,         "n_FT_onlyhits/O");
-    data->Branch("n_FD_doublehits",       &n_FD_doublehits,       "n_FD_doublehits/O");
-    data->Branch("n_ECAL_doublehits",     &n_ECAL_doublehits,     "n_ECAL_doublehits/O");
+  data->Branch("n_FT_onlyhits",         &n_FT_onlyhits,         "n_FT_onlyhits/O");
+  data->Branch("n_FD_doublehits",       &n_FD_doublehits,       "n_FD_doublehits/O");
+  data->Branch("n_ECAL_doublehits",     &n_ECAL_doublehits,     "n_ECAL_doublehits/O");
 	
 	data->Branch("n_dis_events",          &n_dis_events,          "n_dis_events/O");
 	data->Branch("n_excl_events",         &n_excl_events,         "n_excl_events/O");
