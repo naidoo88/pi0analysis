@@ -2,3 +2,6 @@ rm *_cpp*
 rm *_C*
 rm scripts/*_cpp*
 rm scripts/*_C*
+rm scripts/*/*_cpp*
+rm scripts/*/*_C*
+
