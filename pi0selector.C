@@ -20,7 +20,6 @@
 
 
 #include "pi0selector.h"
-#include <TH2.h>
 #include "TCanvas.h"
 #include <TSystem.h>
 #include "clas12reader.h"
@@ -150,9 +149,11 @@ namespace clas12root{
       data->Branch("phot2_pz", &phot2_pz, "phot2_pz/D");
       data->Branch("phot2_E",  &phot2_E,  "phot2_E/D");
     
+    //data->SetDirectory(Out_File);
     GetOutputList()->Add(data);
 
     IM_g1g2_h = new TH1F("IM_g1g2_h", "IM_g1g2", 200, 0, 0.2);
+    //IM_g1g2_h->SetDirectory(Out_File);
     GetOutputList()->Add(IM_g1g2_h);
 
     counterhistos();
@@ -175,7 +176,7 @@ namespace clas12root{
     //Equivalent to TSelector Process
     //Fill in what you would like to do with
     //the data for each event....
-      cout << "In ProcessEvent" << endl << endl;
+      //cout << "In ProcessEvent" << endl << endl;
 
     	auto electronbuff = _c12->getByID(11);
 			//auto recoilbuff = _c12->getByID(2212);
@@ -230,7 +231,7 @@ namespace clas12root{
 
       for (int i = 0; i < n_photons_inevent - 1; i++){
 			  for (int j = i + 1; j < n_photons_inevent; j++){
-        cout << "pair [" << i << "][" << j << "]" << endl;
+        //cout << "pair [" << i << "][" << j << "]" << endl;
         phot1.SetXYZM(photonbuff[i]->par()->getPx(),
 			    photonbuff[i]->par()->getPy(),
 			    photonbuff[i]->par()->getPz(),
@@ -445,14 +446,17 @@ namespace clas12root{
     // the results graphically or save the results to file.
     cout << "In Terminate" << endl << endl;
 
-    Out_File = new TFile(Out_File_Name, "recreate");
+    //ProofOut_File = new TProofOutputFile(Out_File_Name, "L");
+    //Out_File = ProofOut_File->OpenFile("RECREATE");
+    TFile Out_File(Out_File_Name, "RECREATE");
+
 	  TListIter *iter = (TListIter*)GetOutputList()->MakeIterator();
 	  for (TObject *obj = (*iter)(); obj != 0; obj = iter->Next()) {
 		  obj->Write();
 	  }
 
-    Out_File->Close();
-    cout << "In Terminate: " << Out_File->GetName() << " closed and we're done." << endl << endl;
+    Out_File.Close();
+    cout << "In Terminate: " << Out_File.GetName() << " closed and we're done." << endl << endl;
 
   }
 
@@ -471,6 +475,14 @@ namespace clas12root{
     n_FT_onlyhits_h         =  new TH1F("n_FT_onlyhits_h", "FT-only photon-pairs; N; counts", 20,0,20);
     n_FD_doublehits_h       =  new TH1F("n_FD_doublehits_h", "Photon-pairs with one #gamma in FD/FT; N; counts", 20,0,20);
     photonE_h               =  new TH1F("photonE_h", "Photon Energy; E_{#gamma} (GeV); counts", 300, 0, 10);
+
+    // n_photons_inevent_h     ->SetDirectory(Out_File);
+    // n_photonpairs_inevent_h ->SetDirectory(Out_File);
+    // n_pi0_post3sig_h        ->SetDirectory(Out_File);
+    // n_FD_onlyhits_h         ->SetDirectory(Out_File);
+    // n_FT_onlyhits_h         ->SetDirectory(Out_File);
+    // n_FD_doublehits_h       ->SetDirectory(Out_File);
+    // photonE_h               ->SetDirectory(Out_File);
   
     GetOutputList()->Add(n_photons_inevent_h);
     GetOutputList()->Add(n_photonpairs_inevent_h);

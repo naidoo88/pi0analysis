@@ -4,6 +4,7 @@
 #include "HipoSelector.h"
 #include <TLorentzVector.h>
 #include <TH1F.h>
+#include <TProofOutputFile.h>
 
 namespace clas12root{
    
@@ -35,8 +36,11 @@ namespace clas12root{
   private:
 
       TString Out_File_Name;
-      TFile *Out_File;
-      TTree *data;
+
+      //TProofOutputFile *ProofOut_File;
+      //TFile *Out_File;
+      
+      TTree *data = nullptr;
 
       double DEG = TMath::RadToDeg(); //rad->deg conversion
 
@@ -139,16 +143,16 @@ namespace clas12root{
       int n_excl_events;
 
       /* Dip-Check Histos */
-      TH1F *IM_g1g2_h;
+      TH1F *IM_g1g2_h = nullptr;
       
       /*  Counter Histos  */
-      TH1F *n_photons_inevent_h;
-      TH1F *n_photonpairs_inevent_h;
-      TH1F *n_pi0_post3sig_h;
-      TH1F *n_FD_onlyhits_h;
-      TH1F *n_FT_onlyhits_h;
-      TH1F *n_FD_doublehits_h;
-      TH1F *photonE_h;
+      TH1F *n_photons_inevent_h = nullptr;
+      TH1F *n_photonpairs_inevent_h = nullptr;
+      TH1F *n_pi0_post3sig_h = nullptr;
+      TH1F *n_FD_onlyhits_h = nullptr;
+      TH1F *n_FT_onlyhits_h = nullptr;
+      TH1F *n_FD_doublehits_h = nullptr;
+      TH1F *photonE_h = nullptr;
 
       /* Particle 4vects */
       double e_px;
