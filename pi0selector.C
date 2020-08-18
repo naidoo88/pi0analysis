@@ -448,7 +448,7 @@ namespace clas12root{
 
     //ProofOut_File = new TProofOutputFile(Out_File_Name, "L");
     //Out_File = ProofOut_File->OpenFile("RECREATE");
-    TFile Out_File(Out_File_Name, "RECREATE");
+    TFile Out_File(".outbuff/" + Out_File_Name, "RECREATE");
 
 	  TListIter *iter = (TListIter*)GetOutputList()->MakeIterator();
 	  for (TObject *obj = (*iter)(); obj != 0; obj = iter->Next()) {

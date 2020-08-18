@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include "TProof.h"
 #include "HipoChain.h"
+#include "TSystem.h"
 #include "pi0selector.h"
 
 using std::cout;
@@ -15,11 +16,12 @@ using std::endl;
 
 void runAnaProof(const Char_t input_list[], const Char_t outfilename[]){
 
-  clas12root::HipoChain chain;
-
   std::ifstream list_of_files;
   char file_name[200];
   char last_file[200];
+
+  int filecount = 0;
+  TString outbuffname; //outfile buffer to be combined with hadd at the end of the script.
 
   list_of_files.open(input_list);
   if (list_of_files.is_open()){
@@ -31,18 +33,32 @@ void runAnaProof(const Char_t input_list[], const Char_t outfilename[]){
         break;
       }
 
+      clas12root::HipoChain chain;
+
       list_of_files >> file_name;
 
       if (strcmp(last_file, file_name) != 0){ //make sure no double read on last
         TString file_str(file_name);
+
         chain.Add(file_str);
+
+        clas12root::pi0selector selector(&chain);
+
+        //TString filecount_str = filecount;
+        outbuffname.Form("buff%d.root", filecount);
+        cout << outbuffname << endl;
+
+        selector.SetOutFileName(outbuffname);
+
+        gProof->Process(&selector,chain.GetNRecords());
+
+        filecount++;
       }
     }
   }
 
-  clas12root::pi0selector selector(&chain);
+  TString hadd_cmd;
+  hadd_cmd.Form("hadd %s .outbuff/*", outfilename);
+  gSystem->Exec(hadd_cmd.Data());
 
-  selector.SetOutFileName(outfilename);
-
-  gProof->Process(&selector,chain.GetNRecords());
 }
