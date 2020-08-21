@@ -50,7 +50,7 @@ namespace clas12root{
     // The SlaveBegin() function is called after the Begin() function.
     // When running with PROOF SlaveBegin() is called on each slave server.
     // The tree argument is deprecated (on PROOF 0 is passed).
-    cout << "In SlaveBegin" << endl;
+    //cout << "In SlaveBegin" << endl;
 
     data = new TTree("data", "Processed Data.");
       data->Branch("helicity", &helicity, "helicity/I");
@@ -163,7 +163,7 @@ namespace clas12root{
   }
   
   void pi0selector::AddFilter(){
-    cout << "In AddFilter" << endl << endl;
+    //cout << "In AddFilter" << endl << endl;
 
     _c12->addExactPid(2112, 1); //one neutron
     //_c12->addExactPid(2212, 1); //one proton
@@ -444,11 +444,10 @@ namespace clas12root{
     // The Terminate() function is the last function to be called during
     // a query. It always runs on the client, it can be used to present
     // the results graphically or save the results to file.
-    cout << "In Terminate" << endl << endl;
-
+    
     //ProofOut_File = new TProofOutputFile(Out_File_Name, "L");
     //Out_File = ProofOut_File->OpenFile("RECREATE");
-    TFile Out_File(".outbuff/" + Out_File_Name, "RECREATE");
+    TFile Out_File(Out_File_Name, "RECREATE");
 
 	  TListIter *iter = (TListIter*)GetOutputList()->MakeIterator();
 	  for (TObject *obj = (*iter)(); obj != 0; obj = iter->Next()) {
@@ -456,7 +455,7 @@ namespace clas12root{
 	  }
 
     Out_File.Close();
-    cout << "In Terminate: " << Out_File.GetName() << " closed and we're done." << endl << endl;
+    cout << Out_File.GetName() << " closed." << endl << endl;
 
   }
 
