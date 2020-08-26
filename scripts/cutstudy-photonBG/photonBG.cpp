@@ -34,6 +34,8 @@ void photonBG(TString infile, TString outfile)
 	double pi0coneangle;
 	double phot1_E;
 	double phot2_E;
+	double eg1coneangle;
+	double eg2coneangle;
 	bool flag_2photon_event;
 
 	chain.SetBranchAddress("Q2", &Q2);
@@ -46,6 +48,8 @@ void photonBG(TString infile, TString outfile)
 	chain.SetBranchAddress("pi0coneangle", &pi0coneangle);
 	chain.SetBranchAddress("phot1_E", &phot1_E);
 	chain.SetBranchAddress("phot2_E", &phot2_E);
+	chain.SetBranchAddress("eg1coneangle", &eg1coneangle);
+	chain.SetBranchAddress("eg2coneangle", &eg2coneangle);
 	chain.SetBranchAddress("flag_2photon_event", &flag_2photon_event);
 	
 	vector<vector<double>> Eg_bins = {{0.0, 0.5}, {0.5, 1.0}, {1.0, 1.5}, 
@@ -65,8 +69,11 @@ void photonBG(TString infile, TString outfile)
 	auto IMgg_Ethresh_h = createHistArray2D("IM_gg", options, "IM_{#gamma#gamma}", Ethresh, Ethresh_titles, Photon, Photontitles);
 	auto IMgg_EthreshComb_h = createHistArray1D("IM_gg", options,"IM_{#gamma#gamma}", Ethresh, Ethresh_titles);
 
-	//vector<vector<double>> egcone_bins = {{0.0, 0.5}, {0.5, 1.0}, {1.0, 1.5}, {1.5, 2.5}, {2.5, 100}};
-	
+	vector<vector<double>> egcone_bins = {{0.0, 2.5}, {2.5, 7}, {7, 15}, {15, 25}, {25, 35},{35, 45}, {45, 360}};
+	vector<TString> egconebins = {"eg_cone_0-2.5", "eg_cone_2.5-7", "eg_cone_7-15", "eg_cone_15-25", "eg_cone_25-35", "eg_cone_35-45", "eg_cone_>45"};
+	vector<TString> egconebins_titles = {"#theta_{e#gamma} 0-2.5", "#theta_{e#gamma} 2.5-7", "#theta_{e#gamma} 7-15", "#theta_{e#gamma} 15-25", "#theta_{e#gamma} 25-35", "#theta_{e#gamma} 35-45", "#theta_{e#gamma} > 45"};
+	auto IMgg_egconebins_h = createHistArray2D("IM_gg", options, "IM_{#gamma#gamma}", egconebins, egconebins_titles, Photon, Photontitles);
+	auto IMgg_egconebinsComb_h = createHistArray1D("IM_gg", options, "IM_{#gamma#gamma}", egconebins, egconebins_titles);
 	//vector<double>egcone_thresh = 
 
 
@@ -104,6 +111,18 @@ void photonBG(TString infile, TString outfile)
 				}
 			}
 
+			//CRASHING HERE
+			for (u_int e = 0; e < egcone_bins.size(); e++)
+			{
+				if(eg1coneangle > egcone_bins[e][0] && eg1coneangle < egcone_bins[e][1] && IM_g1g2 != 0) IMgg_egconebins_h[e][0].Fill(IM_g1g2);
+				if(eg2coneangle > egcone_bins[e][0] && eg2coneangle < egcone_bins[e][1] && IM_g1g2 != 0) IMgg_egconebins_h[e][1].Fill(IM_g1g2);
+
+				if((eg1coneangle > egcone_bins[e][0] && eg1coneangle < egcone_bins[e][1]) && (eg2coneangle > egcone_bins[e][0] && eg2coneangle < egcone_bins[e][1]) && IM_g1g2 != 0)
+				{
+					IMgg_egconebinsComb_h[e].Fill(IM_g1g2);
+				}
+			}
+
 		} //if 2g-event
 		
 
@@ -115,32 +134,8 @@ void photonBG(TString infile, TString outfile)
 	writeHistos(IMgg_EbinsComb_h);
 	writeHistos(IMgg_Ethresh_h);
 	writeHistos(IMgg_EthreshComb_h);
-
-	// for (u_int i = 0; i < IMgg_Ebins_h.size(); i++)
-	// {
-	// 	IMgg_Ebins_h[i][0].Write();
-	// }
-	// for (u_int i = 0; i < IMgg_Ebins_h.size(); i++)
-	// {
-	// 	IMgg_Ebins_h[i][1].Write();
-	// }
-	// for (u_int i = 0; i < IMgg_Ebins_h.size(); i++)
-	// {
-	// 	IMgg_EbinsComb_h[i].Write();
-	// }
-
-	// for (u_int i = 0; i < IMgg_Ethresh_h.size(); i++)
-	// {
-	// 	IMgg_Ethresh_h[i][0].Write();
-	// }
-	// for (u_int i = 0; i < IMgg_Ethresh_h.size(); i++)
-	// {
-	// 	IMgg_Ethresh_h[i][1].Write();
-	// }
-	// for (u_int i = 0; i < IMgg_Ethresh_h.size(); i++)
-	// {
-	// 	IMgg_EthreshComb_h[i].Write();
-	// }
+	writeHistos(IMgg_egconebins_h);
+	writeHistos(IMgg_egconebinsComb_h);
 
 	OutFile->Close();
 }
