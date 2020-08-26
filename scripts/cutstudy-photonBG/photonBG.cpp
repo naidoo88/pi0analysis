@@ -74,22 +74,22 @@ void photonBG(TString infile, TString outfile)
 	vector<TString> egconebins_titles = {"#theta_{e#gamma} 0-2.5", "#theta_{e#gamma} 2.5-7", "#theta_{e#gamma} 7-15", "#theta_{e#gamma} 15-25", "#theta_{e#gamma} 25-35", "#theta_{e#gamma} 35-45", "#theta_{e#gamma} > 45"};
 	auto IMgg_egconebins_h = createHistArray2D("IM_gg", options, "IM_{#gamma#gamma}", egconebins, egconebins_titles, Photon, Photontitles);
 	auto IMgg_egconebinsComb_h = createHistArray1D("IM_gg", options, "IM_{#gamma#gamma}", egconebins, egconebins_titles);
-	//vector<double>egcone_thresh = 
+
+	vector<double> egcone_thresh = {0, 2.5, 7, 15, 25, 35, 45};
+	vector<TString> egconethresh = {"eg_cone>0", "eg_cone>2.5", "eg_cone>7", "eg_cone>15", "eg_cone>25", "eg_cone>35", "eg_cone>45"};
+	vector<TString> egconethresh_titles = {"#theta_{e#gamma}>0", "#theta_{e#gamma}>2.5", "#theta_{e#gamma}>7", "#theta_{e#gamma}>15", "#theta_{e#gamma}>25", "#theta_{e#gamma}>35", "#theta_{e#gamma}>45"};
+	auto IMgg_egconethresh_h = createHistArray2D("IM_gg", options, "IM_{#gamma#gamma}", egconethresh, egconethresh_titles, Photon, Photontitles);
+	auto IMgg_egconethreshComb_h = createHistArray1D("IM_gg", options, "IM_{#gamma#gamma}", egconethresh, egconethresh_titles);
 
 
 	for (u_int i = 0; i < chain.GetEntries(); i++)
 	{
 		chain.GetEntry(i);
 		
-		//cout << "Photon1 has energy: " << phot1_E << endl;
-		//cout << "Photon2 has energy: " << phot2_E << endl << endl;
-		//cout << "E-bin size: " << Eg_bins.size() << endl;
-
 		if(flag_2photon_event == 1)
 		{
 			for (u_int e = 0; e < Eg_bins.size(); e++)
 			{
-				//cout << "Current bin is: " << Eg_bins[e][0] << " to " << Eg_bins[e][1] << endl;
 				if(phot1_E > Eg_bins[e][0] && phot1_E < Eg_bins[e][1] && IM_g1g2 != 0) IMgg_Ebins_h[e][0].Fill(IM_g1g2);
 				if(phot2_E > Eg_bins[e][0] && phot2_E < Eg_bins[e][1] && IM_g1g2 != 0) IMgg_Ebins_h[e][1].Fill(IM_g1g2);
 
@@ -101,7 +101,6 @@ void photonBG(TString infile, TString outfile)
 
 			for (u_int e = 0; e < Eg_thresh.size(); e++)
 			{
-				//cout << "Current bin is: " << Eg_thresh[e][0] << " to " << Eg_thresh[e][1] << endl;
 				if(phot1_E > Eg_thresh[e] && IM_g1g2 != 0) IMgg_Ethresh_h[e][0].Fill(IM_g1g2);
 				if(phot2_E > Eg_thresh[e] && IM_g1g2 != 0) IMgg_Ethresh_h[e][1].Fill(IM_g1g2);
 
@@ -111,7 +110,6 @@ void photonBG(TString infile, TString outfile)
 				}
 			}
 
-			//CRASHING HERE
 			for (u_int e = 0; e < egcone_bins.size(); e++)
 			{
 				if(eg1coneangle > egcone_bins[e][0] && eg1coneangle < egcone_bins[e][1] && IM_g1g2 != 0) IMgg_egconebins_h[e][0].Fill(IM_g1g2);
@@ -123,6 +121,16 @@ void photonBG(TString infile, TString outfile)
 				}
 			}
 
+			for (u_int e = 0; e < egcone_thresh.size(); e++)
+			{
+				if(eg1coneangle > egcone_thresh[e] && IM_g1g2 != 0) IMgg_egconethresh_h[e][0].Fill(IM_g1g2);
+				if(eg2coneangle > egcone_thresh[e] && IM_g1g2 != 0) IMgg_egconethresh_h[e][1].Fill(IM_g1g2);
+
+				if(eg1coneangle > egcone_thresh[e] && eg2coneangle > egcone_thresh[e] && IM_g1g2 != 0)
+				{
+					IMgg_egconethreshComb_h[e].Fill(IM_g1g2);
+				}
+			}
 		} //if 2g-event
 		
 
@@ -136,6 +144,8 @@ void photonBG(TString infile, TString outfile)
 	writeHistos(IMgg_EthreshComb_h);
 	writeHistos(IMgg_egconebins_h);
 	writeHistos(IMgg_egconebinsComb_h);
+	writeHistos(IMgg_egconethresh_h);
+	writeHistos(IMgg_egconethreshComb_h);
 
 	OutFile->Close();
 }
