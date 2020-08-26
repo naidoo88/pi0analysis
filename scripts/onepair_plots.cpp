@@ -233,6 +233,7 @@ void onepair_plots(TString infile, TString outfile)
     TFile *Outfile = new TFile(outfile, "recreate");
 
     //Loop individually for well formatted output files
+    //FUNCTIONS FOR THIS NASTINESS
     for (int i = 0; i < 5; i++)
     {
         Q2_v_xB_h[i]->Write();
