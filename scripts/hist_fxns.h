@@ -12,9 +12,16 @@ using std::endl;
 using HistArray1D = vector<TH1F>;
 using HistArray2D = vector<HistArray1D>;
 
-HistArray1D createHistArray1D(TString, float[3], TString, vector<TString>, vector<TString>);
-HistArray2D createHistArray2D(TString, float[3], TString, vector<TString>, vector<TString>, vector<TString>, vector<TString>);
-void writeHistos(HistArray1D &);
-void writeHistos(HistArray2D &);
+class hist_fxns {
+  public:
 
+  hist_fxns();
+  ~hist_fxns();
+
+  HistArray1D createHistArray1D(TString, float[3], TString, vector<TString>, vector<TString>);
+  HistArray2D createHistArray2D(TString, float[3], TString, vector<TString>, vector<TString>, vector<TString>, vector<TString>);
+  void writeHistos(HistArray1D &);
+  void writeHistos(HistArray2D &);
+
+};
 #endif

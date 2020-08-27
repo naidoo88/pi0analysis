@@ -1,7 +1,10 @@
 #include "hist_fxns.h"
 
+hist_fxns::hist_fxns() { }
+
+
 //Generic function to create 2D array of TH1Fs.
-HistArray2D createHistArray2D(TString hname, float op[3], TString htitle, vector<TString> var1, vector<TString> var1_titles, vector<TString> var2, vector<TString> var2_titles){
+HistArray2D hist_fxns::createHistArray2D(TString hname, float op[3], TString htitle, vector<TString> var1, vector<TString> var1_titles, vector<TString> var2, vector<TString> var2_titles){
 	HistArray2D h2D;
 
 	for(u_int i = 0; i < var1.size(); i++)
@@ -21,7 +24,7 @@ HistArray2D createHistArray2D(TString hname, float op[3], TString htitle, vector
 }
 
 //Generic function to create 1D array of TH1Fs.
-HistArray1D createHistArray1D(TString hname, float op[3], TString htitle, vector<TString> var, vector<TString> var_titles){
+HistArray1D hist_fxns::createHistArray1D(TString hname, float op[3], TString htitle, vector<TString> var, vector<TString> var_titles){
 	HistArray1D h1D;
 
 	for(u_int j=0; j < var.size(); j++)
@@ -35,14 +38,14 @@ HistArray1D createHistArray1D(TString hname, float op[3], TString htitle, vector
 	return h1D;
 }
 
-void writeHistos(HistArray1D &hist){
+void hist_fxns::writeHistos(HistArray1D &hist){
 	for (auto &ihist : hist)
 	{
 		ihist.Write();
 	}
 }
 
-void writeHistos(HistArray2D &hist){
+void hist_fxns::writeHistos(HistArray2D &hist){
 	for (auto &histarray : hist)
 	{
 		for (auto &ihist : histarray)
