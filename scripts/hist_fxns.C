@@ -1,0 +1,53 @@
+#include "hist_fxns.h"
+
+//Generic function to create 2D array of TH1Fs.
+HistArray2D createHistArray2D(TString hname, float op[3], TString htitle, vector<TString> var1, vector<TString> var1_titles, vector<TString> var2, vector<TString> var2_titles){
+	HistArray2D h2D;
+
+	for(u_int i = 0; i < var1.size(); i++)
+	{
+		HistArray1D h1D;
+		for(u_int j=0; j < var2.size(); j++)
+		{
+			auto histName = Form("%s_%s_%s", hname.Data(), var2[j].Data(), var1[i].Data());
+			auto histTitle = Form("%s - %s: %s", htitle.Data(), var2[j].Data() , var1[i].Data());
+
+			h1D.push_back(TH1F{histName,histTitle,(int)op[0],op[1],op[2]});
+		}
+		h2D.push_back(h1D);
+	}
+
+	return h2D;
+}
+
+//Generic function to create 1D array of TH1Fs.
+HistArray1D createHistArray1D(TString hname, float op[3], TString htitle, vector<TString> var, vector<TString> var_titles){
+	HistArray1D h1D;
+
+	for(u_int j=0; j < var.size(); j++)
+	{
+		auto histName = Form("%s_%s", hname.Data(), var[j].Data());
+		auto histTitle = Form("%s: %s", htitle.Data(), var[j].Data());
+
+		h1D.push_back(TH1F{histName,histTitle,(int)op[0],op[1],op[2]});
+	}
+
+	return h1D;
+}
+
+void writeHistos(HistArray1D &hist){
+	for (auto &ihist : hist)
+	{
+		ihist.Write();
+	}
+}
+
+void writeHistos(HistArray2D &hist){
+	for (auto &histarray : hist)
+	{
+		for (auto &ihist : histarray)
+		{
+			ihist.Write();
+		}
+	}
+}
