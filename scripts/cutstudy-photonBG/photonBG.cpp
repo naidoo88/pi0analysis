@@ -81,6 +81,7 @@ void photonBG(TString infile, TString outfile)
 	auto IMgg_egconethresh_h = createHistArray2D("IM_gg", options, "IM_{#gamma#gamma}", egconethresh, egconethresh_titles, Photon, Photontitles);
 	auto IMgg_egconethreshComb_h = createHistArray1D("IM_gg", options, "IM_{#gamma#gamma}", egconethresh, egconethresh_titles);
 
+	TH2F Eg_egcone_corr_h = TH2F("Eg_egcone_corr_h", "E_{#gamma} vs. #theta_{e#gamma}", 60, 0, 60, 100, 0, 10);
 
 	for (u_int i = 0; i < chain.GetEntries(); i++)
 	{
@@ -131,6 +132,8 @@ void photonBG(TString infile, TString outfile)
 					IMgg_egconethreshComb_h[e].Fill(IM_g1g2);
 				}
 			}
+
+			Eg_egcone_corr_h.Fill(eg1coneangle, phot1_E);
 		} //if 2g-event
 		
 
@@ -146,6 +149,7 @@ void photonBG(TString infile, TString outfile)
 	writeHistos(IMgg_egconebinsComb_h);
 	writeHistos(IMgg_egconethresh_h);
 	writeHistos(IMgg_egconethreshComb_h);
+	Eg_egcone_corr_h.Write();
 
 	OutFile->Close();
 }
