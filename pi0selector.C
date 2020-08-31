@@ -313,16 +313,22 @@ namespace clas12root{
                 // ---- both FD: Mean: 0.13100  Sig: 0.01406 =>  Lower: 0.08882   Upper: 0.17318
                 // ---- both FT: Mean: 0.13110  Sig: 0.00642 =>  Lower: 0.11184   Upper: 0.15036
                 // ---- 1FD/1FT: Mean: 0.12610  Sig: 0.01483 =>  Lower: 0.08161   Upper: 0.17059
+
+                Defined using only 2-photon events:  
+                // ----- bothFD_ Mean: 0.130879  Sig: 0.0125521  Lower: 0.0932222  Upper: 0.168535
+                // ----- bothFT_ Mean: 0.13331  Sig: 0.00468502  Lower: 0.119254  Upper: 0.147365
+                // ----- FDFT_   Mean: 0.128562  Sig: 0.0103054  Lower: 0.097646  Upper: 0.159478
         */
-        if ((flag_photon1_FD == 1 && flag_photon2_FD == 1) && (IM_g1g2 > 0.08882 && IM_g1g2 < 0.17318)){
+
+        if ((flag_photon1_FD == 1 && flag_photon2_FD == 1) && (IM_g1g2 > 0.0932222 && IM_g1g2 < 0.168535)){
           flag_cuts_3sigIM = 1;
           n_pi0_post3sig++;
         }
-        else if ((flag_photon1_FT == 1 && flag_photon2_FT == 1) && (IM_g1g2 > 0.11184 && IM_g1g2 < 0.15036)){
+        else if ((flag_photon1_FT == 1 && flag_photon2_FT == 1) && (IM_g1g2 > 0.119254 && IM_g1g2 < 0.147365)){
           flag_cuts_3sigIM = 1;
           n_pi0_post3sig++;
         }
-        else if (((flag_photon1_FD == 1 && flag_photon2_FT == 1) || (flag_photon2_FD == 1 && flag_photon1_FT == 1)) && (IM_g1g2 > 0.08161 && IM_g1g2 < 0.17059)){
+        else if (((flag_photon1_FD == 1 && flag_photon2_FT == 1) || (flag_photon2_FD == 1 && flag_photon1_FT == 1)) && (IM_g1g2 > 0.097646 && IM_g1g2 < 0.159478)){
           flag_cuts_3sigIM = 1;
           n_pi0_post3sig++;
         }
@@ -337,6 +343,7 @@ namespace clas12root{
                 // ---- ECAL/FCAL: Mean: 0.127126  Sig: 0.0107954 => Lower: 0.0947396  Upper: 0.159512
                 // ---- PCAL/FCAL: Mean: 0.126721  Sig: 0.0119468 => Lower: 0.0908801  Upper: 0.162561
                 */
+               
         if ((flag_photon1_PCAL == 1 && flag_photon2_PCAL == 1) && (IM_g1g2 > 0.091476 && IM_g1g2 < 0.170891)){
           flag_cuts_3sigIMfull = 1;
         }
