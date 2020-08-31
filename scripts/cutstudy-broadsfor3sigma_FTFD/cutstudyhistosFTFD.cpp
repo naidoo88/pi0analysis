@@ -34,6 +34,9 @@ void cutstudyhistosFTFD(TString datafile, TString outfile)
     bool flag_photon2_FD;
     bool flag_photon1_FT;
     bool flag_photon2_FT;
+    bool flag_2photon_event;
+    bool flag_photon1_onlyECAL;
+    bool flag_photon2_onlyECAL;
 
     chain.SetBranchAddress("IM_g1g2",         &IM_g1g2);
     chain.SetBranchAddress("MM2_total",       &MM2_total);
@@ -43,6 +46,9 @@ void cutstudyhistosFTFD(TString datafile, TString outfile)
     chain.SetBranchAddress("flag_photon2_FD", &flag_photon2_FD);
     chain.SetBranchAddress("flag_photon1_FT", &flag_photon1_FT);
     chain.SetBranchAddress("flag_photon2_FT", &flag_photon2_FT);
+    chain.SetBranchAddress("flag_2photon_event",   &flag_2photon_event);
+    chain.SetBranchAddress("flag_photon1_onlyECAL", &flag_photon1_onlyECAL);
+    chain.SetBranchAddress("flag_photon2_onlyECAL", &flag_photon2_onlyECAL);
 
     cuthistos();
 
@@ -50,39 +56,42 @@ void cutstudyhistosFTFD(TString datafile, TString outfile)
     for (Int_t i = 0; i < chain.GetEntries(); i++)
     {
         chain.GetEntry(i);
+        
+        if(flag_2photon_event == 1 && (flag_photon1_onlyECAL == 0 && flag_photon2_onlyECAL == 0)){
 
-        /*=====PRE-CUT HISTOS=====*/
-        if (flag_photon1_FD == 1 && flag_photon2_FD == 1) ggIM_h[0]->Fill(IM_g1g2);
-        if (flag_photon1_FT == 1 && flag_photon2_FT == 1) ggIM_h[1]->Fill(IM_g1g2);
-        if ((flag_photon1_FD == 1 && flag_photon2_FT == 1) || (flag_photon2_FD == 1 && flag_photon1_FT == 1)) ggIM_h[2]->Fill(IM_g1g2);
+            /*=====PRE-CUT HISTOS=====*/
+            if (flag_photon1_FD == 1 && flag_photon2_FD == 1) ggIM_h[0]->Fill(IM_g1g2);
+            if (flag_photon1_FT == 1 && flag_photon2_FT == 1) ggIM_h[1]->Fill(IM_g1g2);
+            if ((flag_photon1_FD == 1 && flag_photon2_FT == 1) || (flag_photon2_FD == 1 && flag_photon1_FT == 1)) ggIM_h[2]->Fill(IM_g1g2);
 
-        // /*=====Cone angle histos=====*/
-        //if ((MM2_total>-0.5 && MM2_total<0.5) && (flag_cuts_dis == 1)){ //Apply very broad MM2 cut to kill some background.
-            if (pi0coneangle < 30)
-            {
-                if (flag_photon1_FD == 1 && flag_photon2_FD == 1) ggIM_coneangle_h[0][0]  -> Fill(IM_g1g2);
-                if (flag_photon1_FT == 1 && flag_photon2_FT == 1) ggIM_coneangle_h[0][1]  -> Fill(IM_g1g2);
-                if ((flag_photon1_FD == 1 && flag_photon2_FT == 1) || (flag_photon2_FD == 1 && flag_photon1_FT == 1)) ggIM_coneangle_h[0][2]  -> Fill(IM_g1g2);
-            }    
-            if (pi0coneangle < 20)
-            {
-                if (flag_photon1_FD == 1 && flag_photon2_FD == 1) ggIM_coneangle_h[1][0]  -> Fill(IM_g1g2);
-                if (flag_photon1_FT == 1 && flag_photon2_FT == 1) ggIM_coneangle_h[1][1]  -> Fill(IM_g1g2);
-                if ((flag_photon1_FD == 1 && flag_photon2_FT == 1) || (flag_photon2_FD == 1 && flag_photon1_FT == 1)) ggIM_coneangle_h[1][2]  -> Fill(IM_g1g2);
-            }
-            if (pi0coneangle < 10)
-            {
-                if (flag_photon1_FD == 1 && flag_photon2_FD == 1) ggIM_coneangle_h[2][0]  -> Fill(IM_g1g2);
-                if (flag_photon1_FT == 1 && flag_photon2_FT == 1) ggIM_coneangle_h[2][1]  -> Fill(IM_g1g2);
-                if ((flag_photon1_FD == 1 && flag_photon2_FT == 1) || (flag_photon2_FD == 1 && flag_photon1_FT == 1)) ggIM_coneangle_h[2][2]  -> Fill(IM_g1g2);    
-            }
-            if (pi0coneangle < 8)
-            {
-                if (flag_photon1_FD == 1 && flag_photon2_FD == 1) ggIM_coneangle_h[3][0]  -> Fill(IM_g1g2);
-                if (flag_photon1_FT == 1 && flag_photon2_FT == 1) ggIM_coneangle_h[3][1]  -> Fill(IM_g1g2);
-                if ((flag_photon1_FD == 1 && flag_photon2_FT == 1) || (flag_photon2_FD == 1 && flag_photon1_FT == 1)) ggIM_coneangle_h[3][2]  -> Fill(IM_g1g2);    
-            }
-        //}//broad MM2 cut (+/- 0.5)
+            // /*=====Cone angle histos=====*/
+            //if ((MM2_total>-0.5 && MM2_total<0.5) && (flag_cuts_dis == 1)){ //Apply very broad MM2 cut to kill some background.
+                if (pi0coneangle < 30)
+                {
+                    if (flag_photon1_FD == 1 && flag_photon2_FD == 1) ggIM_coneangle_h[0][0]  -> Fill(IM_g1g2);
+                    if (flag_photon1_FT == 1 && flag_photon2_FT == 1) ggIM_coneangle_h[0][1]  -> Fill(IM_g1g2);
+                    if ((flag_photon1_FD == 1 && flag_photon2_FT == 1) || (flag_photon2_FD == 1 && flag_photon1_FT == 1)) ggIM_coneangle_h[0][2]  -> Fill(IM_g1g2);
+                }    
+                if (pi0coneangle < 20)
+                {
+                    if (flag_photon1_FD == 1 && flag_photon2_FD == 1) ggIM_coneangle_h[1][0]  -> Fill(IM_g1g2);
+                    if (flag_photon1_FT == 1 && flag_photon2_FT == 1) ggIM_coneangle_h[1][1]  -> Fill(IM_g1g2);
+                    if ((flag_photon1_FD == 1 && flag_photon2_FT == 1) || (flag_photon2_FD == 1 && flag_photon1_FT == 1)) ggIM_coneangle_h[1][2]  -> Fill(IM_g1g2);
+                }
+                if (pi0coneangle < 10)
+                {
+                    if (flag_photon1_FD == 1 && flag_photon2_FD == 1) ggIM_coneangle_h[2][0]  -> Fill(IM_g1g2);
+                    if (flag_photon1_FT == 1 && flag_photon2_FT == 1) ggIM_coneangle_h[2][1]  -> Fill(IM_g1g2);
+                    if ((flag_photon1_FD == 1 && flag_photon2_FT == 1) || (flag_photon2_FD == 1 && flag_photon1_FT == 1)) ggIM_coneangle_h[2][2]  -> Fill(IM_g1g2);    
+                }
+                if (pi0coneangle < 8)
+                {
+                    if (flag_photon1_FD == 1 && flag_photon2_FD == 1) ggIM_coneangle_h[3][0]  -> Fill(IM_g1g2);
+                    if (flag_photon1_FT == 1 && flag_photon2_FT == 1) ggIM_coneangle_h[3][1]  -> Fill(IM_g1g2);
+                    if ((flag_photon1_FD == 1 && flag_photon2_FT == 1) || (flag_photon2_FD == 1 && flag_photon1_FT == 1)) ggIM_coneangle_h[3][2]  -> Fill(IM_g1g2);    
+                }
+            //}//broad MM2 cut (+/- 0.5)
+        }
     } //chain-loop
 
     /*=====Plot some canvases=====*/
