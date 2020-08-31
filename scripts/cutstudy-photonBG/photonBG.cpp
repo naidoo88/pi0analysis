@@ -11,13 +11,13 @@
 using std::vector;
 using std::cout;
 using std::endl;
-using HistArray1D = vector<TH1F>;
-using HistArray2D = vector<HistArray1D>;
+using TH1Array1D = vector<TH1F>;
+using TH1Array2D = vector<TH1Array1D>;
 
-HistArray1D createHistArray1D(TString, float[3], TString, vector<TString>, vector<TString>);
-HistArray2D createHistArray2D(TString, float[3], TString, vector<TString>, vector<TString>, vector<TString>, vector<TString>);
-void writeHistos(HistArray1D &);
-void writeHistos(HistArray2D &);
+TH1Array1D createTH1Array1D(TString, float[3], TString, vector<TString>, vector<TString>);
+TH1Array2D createTH1Array2D(TString, float[3], TString, vector<TString>, vector<TString>, vector<TString>, vector<TString>);
+void writeHistos(TH1Array1D &);
+void writeHistos(TH1Array2D &);
 
 void photonBG(TString infile, TString outfile)
 {
@@ -60,26 +60,26 @@ void photonBG(TString infile, TString outfile)
 	vector<TString> Photon{"g1","g2"};
 	vector<TString> Photontitles{"#gamma_{1}","#gamma_{2}"};
 	float options[3] = {200,0.001,0.2};
-	auto IMgg_Ebins_h = createHistArray2D("IM_gg", options,"IM_{#gamma#gamma}", Ebins, Etitles, Photon, Photontitles);
-	auto IMgg_EbinsComb_h = createHistArray1D("IM_gg", options,"IM_{#gamma#gamma}", Ebins, Etitles);
+	auto IMgg_Ebins_h = createTH1Array2D("IM_gg", options,"IM_{#gamma#gamma}", Ebins, Etitles, Photon, Photontitles);
+	auto IMgg_EbinsComb_h = createTH1Array1D("IM_gg", options,"IM_{#gamma#gamma}", Ebins, Etitles);
 
 	vector<double> Eg_thresh = {0, 0.5, 1, 1.5, 2, 2.5};
 	vector<TString> Ethresh{"E>0","E>0.5","E>1","E>1.5","E>2", "E>2.5"};
 	vector<TString> Ethresh_titles{"E_{#gamma}>0","E_{#gamma}>0.5","E_{#gamma}>1","E_{#gamma}>1.5","E_{#gamma}>2", "E_{#gamma}>2.5"};
-	auto IMgg_Ethresh_h = createHistArray2D("IM_gg", options, "IM_{#gamma#gamma}", Ethresh, Ethresh_titles, Photon, Photontitles);
-	auto IMgg_EthreshComb_h = createHistArray1D("IM_gg", options,"IM_{#gamma#gamma}", Ethresh, Ethresh_titles);
+	auto IMgg_Ethresh_h = createTH1Array2D("IM_gg", options, "IM_{#gamma#gamma}", Ethresh, Ethresh_titles, Photon, Photontitles);
+	auto IMgg_EthreshComb_h = createTH1Array1D("IM_gg", options,"IM_{#gamma#gamma}", Ethresh, Ethresh_titles);
 
 	vector<vector<double>> egcone_bins = {{0.0, 2.5}, {2.5, 7}, {7, 15}, {15, 25}, {25, 35},{35, 45}, {45, 360}};
 	vector<TString> egconebins = {"eg_cone_0-2.5", "eg_cone_2.5-7", "eg_cone_7-15", "eg_cone_15-25", "eg_cone_25-35", "eg_cone_35-45", "eg_cone_>45"};
 	vector<TString> egconebins_titles = {"#theta_{e#gamma} 0-2.5", "#theta_{e#gamma} 2.5-7", "#theta_{e#gamma} 7-15", "#theta_{e#gamma} 15-25", "#theta_{e#gamma} 25-35", "#theta_{e#gamma} 35-45", "#theta_{e#gamma} > 45"};
-	auto IMgg_egconebins_h = createHistArray2D("IM_gg", options, "IM_{#gamma#gamma}", egconebins, egconebins_titles, Photon, Photontitles);
-	auto IMgg_egconebinsComb_h = createHistArray1D("IM_gg", options, "IM_{#gamma#gamma}", egconebins, egconebins_titles);
+	auto IMgg_egconebins_h = createTH1Array2D("IM_gg", options, "IM_{#gamma#gamma}", egconebins, egconebins_titles, Photon, Photontitles);
+	auto IMgg_egconebinsComb_h = createTH1Array1D("IM_gg", options, "IM_{#gamma#gamma}", egconebins, egconebins_titles);
 
 	vector<double> egcone_thresh = {0, 2.5, 7, 15, 25, 35, 45};
 	vector<TString> egconethresh = {"eg_cone>0", "eg_cone>2.5", "eg_cone>7", "eg_cone>15", "eg_cone>25", "eg_cone>35", "eg_cone>45"};
 	vector<TString> egconethresh_titles = {"#theta_{e#gamma}>0", "#theta_{e#gamma}>2.5", "#theta_{e#gamma}>7", "#theta_{e#gamma}>15", "#theta_{e#gamma}>25", "#theta_{e#gamma}>35", "#theta_{e#gamma}>45"};
-	auto IMgg_egconethresh_h = createHistArray2D("IM_gg", options, "IM_{#gamma#gamma}", egconethresh, egconethresh_titles, Photon, Photontitles);
-	auto IMgg_egconethreshComb_h = createHistArray1D("IM_gg", options, "IM_{#gamma#gamma}", egconethresh, egconethresh_titles);
+	auto IMgg_egconethresh_h = createTH1Array2D("IM_gg", options, "IM_{#gamma#gamma}", egconethresh, egconethresh_titles, Photon, Photontitles);
+	auto IMgg_egconethreshComb_h = createTH1Array1D("IM_gg", options, "IM_{#gamma#gamma}", egconethresh, egconethresh_titles);
 
 	TH2F Eg_egcone_corr_h = TH2F("Eg_egcone_corr_h", "E_{#gamma} vs. #theta_{e#gamma}", 60, 0, 60, 100, 0, 10);
 
@@ -155,12 +155,12 @@ void photonBG(TString infile, TString outfile)
 }
 
 //Generic function to create 2D array of TH1Fs.
-HistArray2D createHistArray2D(TString hname, float op[3], TString htitle, vector<TString> var1, vector<TString> var1_titles, vector<TString> var2, vector<TString> var2_titles){
-	HistArray2D h2D;
+TH1Array2D createTH1Array2D(TString hname, float op[3], TString htitle, vector<TString> var1, vector<TString> var1_titles, vector<TString> var2, vector<TString> var2_titles){
+	TH1Array2D h2D;
 
 	for(u_int i = 0; i < var1.size(); i++)
 	{
-		HistArray1D h1D;
+		TH1Array1D h1D;
 		for(u_int j=0; j < var2.size(); j++)
 		{
 			auto histName = Form("%s_%s_%s", hname.Data(), var2[j].Data(), var1[i].Data());
@@ -175,8 +175,8 @@ HistArray2D createHistArray2D(TString hname, float op[3], TString htitle, vector
 }
 
 //Generic function to create 1D array of TH1Fs.
-HistArray1D createHistArray1D(TString hname, float op[3], TString htitle, vector<TString> var, vector<TString> var_titles){
-	HistArray1D h1D;
+TH1Array1D createTH1Array1D(TString hname, float op[3], TString htitle, vector<TString> var, vector<TString> var_titles){
+	TH1Array1D h1D;
 
 	for(u_int j=0; j < var.size(); j++)
 	{
@@ -189,14 +189,14 @@ HistArray1D createHistArray1D(TString hname, float op[3], TString htitle, vector
 	return h1D;
 }
 
-void writeHistos(HistArray1D &hist){
+void writeHistos(TH1Array1D &hist){
 	for (auto &ihist : hist)
 	{
 		ihist.Write();
 	}
 }
 
-void writeHistos(HistArray2D &hist){
+void writeHistos(TH1Array2D &hist){
 	for (auto &histarray : hist)
 	{
 		for (auto &ihist : histarray)

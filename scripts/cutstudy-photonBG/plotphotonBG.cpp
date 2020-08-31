@@ -127,8 +127,8 @@ cout << "END" << endl << endl;
   // vector<TString> Photontitles{"#gamma_{1}","#gamma_{2}"};
   // float options[3] = {200,0.001,0.2};
   // cout << "PREGEN" << endl << endl;
-  // auto IMgg_Ebins_h = h.createHistArray2D("IM_gg", options,"IM_{#gamma#gamma}", Ebins, Etitles, Photon, Photontitles);
-  // auto IMgg_EbinsComb_h = h.createHistArray1D("IM_gg", options,"IM_{#gamma#gamma}", Ebins, Etitles);
+  // auto IMgg_Ebins_h = h.createTH1Array2D("IM_gg", options,"IM_{#gamma#gamma}", Ebins, Etitles, Photon, Photontitles);
+  // auto IMgg_EbinsComb_h = h.createTH1Array1D("IM_gg", options,"IM_{#gamma#gamma}", Ebins, Etitles);
   // cout << "POSTGEN" << endl << endl;
 
 
