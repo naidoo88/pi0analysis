@@ -46,7 +46,7 @@ void runAnaProof(const Char_t input_list[], const Char_t outfilename[]){
   else{ //remove any previous contents if exists
     cout << ">>> Directory '" << buffpath << "' exists.  Removing any previous contents." << endl << endl;
     TString rmprev_cmd = Form("rm %s*", buffpath.Data());
-    cout << rmprev_cmd << 
+    cout << rmprev_cmd << endl;
     gSystem->Exec(rmprev_cmd);
   }
 
