@@ -9,8 +9,8 @@ TH1Array2D hist_fxns::createTH1Array2D(TString hname, float op[3], TString htitl
 		TH1Array1D h1D;
 		for(u_int j=0; j < var2.size(); j++)
 		{
-			auto histName = Form("%s_%s_%s", hname.Data(), var2[j].Data(), var1[i].Data());
-			auto histTitle = Form("%s - %s: %s", htitle.Data(), var2[j].Data() , var1[i].Data());
+			auto histName = Form("%s_%s_%s_h", hname.Data(), var2[j].Data(), var1[i].Data());
+			auto histTitle = Form("%s - %s: %s", htitle.Data(), var2_titles[j].Data() , var1_titles[i].Data());
 
 			h1D.push_back(TH1F{histName,histTitle,(int)op[0],op[1],op[2]});
 		}
@@ -26,8 +26,8 @@ TH1Array1D hist_fxns::createTH1Array1D(TString hname, float op[3], TString htitl
 
 	for(u_int j=0; j < var.size(); j++)
 	{
-		auto histName = Form("%s_%s", hname.Data(), var[j].Data());
-		auto histTitle = Form("%s: %s", htitle.Data(), var[j].Data());
+		auto histName = Form("%s_%s_h", hname.Data(), var[j].Data());
+		auto histTitle = Form("%s: %s", htitle.Data(), var_titles[j].Data());
 
 		h1D.push_back(TH1F{histName,histTitle,(int)op[0],op[1],op[2]});
 	}
@@ -41,8 +41,8 @@ TH1Array1D_Ptr hist_fxns::createTH1PtrArray1D(TString hname, float op[3], TStrin
 
 	for(u_int j=0; j < var.size(); j++)
 	{
-		auto histName = Form("%s_%s", hname.Data(), var[j].Data());
-		auto histTitle = Form("%s: %s", htitle.Data(), var[j].Data());
+		auto histName = Form("%s_%s_h", hname.Data(), var[j].Data());
+		auto histTitle = Form("%s: %s", htitle.Data(), var_titles[j].Data());
 
 		h1D.push_back(new TH1F{histName,histTitle,(int)op[0],op[1],op[2]});
 	}
@@ -58,8 +58,8 @@ TH1Array2D_Ptr hist_fxns::createTH1PtrArray2D(TString hname, float op[3], TStrin
 		TH1Array1D_Ptr h1D;
 		for(u_int j=0; j < var2.size(); j++)
 		{
-			auto histName = Form("%s_%s_%s", hname.Data(), var2[j].Data(), var1[i].Data());
-			auto histTitle = Form("%s - %s: %s", htitle.Data(), var2[j].Data() , var1[i].Data());
+			auto histName = Form("%s_%s_%s_h", hname.Data(), var2[j].Data(), var1[i].Data());
+			auto histTitle = Form("%s - %s: %s", htitle.Data(), var2_titles[j].Data() , var1_titles[i].Data());
 
 			h1D.push_back(new TH1F{histName,histTitle,(int)op[0],op[1],op[2]});
 		}
@@ -77,8 +77,8 @@ TH2Array2D hist_fxns::createTH2Array2D(TString hname, float op[6], TString htitl
 		TH2Array1D h1D;
 		for(u_int j=0; j < var2.size(); j++)
 		{
-			auto histName = Form("%s_%s_%s", hname.Data(), var2[j].Data(), var1[i].Data());
-			auto histTitle = Form("%s - %s: %s", htitle.Data(), var2[j].Data() , var1[i].Data());
+			auto histName = Form("%s_%s_%s_h", hname.Data(), var2[j].Data(), var1[i].Data());
+			auto histTitle = Form("%s - %s: %s", htitle.Data(), var2_titles[j].Data() , var1_titles[i].Data());
 
 			h1D.push_back(TH2F{histName,histTitle,(int)op[0],op[1],op[2],(int)op[3],op[4],op[5]});
 		}
@@ -95,8 +95,8 @@ TH2Array1D hist_fxns::createTH2Array1D(TString hname, float op[6], TString htitl
 
 	for(u_int j=0; j < var.size(); j++)
 	{
-		auto histName = Form("%s_%s", hname.Data(), var[j].Data());
-		auto histTitle = Form("%s: %s", htitle.Data(), var[j].Data());
+		auto histName = Form("%s_%s_h", hname.Data(), var[j].Data());
+		auto histTitle = Form("%s: %s", htitle.Data(), var_titles[j].Data());
 
 		h1D.push_back(TH2F{histName,histTitle,(int)op[0],op[1],op[2],(int)op[3],op[4],op[5]});
 	}
