@@ -43,6 +43,9 @@ namespace clas12root{
       TTree *data = nullptr;
 
       double DEG = TMath::RadToDeg(); //rad->deg conversion
+      
+      //clas12::rcdb_vals rcdbData;
+      double rcdb_Ebeam; //E_beam from RCDB
 
       /*  Variables  */
       int helicity;
@@ -153,6 +156,7 @@ namespace clas12root{
       TH1F *n_FT_onlyhits_h = nullptr;
       TH1F *n_FD_doublehits_h = nullptr;
       TH1F *photonE_h = nullptr;
+      TH1F *beamErcdb_h = nullptr;
 
       /* Particle 4vects */
       double e_px;

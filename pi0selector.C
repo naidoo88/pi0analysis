@@ -158,6 +158,12 @@ namespace clas12root{
 
     counterhistos();
 
+    // _c12->queryRcdb();
+    // auto rcdbData=_c12->getRcdbVals();//struct with all relevent rcdb values
+    // rcdb_Ebeam = rcdbData.beam_energy / 1000; //db val in MeV
+    // beamErcdb_h->Fill(rcdb_Ebeam);
+
+
     HipoSelector::SlaveBegin(0); //Do not remove this line!
     
   }
@@ -176,15 +182,15 @@ namespace clas12root{
     //Equivalent to TSelector Process
     //Fill in what you would like to do with
     //the data for each event....
-      //cout << "In ProcessEvent" << endl << endl;
 
-    	auto electronbuff = _c12->getByID(11);
-			//auto recoilbuff = _c12->getByID(2212);
-			auto recoilbuff   = _c12->getByID(2112);
+      auto electronbuff = _c12->getByID(11);
+			//auto recoilbuff = _c12->getByID(2212); //proton
+			auto recoilbuff   = _c12->getByID(2112); //neutron
 			auto photonbuff   = _c12->getByID(22);
-      
-      //if (recoilbuff.empty() == false) return kTRUE; //work around for BAND neutrons which cause segfault.
 
+      // beam.SetE(rcdb_Ebeam);
+      // beam.SetPz(rcdb_Ebeam);
+      
       recoil.SetXYZM(recoilbuff[0]->par()->getPx(),
 			  recoilbuff[0]->par()->getPy(),
 			  recoilbuff[0]->par()->getPz(),
@@ -343,7 +349,7 @@ namespace clas12root{
                 // ---- ECAL/FCAL: Mean: 0.127126  Sig: 0.0107954 => Lower: 0.0947396  Upper: 0.159512
                 // ---- PCAL/FCAL: Mean: 0.126721  Sig: 0.0119468 => Lower: 0.0908801  Upper: 0.162561
                 */
-               
+
         if ((flag_photon1_PCAL == 1 && flag_photon2_PCAL == 1) && (IM_g1g2 > 0.091476 && IM_g1g2 < 0.170891)){
           flag_cuts_3sigIMfull = 1;
         }
@@ -481,6 +487,7 @@ namespace clas12root{
     n_FT_onlyhits_h         =  new TH1F("n_FT_onlyhits_h", "FT-only photon-pairs; N; counts", 20,0,20);
     n_FD_doublehits_h       =  new TH1F("n_FD_doublehits_h", "Photon-pairs with one #gamma in FD/FT; N; counts", 20,0,20);
     photonE_h               =  new TH1F("photonE_h", "Photon Energy; E_{#gamma} (GeV); counts", 300, 0, 10);
+    //beamErcdb_h             =  new TH1F("beamErcdb_h", "RCDB Beam Energy; E_{beam_{RCDB}}; counts", 400, -100, 100);
 
     // n_photons_inevent_h     ->SetDirectory(Out_File);
     // n_photonpairs_inevent_h ->SetDirectory(Out_File);
@@ -497,6 +504,8 @@ namespace clas12root{
     GetOutputList()->Add(n_FT_onlyhits_h);
     GetOutputList()->Add(n_FD_doublehits_h);
     GetOutputList()->Add(photonE_h);
+    //GetOutputList()->Add(beamErcdb_h);
+
   }//counterhistos fxn
 
   void pi0selector::calc_angles(TVector3 Ebeam_vect, TVector3 Electron_vect, TVector3 Recoil_vect, TVector3 Newpart_vect)
