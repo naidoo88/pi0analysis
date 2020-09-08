@@ -6,6 +6,7 @@
 #include "TF1.h"
 #include "TCanvas.h"
 #include "TStyle.h"
+#include "TBenchmark.h"
 
 #include "hist_fxns.h"
 //^^^^^^^^^^^^^^^^^^^^^  https://root-forum.cern.ch/t/adding-include-paths-to-cint/8281/5
@@ -13,12 +14,19 @@
 using std::cout;
 using std::endl;
 
-void calcAsymmetry(TH1F* asym_h, TH1F* hel_plus_h, TH1F* hel_min_h);
+TH1Array1D_Ptr calcAsymmetry(TH1Array2D_Ptr hel_plus_h, TH1Array2D_Ptr hel_min_h, TString asym_name, TString asym_title, vector<TString> &cut, vector<TString> &cut_title);
 
 void exclplots(TString infile, TString outfile)
 {
+	TStopwatch time;
+	time.Start();
+
+	cout << "Begin..." << endl;
+
  	gStyle->SetOptFit(01111);
 	gStyle->SetOptStat(11);
+
+	cout << "Set up read-out..." << endl;
 
 	TChain chain("data");
 	chain.AddFile(infile);
@@ -30,8 +38,7 @@ void exclplots(TString infile, TString outfile)
 	double MP_rec_spectator;
 	double MM_rec_spectator;
 
-  
-	double pi0coneangle;
+  double pi0coneangle;
 	double phot1_E;
 	double phot2_E;
 	double eg1coneangle;
@@ -71,6 +78,8 @@ void exclplots(TString infile, TString outfile)
 	chain.SetBranchAddress("flag_cuts_3sigIM", &flag_cuts_3sigIM);
 	chain.SetBranchAddress("flag_cuts_spectMP", &flag_cuts_spectMP);
 
+	cout << "Setting up histograms... " << endl;
+
 	hist_fxns h;
 
 	//--cumulation histos
@@ -104,14 +113,7 @@ void exclplots(TString infile, TString outfile)
 	auto hel_Rvg_h = h.createTH1PtrArray2D("hel_Rvg", hel_bins, "Helicity - R-vg", cut, cut_title, hel_vars, hel_titles);
 	auto hel_Nvg_h = h.createTH1PtrArray2D("hel_Nvg", hel_bins, "Helicity - N-vg", cut, cut_title, hel_vars, hel_titles);
 
-	TH1F* asym_RN_h[5];
-	TH1F* asym_Rvg_h[5];
-	TH1F* asym_Nvg_h[5];
-
-	// auto asym_RN_h =  h.createTH1PtrArray1D("asym_RN",  hel_bins, "BSA_{RN}", cut, cut_title);
-	// auto asym_Rvg_h = h.createTH1PtrArray1D("asym_Rvg", hel_bins, "BSA_{Rvg}", cut, cut_title);
-	// auto asym_Nvg_h = h.createTH1PtrArray1D("asym_Nvg", hel_bins, "BSA_{Nvg}", cut, cut_title);
-
+	cout << "Looping through file... " << endl;
 
 	for(Int_t i=0;i<chain.GetEntries();i++){
 		chain.GetEntry(i);
@@ -244,17 +246,16 @@ void exclplots(TString infile, TString outfile)
 
 	}//chain loop
 
-	asym_RN_h[0] = (TH1F*) hel_RN_h[0][0]->GetAsymmetry(hel_RN_h[0][1]);
-	// for (u_int i = 0; i < asym_RN_h.size(); i++){
-	// 	calcAsymmetry(asym_RN_h[i], hel_RN_h[i][0], hel_RN_h[i][1]);
-	// }
+	cout << "Processing asymmetries..." << endl;
+	TH1Array1D_Ptr asym_RN_h 	= calcAsymmetry(hel_RN_h,  hel_RN_h,  "asym_RN",  "BSA_{RN}",  cut, cut_title);
+	TH1Array1D_Ptr asym_Rvg_h	= calcAsymmetry(hel_Rvg_h, hel_Rvg_h, "asym_Rvg", "BSA_{Rvg}", cut, cut_title);
+	TH1Array1D_Ptr asym_Nvg_h	= calcAsymmetry(hel_Nvg_h, hel_Nvg_h, "asym_Nvg", "BSA_{Nvg}", cut, cut_title);
 
-	// calcAsymmetry(asym_RN_h[0], hel_RN_h[0][0], hel_RN_h[0][1]);
-	// calcAsymmetry(asym_RN_h[1], hel_RN_h[1][0], hel_RN_h[1][1]);
-	// calcAsymmetry(asym_RN_h[2], hel_RN_h[2][0], hel_RN_h[2][1]);
-	// calcAsymmetry(asym_RN_h[3], hel_RN_h[3][0], hel_RN_h[3][1]);
-	// calcAsymmetry(asym_RN_h[4], hel_RN_h[4][0], hel_RN_h[4][1]);
+	for (u_int i = 0; i < asym_RN_h.size(); i++){
+		cout << "post asym: asym_RN_h[" << i << "] is -- " << asym_RN_h[i]->GetName() << endl; 
+	} 
 
+	cout << "Writting out to file..." << endl;
 	TFile* OutFile = new TFile(outfile, "RECREATE");
 	h.writeHistos(MMspect_h);
 	h.writeHistos(MMrecoil_h);
@@ -265,7 +266,11 @@ void exclplots(TString infile, TString outfile)
 	h.writeHistos(hel_Rvg_h);
 	h.writeHistos(hel_Nvg_h);
 
-	asym_RN_h[0]->Write();
+
+
+	h.writeHistos(asym_RN_h);
+	h.writeHistos(asym_Rvg_h);
+	h.writeHistos(asym_Nvg_h);
 
 	// h.writeHistos(asym_RN_h);
 	// h.writeHistos(asym_Rvg_h);
@@ -275,21 +280,45 @@ void exclplots(TString infile, TString outfile)
 
 }//fxn
 
-void calcAsymmetry(TH1F* asym_h, TH1F* hel_plus_h, TH1F* hel_min_h){
+TH1Array1D_Ptr calcAsymmetry(TH1Array2D_Ptr hel_plus_h, TH1Array2D_Ptr hel_min_h, TString asym_name, TString asym_title, vector<TString> &cut, vector<TString> &cut_title){
 	    
   //Fill asymmetries
-	//TString hname_buff = asym_h->GetName();
-	cout << "In calcAsym.   Asym hist: " << asym_h->GetName() << "Hel+: " << hel_plus_h->GetName() << "Hel-: " << hel_min_h->GetName() << endl; 
-  asym_h = (TH1F*) hel_plus_h->GetAsymmetry(hel_min_h);
-  //asym_h->SetName("Asym_R_vg_h");
+	//cout << "   In calcAsym." << endl;
+	
+	TH1Array1D_Ptr asym_h;
+
+	for(u_int j=0; j < cut.size(); j++)
+	{
+		//cout << "   Hel+: " << hel_plus_h[j][0]->GetName() << " Hel-: " << hel_min_h[j][1]->GetName() << endl; 
+		
+		TH1F* buff_h = (TH1F*) hel_plus_h[j][0]->GetAsymmetry(hel_min_h[j][1]);
+		//cout << "   Created asym: " << buff_h->GetName() << endl;
+
+		auto histName = Form("%s_%s_h", asym_name.Data(), cut[j].Data());
+		auto histTitle = Form("%s: %s", asym_title.Data(), cut_title[j].Data());
+		buff_h->SetNameTitle(histName, histTitle);
+
+		//cout << "   Renamed it: " << buff_h->GetName() << endl << endl;
+
+		asym_h.push_back(buff_h);
+	}
+
 
   // //Fit the asymmetries
-  // TString fit_fxn = "[0] + [1]*sin(TMath::DegToRad()*(x))";
-  // TF1 *asymm_fits[3];
-  // asymm_fits[0] = new TF1("Asym_R_vg_fit", fit_fxn, 0, 360);
-  // asymm_fits[1] = new TF1("Asym_R_N_fit",  fit_fxn, 0, 360);
-  // asymm_fits[2] = new TF1("Asym_N_vg_fit", fit_fxn, 0, 360);
+  TString fit_fxn = "[0] + [1]*sin(TMath::DegToRad()*(x))";
+  TF1 *asym_fit[asym_h.size()];
 
+	for (u_int j = 0; j < asym_h.size(); j++)
+	{
+		auto fitName = Form("%s_fit", asym_h[j]->GetName());
+		asym_fit[j] = new TF1(fitName, fit_fxn, 0, 360);
+		asym_fit[j]->SetParNames("const", "P_{b} A_{LU}^{sin#phi}");
+
+		asym_h[j]->Fit(asym_fit[j], "RM");
+	}
+
+
+	return asym_h;
   // for (int i = 0; i < 3; i++)
   // {
   //     asymm_fits[i]->SetParNames("const", "P_{b} A_{LU}^{sin#phi}");
@@ -298,5 +327,4 @@ void calcAsymmetry(TH1F* asym_h, TH1F* hel_plus_h, TH1F* hel_min_h){
   // R_N_helasym_h  -> Fit(asymm_fits[0], "RM");
   // R_vg_helasym_h -> Fit(asymm_fits[1], "RM");
   // N_vg_helasym_h -> Fit(asymm_fits[2], "RM");
-
 }
