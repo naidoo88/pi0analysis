@@ -43,7 +43,7 @@ void hiposkim(const Char_t input_list[]){
 				cout << "INPUT FILE: " << inputFile << endl;
 				string inbuff = inputFile;
 				eraseSubStr(inbuff, ".hipo");
-        string outputFile = inbuff + "_PIDskim.hipo";
+        string outputFile = inbuff + "_preskim.hipo";
 				cout << "OUTPUT FILE: " << outputFile << endl << endl;
 
         clas12writer c12writer(outputFile.c_str()); //initialising clas12writer with output path
@@ -64,6 +64,9 @@ void hiposkim(const Char_t input_list[]){
 					}
 				}
 
+				//close writer
+				c12writer.closeWriter();
+
 			}//duplicate check
 			sprintf(last_file, "%s", file_name); // save name of the current file into "last_file"
 		}//file list loop
@@ -71,7 +74,7 @@ void hiposkim(const Char_t input_list[]){
 
 	list_of_files.close();
 
-	time.Stop();\
+	time.Stop();
 	time.Print();
 } //fxn
 
